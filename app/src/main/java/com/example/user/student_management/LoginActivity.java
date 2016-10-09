@@ -8,10 +8,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class LoginActivity extends AppCompatActivity {
 
+    @BindView(R.id.edittext_username)
     private EditText edittext_username;
+
+    @BindView(R.id.edittext_password)
     private EditText edittext_password;
+
+    @BindView(R.id.button_login)
     private Button button_login;
 
     @Override
@@ -19,15 +28,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        edittext_username = (EditText) findViewById(R.id.edittext_username);
-        edittext_password = (EditText) findViewById(R.id.edittext_password);
-        button_login = (Button) findViewById(R.id.button_login);
-        button_login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                attemptLogin();
-            }
-        });
+        ButterKnife.bind(this);
 
     }
 
@@ -50,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
      * LOGIN FUNCTION
      *
      * **/
+    @OnClick(R.id.button_login)
     private void attemptLogin(){
 
         /** Store values at the time of the login attempt.**/
