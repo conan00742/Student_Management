@@ -15,13 +15,13 @@ import butterknife.OnClick;
 public class LoginActivity extends AppCompatActivity {
 
     @BindView(R.id.edittext_username)
-    private EditText edittext_username;
+    EditText edittext_username;
 
     @BindView(R.id.edittext_password)
-    private EditText edittext_password;
+    EditText edittext_password;
 
     @BindView(R.id.button_login)
-    private Button button_login;
+    Button button_login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
      *
      * **/
     @OnClick(R.id.button_login)
-    private void attemptLogin(){
+    void attemptLogin(){
 
         /** Store values at the time of the login attempt.**/
         String email = edittext_username.getText().toString();
