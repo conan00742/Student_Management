@@ -1,5 +1,6 @@
 package com.example.user.student_management;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -22,6 +23,9 @@ public class LoginActivity extends AppCompatActivity {
 
     @BindView(R.id.button_login)
     Button button_login;
+
+
+    final static String USERNAME_TAG = "user";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +105,9 @@ public class LoginActivity extends AppCompatActivity {
 
             /**Correct Account**/
             else if(email.equals("conan00742@gmail.com") && password.equals("123456")){
-                Toast.makeText(LoginActivity.this, "Welcome conan00742", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(getApplicationContext(),LoginSuccessActivity.class);
+                i.putExtra(USERNAME_TAG,email);
+                startActivity(i);
             }
 
             /**Wrong Account**/
