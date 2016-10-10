@@ -1,5 +1,7 @@
 package com.example.user.student_management;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -42,20 +44,47 @@ public class LoginSuccessActivity extends AppCompatActivity {
         // get user data from session
         HashMap<String, String> user = session.getUserDetails();
 
-        // email
-        String email = user.get(SessionManager.KEY_EMAIL);
+        if(user != null && user.containsKey(SessionManager.KEY_EMAIL)){
+            /**get Email from SessionManager**/
+            String email = user.get(SessionManager.KEY_EMAIL);
 
-        /**Get Intent Extra**/
-        Bundle extras = getIntent().getExtras();
-        if(extras != null){
-            String userValue = extras.getString(LoginActivity.USERNAME_TAG);
-            edtUsername.setText(userValue);
+            /**and set it into the EditText**/
+            edtUsername.setText(email);
         }
+
+
     }
 
     @OnClick(R.id.btnLogout)
     void attemptLogout(){
-        session.logoutUser();
+        AlertDialog.Builder builder = new AlertDialog.Builder(LoginSuccessActivity.this);
+
+        /**set title**/
+        builder.setTitle("Log out");
+
+        /**set message**/
+        builder.setMessage("Are you sure you want to log out?");
+
+        /**set icon**/
+        builder.setIcon(R.drawable.logout_mdpi);
+
+        /**set positive button**/
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                session.logoutUser();
+            }
+        });
+
+        /**set negative button**/
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
 
     }
 }

@@ -119,9 +119,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 session.createLoginSession(email);
 
-                /**Login Success ---> LoginSuccessActivity with extras**/
+                /**Login Success ---> LoginSuccessActivity**/
                 Intent i = new Intent(getApplicationContext(),LoginSuccessActivity.class);
-                i.putExtra(USERNAME_TAG,email);
                 startActivity(i);
                 finish();
             }

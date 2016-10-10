@@ -1,5 +1,6 @@
 package com.example.user.student_management;
 
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -95,6 +96,7 @@ public class SessionManager {
      * Clear session details
      * */
     public void logoutUser(){
+
         // Clearing all data from Shared Preferences
         editor.clear();
         editor.commit();
