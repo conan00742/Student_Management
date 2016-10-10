@@ -1,6 +1,7 @@
 package com.example.user.student_management;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -24,15 +25,25 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.button_login)
     Button button_login;
 
-
+    /**Intent extra TAG**/
     final static String USERNAME_TAG = "user";
+
+
+    SessionManager session;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        session = new SessionManager(getApplicationContext());
+
         ButterKnife.bind(this);
+
+        /**Check User Login Status**/
+        Toast.makeText(LoginActivity.this, "User Login Status: "+session.isLoggedIn(), Toast.LENGTH_LONG).show();
 
     }
 
@@ -52,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
     /**
      *
      *
-     * LOGIN FUNCTION
+     * LOGIN
      *
      * **/
     @OnClick(R.id.button_login)
@@ -104,10 +115,15 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             /**Correct Account**/
-            else if(email.equals("conan00742@gmail.com") && password.equals("123456")){
+            else if(email.equals("android@gmail.com")  && password.equals("123456")){
+
+                session.createLoginSession(email);
+
+                /**Login Success ---> LoginSuccessActivity with extras**/
                 Intent i = new Intent(getApplicationContext(),LoginSuccessActivity.class);
                 i.putExtra(USERNAME_TAG,email);
                 startActivity(i);
+                finish();
             }
 
             /**Wrong Account**/
@@ -117,4 +133,5 @@ public class LoginActivity extends AppCompatActivity {
         }
 
     }
+
 }
