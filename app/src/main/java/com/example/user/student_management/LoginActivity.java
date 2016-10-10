@@ -39,6 +39,13 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         session = new SessionManager(getApplicationContext());
+        if(session.isLoggedIn()){
+            Intent loginIntent = new Intent(this, LoginSuccessActivity.class);
+            startActivity(loginIntent);
+
+            //close log in activity
+            finish();
+        }
 
         ButterKnife.bind(this);
 
