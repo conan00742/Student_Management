@@ -1,7 +1,9 @@
 package com.example.user.student_management;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -50,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         /**Check User Login Status**/
-        Toast.makeText(LoginActivity.this, "User Login Status: "+session.isLoggedIn(), Toast.LENGTH_LONG).show();
+        /*Toast.makeText(LoginActivity.this, "User Login Status: "+session.isLoggedIn(), Toast.LENGTH_LONG).show();*/
 
     }
 
@@ -75,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
      * **/
     @OnClick(R.id.button_login)
     void attemptLogin(){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(LoginActivity.this);
 
         /** Store values at the time of the login attempt.**/
         String email = edittext_username.getText().toString();
@@ -88,17 +91,41 @@ public class LoginActivity extends AppCompatActivity {
 
         /**If email AND password all blank**/
         if(TextUtils.isEmpty(email) && TextUtils.isEmpty(password)){
-            Toast.makeText(LoginActivity.this, "Can't leave blank", Toast.LENGTH_SHORT).show();
+            alertDialog.setTitle("Error");
+            alertDialog.setMessage("Can not leave blank");
+            alertDialog.setIcon(R.drawable.delete_mdpi);
+            alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
         }
 
         /**If PASSWORD blank**/
         else if(!TextUtils.isEmpty(email) && TextUtils.isEmpty(password)){
-            Toast.makeText(LoginActivity.this, "Can't leave PASSWORD blank", Toast.LENGTH_SHORT).show();
+            alertDialog.setTitle("Error");
+            alertDialog.setMessage("Can not leave PASSWORD blank");
+            alertDialog.setIcon(R.drawable.delete_mdpi);
+            alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
         }
 
         /**If EMAIL blank**/
         else if(TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)) {
-            Toast.makeText(LoginActivity.this, "Can't leave EMAIL blank", Toast.LENGTH_SHORT).show();
+            alertDialog.setTitle("Error");
+            alertDialog.setMessage("Can not leave EMAIL blank");
+            alertDialog.setIcon(R.drawable.delete_mdpi);
+            alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
         }
 
 
@@ -134,9 +161,19 @@ public class LoginActivity extends AppCompatActivity {
 
             /**Wrong Account**/
             else{
-                Toast.makeText(LoginActivity.this, "Username or Password incorrect", Toast.LENGTH_SHORT).show();
+                alertDialog.setTitle("Error");
+                alertDialog.setMessage("Username or Password is incorrect");
+                alertDialog.setIcon(R.drawable.delete_mdpi);
+                alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
             }
         }
+
+        alertDialog.show();
 
     }
 

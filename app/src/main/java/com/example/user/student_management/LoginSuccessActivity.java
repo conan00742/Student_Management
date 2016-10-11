@@ -4,10 +4,13 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.HashMap;
@@ -18,7 +21,7 @@ import butterknife.OnClick;
 
 public class LoginSuccessActivity extends AppCompatActivity {
 
-    @BindView(R.id.edtUsername) EditText edtUsername;
+    @BindView(R.id.tvUsername) TextView tvUsername;
     @BindView(R.id.btnLogout) Button btnLogout;
 
     SessionManager session;
@@ -32,7 +35,7 @@ public class LoginSuccessActivity extends AppCompatActivity {
 
         session = new SessionManager(getApplicationContext());
 
-        Toast.makeText(LoginSuccessActivity.this, "User Login Status: " + session.isLoggedIn(), Toast.LENGTH_LONG).show();
+        /*Toast.makeText(LoginSuccessActivity.this, "User Login Status: " + session.isLoggedIn(), Toast.LENGTH_LONG).show();*/
 
         /**
          * Call this function whenever you want to check user login
@@ -49,7 +52,7 @@ public class LoginSuccessActivity extends AppCompatActivity {
             String email = user.get(SessionManager.KEY_EMAIL);
 
             /**and set it into the EditText**/
-            edtUsername.setText(email);
+            tvUsername.setText(email);
         }
 
 
