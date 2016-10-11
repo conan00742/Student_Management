@@ -8,6 +8,8 @@ import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -22,10 +24,29 @@ import butterknife.OnClick;
 public class LoginSuccessActivity extends AppCompatActivity {
 
     @BindView(R.id.tvUsername) TextView tvUsername;
-    @BindView(R.id.btnLogout) Button btnLogout;
+    @BindView(R.id.btnViewStudentList) Button btnViewStudentList;
 
     SessionManager session;
 
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.home_option_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.mnLogout:
+                attemptLogout();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +79,7 @@ public class LoginSuccessActivity extends AppCompatActivity {
 
     }
 
-    @OnClick(R.id.btnLogout)
+
     void attemptLogout(){
         AlertDialog.Builder builder = new AlertDialog.Builder(LoginSuccessActivity.this);
 
@@ -89,5 +110,11 @@ public class LoginSuccessActivity extends AppCompatActivity {
 
         builder.show();
 
+    }
+
+    @OnClick(R.id.btnViewStudentList)
+    public void viewStudentList(){
+        Intent i = new Intent(this,StudentsList.class);
+        startActivity(i);
     }
 }

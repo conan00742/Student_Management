@@ -3,4 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="student_name">#222222</color>
+    <color name="student_id">#0C1EB3</color>
+    <color name="year_of_birth">#8F0F22</color>
 </resources>
