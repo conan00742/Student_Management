@@ -4,10 +4,10 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Window;
-import android.view.WindowManager;
 
-public class SplashScreen extends AppCompatActivity {
+import com.example.user.student_management.other.SessionManager;
+
+public class SplashScreenActivity extends AppCompatActivity {
 
     // Splash screen timer
     private static int SPLASH_TIME_OUT = 3000;
@@ -33,11 +33,11 @@ public class SplashScreen extends AppCompatActivity {
             public void run() {
                 session = new SessionManager(getApplicationContext());
                 if(session.isLoggedIn()){
-                    Intent intent = new Intent(SplashScreen.this, LoginSuccessActivity.class);
+                    Intent intent = new Intent(SplashScreenActivity.this, LoginSuccessActivity.class);
                     startActivity(intent);
                     finish();
                 }else{
-                    Intent intent = new Intent(SplashScreen.this, LoginActivity.class);
+                    Intent intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
                     startActivity(intent);
                     finish();
                 }

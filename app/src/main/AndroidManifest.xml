@@ -11,7 +11,7 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".LoginSuccessActivity" />
         <activity
-            android:name=".SplashScreen"
+            android:name=".SplashScreenActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,8 +19,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ClassesList" />
-        <activity android:name=".StudentsList" />
+        <activity android:name=".ClassesListActivity" />
+        <activity android:name=".StudentsListActivity" />
         <activity android:name=".AddStudentActivity"></activity>
     </application>
 

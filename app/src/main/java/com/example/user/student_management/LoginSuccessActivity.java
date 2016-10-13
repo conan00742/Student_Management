@@ -3,17 +3,14 @@ package com.example.user.student_management;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.example.user.student_management.other.SessionManager;
 
 import java.util.HashMap;
 
@@ -25,6 +22,7 @@ public class LoginSuccessActivity extends AppCompatActivity {
 
     @BindView(R.id.tvUsername) TextView tvUsername;
     @BindView(R.id.btnViewStudentList) Button btnViewStudentList;
+    @BindView(R.id.btnViewClassList) Button btnViewClassList;
 
     SessionManager session;
 
@@ -114,7 +112,13 @@ public class LoginSuccessActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnViewStudentList)
     public void viewStudentList(){
-        Intent i = new Intent(this,StudentsList.class);
+        Intent i = new Intent(this,StudentsListActivity.class);
+        startActivity(i);
+    }
+
+    @OnClick(R.id.btnViewClassList)
+    public void viewClassList(){
+        Intent i = new Intent(this,ClassesListActivity.class);
         startActivity(i);
     }
 }

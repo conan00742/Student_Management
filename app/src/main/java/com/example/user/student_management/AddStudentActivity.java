@@ -1,5 +1,6 @@
 package com.example.user.student_management;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.widget.EditText;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -31,6 +33,7 @@ public class AddStudentActivity extends AppCompatActivity {
     private DatePickerDialog datePickerDialog;
 
     private SimpleDateFormat simpleDateFormat;
+    private Date date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,7 @@ public class AddStudentActivity extends AppCompatActivity {
                 Calendar newDate = Calendar.getInstance();
                 newDate.set(year,month,dayOfMonth);
                 edtDoB.setText(simpleDateFormat.format(newDate.getTime()));
+                date = newDate.getTime();
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 
@@ -67,8 +71,12 @@ public class AddStudentActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnAdd)
     public void addStudent(){
-        String fullName = edtName.getText().toString();
-        //TODO: Nhap xong an ADD quay lai StudentList show ra hoc sinh vua moi add nhung chi hien NAM SINH
+        String fullName = edtName.getText().toString().trim();
+        Intent intent = new Intent();
+        intent.putExtra("fullName", fullName);
+        intent.putExtra("year", date.getTime());
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 
 }

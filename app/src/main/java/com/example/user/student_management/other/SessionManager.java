@@ -1,9 +1,11 @@
-package com.example.user.student_management;
+package com.example.user.student_management.other;
 
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+
+import com.example.user.student_management.LoginActivity;
 
 import java.util.HashMap;
 
