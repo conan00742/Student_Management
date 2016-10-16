@@ -39,6 +39,11 @@ public class ClassesListActivity extends AppCompatActivity {
 
     }
 
+    /**
+     *
+     * Spinner Activity
+     *
+     * **/
     private void spinnerClass(){
         // Spinner element
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
@@ -103,6 +108,12 @@ public class ClassesListActivity extends AppCompatActivity {
         // attaching data adapter to spinner
         spinner.setAdapter(gradesAdapter);
     }
+
+    /**
+     *
+     * Fake Data
+     *
+     * **/
 
     //fake data for Grade 10
     private void initGradeTen(){
