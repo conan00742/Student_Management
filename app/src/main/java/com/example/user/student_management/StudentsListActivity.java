@@ -1,6 +1,5 @@
 package com.example.user.student_management;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.user.student_management.model.Student;
 import com.example.user.student_management.other.StudentAdapter;
 
 import java.text.SimpleDateFormat;

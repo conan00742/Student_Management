@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.user.student_management.R;
-import com.example.user.student_management.model.Classes;
+import com.example.user.student_management.Classes;
 
 import java.util.ArrayList;
 import java.util.List;

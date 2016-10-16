@@ -1,4 +1,4 @@
-package com.example.user.student_management.model;
+package com.example.user.student_management;
 
 /**
  * Created by USER on 10/11/2016.

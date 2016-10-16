@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.user.student_management.model.Student;
+import com.example.user.student_management.Student;
 import com.example.user.student_management.R;
 
 import java.util.ArrayList;
