@@ -13,8 +13,6 @@
     android:orientation="vertical">
 
 
-
-
     <TextView
         tools:text="121212"
         android:id="@+id/yearOfBirth"

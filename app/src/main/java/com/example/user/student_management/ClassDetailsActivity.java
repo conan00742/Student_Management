@@ -44,9 +44,11 @@ public class ClassDetailsActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.student_option_menu,menu);
+        getMenuInflater().inflate(R.menu.class_option_menu,menu);
         return super.onCreateOptionsMenu(menu);
     }
+
+    //TODO: implement Add student to class
 
     private void updateHeaderContent(){
         Intent i = getIntent();

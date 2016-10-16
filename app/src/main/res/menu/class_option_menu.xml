@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/mnSearch"
+        android:title="Search"
+        android:icon="@android:drawable/ic_menu_search"
+        app:showAsAction="always|collapseActionView"
+        android:actionViewClass="android.support.v7.widget.SearchView">
+    </item>
+
+    <item app:showAsAction="never"
+        android:title="Add Student to Class"
+        android:id="@+id/mnAdd"></item>
+
+    <item app:showAsAction="never"
+        android:title="Marking"
+        android:id="@+id/mnMarking"></item>
+
+    <item app:showAsAction="never"
+        android:title="View Mark"
+        android:id="@+id/mnViewMark"></item>
+
+</menu>
