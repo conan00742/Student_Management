@@ -1,9 +1,10 @@
-package com.example.user.student_management.other;
+package com.example.user.student_management.ui.student_list;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.user.student_management.Student;
@@ -33,9 +34,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHo
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Student student = studentList.get(position);
-        holder.studentName.setText(student.getStudentName());
-        holder.studentId.setText(String.valueOf(student.getStudentId()));
-        holder.yearOfBirth.setText(String.valueOf(student.getYearOfBirth()));
+        holder.bindData(student);
     }
 
     @Override
@@ -43,13 +42,23 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHo
         return studentList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public static class MyViewHolder extends RecyclerView.ViewHolder{
         private TextView studentId, studentName, yearOfBirth;
+        private ImageView gender;
+
         public MyViewHolder(View itemView) {
             super(itemView);
             studentName = (TextView) itemView.findViewById(R.id.studentName);
             studentId = (TextView) itemView.findViewById(R.id.studentId);
             yearOfBirth = (TextView) itemView.findViewById(R.id.yearOfBirth);
+            gender = (ImageView) itemView.findViewById(R.id.gender);
+        }
+
+        public void bindData( Student student ){
+            studentName.setText(student.getStudentName());
+            studentId.setText(String.valueOf(student.getStudentId()));
+            yearOfBirth.setText(String.valueOf(student.getYearOfBirth()));
+            gender.setImageResource(student.isMale() ? R.drawable.ic_male : R.drawable.ic_female);
         }
     }
 }

@@ -7,6 +7,7 @@ public class Student {
     private long studentId;
     private int yearOfBirth;
     private String studentName;
+    private boolean isMale;
 
     public Student() {
     }
@@ -39,5 +40,13 @@ public class Student {
 
     public void setStudentName(String studentName) {
         this.studentName = studentName;
+    }
+
+    public boolean isMale() {
+        return isMale;
+    }
+
+    public void setMale(boolean male) {
+        isMale = male;
     }
 }

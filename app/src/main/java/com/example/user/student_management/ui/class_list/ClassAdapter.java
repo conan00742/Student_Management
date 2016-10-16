@@ -1,4 +1,4 @@
-package com.example.user.student_management.other;
+package com.example.user.student_management.ui.class_list;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.user.student_management.OnClassListListener;
 import com.example.user.student_management.R;
 import com.example.user.student_management.Classes;
 
@@ -16,6 +17,7 @@ import java.util.List;
  * Created by USER on 10/13/2016.
  */
 public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyViewHolder> {
+    private OnClassListListener classListListener;
 
     private List<Classes> classList = new ArrayList<>();
 
@@ -27,7 +29,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyViewHolder
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).
                 inflate(R.layout.class_list_row, parent, false);
-        return new MyViewHolder(itemView);
+        return new MyViewHolder(itemView,classListListener);
     }
 
     @Override
@@ -42,12 +44,26 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyViewHolder
         return classList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public void setClassListListener(OnClassListListener classListListener) {
+        this.classListListener = classListListener;
+    }
+
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView className, classQuantity;
-        public MyViewHolder(View itemView) {
+        public MyViewHolder(View itemView,final OnClassListListener classListListener) {
             super(itemView);
             className = (TextView) itemView.findViewById(R.id.className);
             classQuantity = (TextView) itemView.findViewById(R.id.classQuantity);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(classListListener != null){
+                        classListListener.onClassClick(getLayoutPosition());
+                    }
+
+                }
+            });
         }
     }
 }

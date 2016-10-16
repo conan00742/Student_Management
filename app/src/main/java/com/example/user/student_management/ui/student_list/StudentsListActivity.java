@@ -1,4 +1,4 @@
-package com.example.user.student_management;
+package com.example.user.student_management.ui.student_list;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -8,7 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.user.student_management.other.StudentAdapter;
+import com.example.user.student_management.AddStudentActivity;
+import com.example.user.student_management.R;
+import com.example.user.student_management.Student;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

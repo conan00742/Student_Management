@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
+    xmlns:tools="http://schemas.android.com/tools"
     android:focusable="true"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
@@ -11,27 +12,44 @@
     android:background="?android:attr/selectableItemBackground"
     android:orientation="vertical">
 
+
+
+
     <TextView
+        tools:text="121212"
+        android:id="@+id/yearOfBirth"
+        android:textColor="@color/year_of_birth"
+        android:layout_width="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_height="wrap_content"
+        />
+
+
+    <ImageView
+        android:layout_below="@id/yearOfBirth"
+        android:layout_alignParentRight="true"
+        android:id="@+id/gender"
+        tools:src="@drawable/ic_male"
+        android:layout_width="12dp"
+        android:layout_height="12dp" />
+
+    <TextView
+        tools:text="name"
         android:id="@+id/studentName"
         android:textColor="@color/student_name"
         android:textSize="16dp"
         android:textStyle="bold"
-        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignEnd="@+id/yearOfBirth"
+        android:layout_marginLeft="0dp"/>
 
     <TextView
         android:id="@+id/studentId"
         android:textColor="@color/student_id"
         android:layout_below="@id/studentName"
         android:layout_width="match_parent"
+        tools:text="121212"
         android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/yearOfBirth"
-        android:textColor="@color/year_of_birth"
-        android:layout_width="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_height="wrap_content" />
-
 </RelativeLayout>

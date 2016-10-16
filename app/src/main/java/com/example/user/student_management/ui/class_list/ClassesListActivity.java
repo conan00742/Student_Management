@@ -1,5 +1,6 @@
-package com.example.user.student_management;
+package com.example.user.student_management.ui.class_list;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,7 +10,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import com.example.user.student_management.other.ClassAdapter;
+import com.example.user.student_management.ClassDetailsActivity;
+import com.example.user.student_management.Classes;
+import com.example.user.student_management.OnClassListListener;
+import com.example.user.student_management.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +27,7 @@ public class ClassesListActivity extends AppCompatActivity {
 
     private ClassAdapter adapter;
 
-    private List<Classes> gradeTenList;
-    private List<Classes> gradeElevenList;
-    private List<Classes> gradeTwelveList;
+    private List<Classes> classesList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +35,33 @@ public class ClassesListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_classes_list);
 
         ButterKnife.bind(this);
-
-
+        initView();
         spinnerClass();
 
+    }
+
+    private void initView() {
+        //init class list
+        classesList = new ArrayList<>();
+        //recyclerView
+        classRecyclerView.setHasFixedSize(true);
+        adapter = new ClassAdapter(classesList);
+        adapter.setClassListListener(new OnClassListListener() {
+            @Override
+            public void onClassClick(int position) {
+                Classes classes = classesList.get(position);
+                if(classes != null){
+                    Intent intent = new Intent(ClassesListActivity.this, ClassDetailsActivity.class);
+                    intent.putExtra("className", classes.get_name());
+                    intent.putExtra("classQuantity", String.valueOf(classes.get_quantity()));
+                    startActivity(intent);
+                }
+            }
+
+        });
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        classRecyclerView.setLayoutManager(layoutManager);
+        classRecyclerView.setAdapter(adapter);
     }
 
     /**
@@ -52,38 +77,20 @@ public class ClassesListActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //init 3 grades ArrayList
-                gradeTenList = new ArrayList<Classes>();
-                gradeElevenList = new ArrayList<Classes>();
-                gradeTwelveList = new ArrayList<Classes>();
-
-                //recyclerView
-                classRecyclerView.setHasFixedSize(true);
                 //If Grade 10 is selected
                 if(position == 1){
-                    adapter = new ClassAdapter(gradeTenList);
-                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-                    classRecyclerView.setLayoutManager(layoutManager);
-                    classRecyclerView.setAdapter(adapter);
+
                     initGradeTen();
                 }
                 //If Grade 11 is selected
                 else if(position == 2){
-                    adapter = new ClassAdapter(gradeElevenList);
-                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-                    classRecyclerView.setLayoutManager(layoutManager);
-                    classRecyclerView.setAdapter(adapter);
                     initGradeEleven();
                 }
                 //If Grade 12 is selected
                 else if(position == 3){
-                    adapter = new ClassAdapter(gradeTwelveList);
-                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-                    classRecyclerView.setLayoutManager(layoutManager);
-                    classRecyclerView.setAdapter(adapter);
                     initGradeTwelve();
                 }
-
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -117,40 +124,43 @@ public class ClassesListActivity extends AppCompatActivity {
 
     //fake data for Grade 10
     private void initGradeTen(){
+        classesList.clear();
         Classes classTen = new Classes("10A1",39);
-        gradeTenList.add(classTen);
+        classesList.add(classTen);
 
         classTen = new Classes("10A2",37);
-        gradeTenList.add(classTen);
+        classesList.add(classTen);
 
         classTen = new Classes("10A3",40);
-        gradeTenList.add(classTen);
+        classesList.add(classTen);
 
         classTen = new Classes("10A4", 36);
-        gradeTenList.add(classTen);
+        classesList.add(classTen);
     }
 
     //fake data for Grade 11
     private void initGradeEleven(){
+        classesList.clear();
         Classes classEleven = new Classes("11A1",40);
-        gradeElevenList.add(classEleven);
+        classesList.add(classEleven);
 
         classEleven = new Classes("11A2",37);
-        gradeElevenList.add(classEleven);
+        classesList.add(classEleven);
 
         classEleven = new Classes("11A3",39);
-        gradeElevenList.add(classEleven);
+        classesList.add(classEleven);
 
 
     }
 
     //fake data for Grade 12
     private void initGradeTwelve(){
+        classesList.clear();
         Classes classTwelve = new Classes("12A1",35);
-        gradeTwelveList.add(classTwelve);
+        classesList.add(classTwelve);
 
         classTwelve = new Classes("12A2", 34);
-        gradeTwelveList.add(classTwelve);
+        classesList.add(classTwelve);
     }
 
 
