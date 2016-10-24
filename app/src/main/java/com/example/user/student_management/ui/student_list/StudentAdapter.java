@@ -1,9 +1,11 @@
 package com.example.user.student_management.ui.student_list;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -44,21 +46,24 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHo
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
         private TextView studentId, studentName, yearOfBirth;
-        private ImageView gender;
+        private ImageView imgGender;
+        private Button btnaddToClass;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             studentName = (TextView) itemView.findViewById(R.id.studentName);
             studentId = (TextView) itemView.findViewById(R.id.studentId);
             yearOfBirth = (TextView) itemView.findViewById(R.id.yearOfBirth);
-            gender = (ImageView) itemView.findViewById(R.id.gender);
+            imgGender = (ImageView) itemView.findViewById(R.id.imgGender);
+            btnaddToClass = (Button) itemView.findViewById(R.id.btnAddToClass);
         }
 
         public void bindData( Student student ){
             studentName.setText(student.getStudentName());
             studentId.setText(String.valueOf(student.getStudentId()));
             yearOfBirth.setText(String.valueOf(student.getYearOfBirth()));
-            gender.setImageResource(student.isMale() ? R.drawable.ic_male : R.drawable.ic_female);
+            imgGender.setImageResource(student.isMale() ? R.drawable.ic_male : R.drawable.ic_female);
+            btnaddToClass.setVisibility(student.isChecked() ? View.VISIBLE : View.GONE);
         }
     }
 }

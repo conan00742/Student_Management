@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.user.student_management.ui.student_list.StudentAdapter;
+import com.example.user.student_management.ui.student_list.StudentsListActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,7 @@ public class ClassDetailsActivity extends AppCompatActivity {
 
     @BindView(R.id.class_details_recycler_view)
     RecyclerView class_details_recycler_view;
+
 
     private StudentAdapter studentAdapter;
     List<Student> studentList;
@@ -50,6 +53,19 @@ public class ClassDetailsActivity extends AppCompatActivity {
 
     //TODO: implement Add student to class
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.mnAdd:
+                Intent intent = new Intent(ClassDetailsActivity.this, StudentsListActivity.class);
+                startActivity(intent);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
     private void updateHeaderContent(){
         Intent i = getIntent();
         String className = i.getStringExtra("className");
@@ -59,15 +75,16 @@ public class ClassDetailsActivity extends AppCompatActivity {
     }
 
     private void initData(){
-        Student student = new Student(System.currentTimeMillis(),1994,"Khiêm Ichigo");
-        student.setMale(true);
+        Student student = new Student(System.currentTimeMillis(),1994,"Khiêm Ichigo", "Radiant",
+                "khiemichigo@gmail.com",true,false);
         studentList.add(student);
 
-        student = new Student(System.currentTimeMillis(),1996,"Slark");
-        student.setMale(true);
+        student = new Student(System.currentTimeMillis(),1996,"Ember Spirit","Dire",
+                "emberspirit@gmail.com", true,false);
         studentList.add(student);
 
-        student = new Student(System.currentTimeMillis(),1993,"Storm Spirit");
+        student = new Student(System.currentTimeMillis(),1993,"Death Prophet","Radiant",
+                "deathprophet@gmail.com",false,false);
         studentList.add(student);
     }
 

@@ -12,25 +12,6 @@
     android:background="?android:attr/selectableItemBackground"
     android:orientation="vertical">
 
-
-    <TextView
-        tools:text="121212"
-        android:id="@+id/yearOfBirth"
-        android:textColor="@color/year_of_birth"
-        android:layout_width="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_height="wrap_content"
-        />
-
-
-    <ImageView
-        android:layout_below="@id/yearOfBirth"
-        android:layout_alignParentRight="true"
-        android:id="@+id/gender"
-        tools:src="@drawable/ic_male"
-        android:layout_width="12dp"
-        android:layout_height="12dp" />
-
     <TextView
         tools:text="name"
         android:id="@+id/studentName"
@@ -39,15 +20,47 @@
         android:textStyle="bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignEnd="@+id/yearOfBirth"
-        android:layout_marginLeft="0dp"/>
+        android:layout_alignBaseline="@+id/yearOfBirth"
+        android:layout_alignBottom="@+id/yearOfBirth"
+        android:layout_alignParentStart="true" />
+
+
+    <TextView
+        tools:text="year of birth"
+        android:id="@+id/yearOfBirth"
+        android:layout_width="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_height="wrap_content"
+        android:textColor="@color/year_of_birth"
+        android:layout_marginRight="90dp"
+        />
+
+
+    <ImageView
+        android:layout_below="@id/yearOfBirth"
+        android:layout_alignParentRight="true"
+        android:id="@+id/imgGender"
+        tools:src="@drawable/ic_male"
+        android:layout_width="20dp"
+        android:layout_height="22dp"
+        android:layout_marginRight="90dp"/>
 
     <TextView
         android:id="@+id/studentId"
         android:textColor="@color/student_id"
         android:layout_below="@id/studentName"
         android:layout_width="match_parent"
-        tools:text="121212"
+        tools:text="ID"
         android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/btnAddToClass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"
+        android:text="ADD"
+        android:fontFamily="cursive" />
+
+
 </RelativeLayout>
