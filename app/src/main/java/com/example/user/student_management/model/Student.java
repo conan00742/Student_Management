@@ -1,4 +1,4 @@
-package com.example.user.student_management;
+package com.example.user.student_management.model;
 
 /**
  * Created by USER on 10/11/2016.
@@ -10,7 +10,7 @@ public class Student {
     private String studentAddress;
     private String email;
     private boolean isMale;
-    private boolean isChecked;
+    private boolean isChecked = true;
 
     public Student() {
     }

@@ -1,6 +1,5 @@
 package com.example.user.student_management.ui.student_list;
 
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +8,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.user.student_management.Student;
+import com.example.user.student_management.model.Student;
 import com.example.user.student_management.R;
 
 import java.util.ArrayList;

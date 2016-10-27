@@ -11,7 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.example.user.student_management.ClassDetailsActivity;
-import com.example.user.student_management.Classes;
+import com.example.user.student_management.model.Classes;
 import com.example.user.student_management.OnClassListListener;
 import com.example.user.student_management.R;
 
