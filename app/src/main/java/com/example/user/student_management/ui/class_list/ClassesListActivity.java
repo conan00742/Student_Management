@@ -26,7 +26,6 @@ public class ClassesListActivity extends AppCompatActivity {
     RecyclerView classRecyclerView;
 
     private ClassAdapter adapter;
-
     private List<Classes> classesList;
 
     @Override
@@ -125,29 +124,43 @@ public class ClassesListActivity extends AppCompatActivity {
     //fake data for Grade 10
     private void initGradeTen(){
         classesList.clear();
-        Classes classTen = new Classes("10A1",39);
+        Classes classTen = new Classes();
+        classTen.set_name("10A1");
+        classTen.set_quantity(39);
         classesList.add(classTen);
 
-        classTen = new Classes("10A2",37);
+        classTen = new Classes();
+        classTen.set_name("10A2");
+        classTen.set_quantity(37);
         classesList.add(classTen);
 
-        classTen = new Classes("10A3",40);
+        classTen = new Classes();
+        classTen.set_name("10A3");
+        classTen.set_quantity(40);
         classesList.add(classTen);
 
-        classTen = new Classes("10A4", 36);
+        classTen = new Classes();
+        classTen.set_name("10A4");
+        classTen.set_quantity(36);
         classesList.add(classTen);
     }
 
     //fake data for Grade 11
     private void initGradeEleven(){
         classesList.clear();
-        Classes classEleven = new Classes("11A1",40);
+        Classes classEleven = new Classes();
+        classEleven.set_name("11A1");
+        classEleven.set_quantity(40);
         classesList.add(classEleven);
 
-        classEleven = new Classes("11A2",37);
+        classEleven = new Classes();
+        classEleven.set_name("11A2");
+        classEleven.set_quantity(37);
         classesList.add(classEleven);
 
-        classEleven = new Classes("11A3",39);
+        classEleven = new Classes();
+        classEleven.set_name("11A3");
+        classEleven.set_quantity(39);
         classesList.add(classEleven);
 
 
@@ -156,10 +169,14 @@ public class ClassesListActivity extends AppCompatActivity {
     //fake data for Grade 12
     private void initGradeTwelve(){
         classesList.clear();
-        Classes classTwelve = new Classes("12A1",35);
+        Classes classTwelve = new Classes();
+        classTwelve.set_name("12A1");
+        classTwelve.set_quantity(35);
         classesList.add(classTwelve);
 
-        classTwelve = new Classes("12A2", 34);
+        classTwelve = new Classes();
+        classTwelve.set_name("12A2");
+        classTwelve.set_quantity(34);
         classesList.add(classTwelve);
     }
 

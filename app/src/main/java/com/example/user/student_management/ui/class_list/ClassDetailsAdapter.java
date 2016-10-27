@@ -24,12 +24,17 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
     public static final int HEADER = 0;
     public static final int INPUTROW = 1;
 
+    /*private Classes _class = new Classes();*/
     private List<Student> studentList = new ArrayList<>();
     private int[] mDataViewType;
+    private String className;
+    private int classQuantity;
 
-    public ClassDetailsAdapter(List<Student> studentList, int[] mDataViewType) {
+    public ClassDetailsAdapter(List<Student> studentList, int[] mDataViewType, String className, int classQuantity) {
         this.studentList = studentList;
         this.mDataViewType = mDataViewType;
+        this.className = className;
+        this.classQuantity = classQuantity;
     }
 
     @Override
@@ -49,14 +54,9 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         if(holder.getItemViewType() == HEADER){
-            Classes _class = new Classes();
             ClassDetailsHeaderViewHolder header = (ClassDetailsHeaderViewHolder) holder;
-
-            /**
-             * Chỗ này nè anh, phải lấy đc 2 cái Extra từ bên kia mới có cái để set
-             * **/
-            header.tvClassName.setText(_class.get_name());
-            header.tvClassQuantity.setText(_class.get_quantity());
+            header.tvClassName.setText(className);
+            header.tvClassQuantity.setText(classQuantity);
 
         } else if(holder.getItemViewType() == INPUTROW){
             Student student = studentList.get(position);
@@ -71,12 +71,12 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
 
     @Override
     public int getItemCount() {
-        return studentList.size();
+        return studentList.size() + 1;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return mDataViewType[position];
+        return position == 0 ? HEADER : INPUTROW;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.user.student_management.model.Classes;
 import com.example.user.student_management.model.Student;
 import com.example.user.student_management.ui.class_list.ClassDetailsAdapter;
 import com.example.user.student_management.ui.student_list.StudentsListActivity;
@@ -29,7 +30,6 @@ import static com.example.user.student_management.ui.class_list.ClassDetailsAdap
 import static com.example.user.student_management.ui.class_list.ClassDetailsAdapter.INPUTROW;
 
 public class ClassDetailsActivity extends AppCompatActivity {
-
     @BindView(R.id.class_details_recycler_view)
     RecyclerView class_details_recycler_view;
 
@@ -41,7 +41,8 @@ public class ClassDetailsActivity extends AppCompatActivity {
     private AlertDialog markingDialog;
     ClassDetailsAdapter classDetailsAdapter;
     List<Student> studentList;
-    int[] mDataViewType = {HEADER, INPUTROW};
+    int[] mDataViewType = {HEADER,INPUTROW};
+    Classes currentClass = new Classes();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,11 @@ public class ClassDetailsActivity extends AppCompatActivity {
         initView();
         initData();
         initMarkingDialog();
+
+        if(getIntent().getExtras() != null){
+            currentClass.set_name(getIntent().getExtras().getString("className","N/A"));
+            currentClass.set_quantity(getIntent().getExtras().getInt("classQuantity",0));
+        }
     }
 
     @Override
@@ -97,7 +103,7 @@ public class ClassDetailsActivity extends AppCompatActivity {
 
         class_details_recycler_view.setHasFixedSize(true);
 
-        classDetailsAdapter = new ClassDetailsAdapter(studentList,mDataViewType);
+        classDetailsAdapter = new ClassDetailsAdapter(studentList,mDataViewType,currentClass.get_name(), currentClass.get_quantity());
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(ClassDetailsActivity.this);
         class_details_recycler_view.setLayoutManager(layoutManager);
         class_details_recycler_view.setAdapter(classDetailsAdapter);

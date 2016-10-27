@@ -13,9 +13,10 @@ public class Classes {
     public Classes() {
     }
 
-    public Classes(String _name, int _quantity) {
+    public Classes(String _name, int _quantity, List<Student> studentList) {
         this._name = _name;
         this._quantity = _quantity;
+        this.studentList = studentList;
     }
 
     public List<Student> getStudentList() {
