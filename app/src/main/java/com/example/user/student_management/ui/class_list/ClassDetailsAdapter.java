@@ -1,5 +1,6 @@
 package com.example.user.student_management.ui.class_list;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,11 +25,11 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
     public static final int INPUTROW = 1;
 
     private List<Student> studentList = new ArrayList<>();
-    private int[] mDataSetType;
+    private int[] mDataViewType;
 
-    public ClassDetailsAdapter(List<Student> studentList, int[] mDataSetType) {
+    public ClassDetailsAdapter(List<Student> studentList, int[] mDataViewType) {
         this.studentList = studentList;
-        this.mDataSetType = mDataSetType;
+        this.mDataViewType = mDataViewType;
     }
 
     @Override
@@ -50,9 +51,14 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
         if(holder.getItemViewType() == HEADER){
             Classes _class = new Classes();
             ClassDetailsHeaderViewHolder header = (ClassDetailsHeaderViewHolder) holder;
+
+            /**
+             * Chỗ này nè anh, phải lấy đc 2 cái Extra từ bên kia mới có cái để set
+             * **/
             header.tvClassName.setText(_class.get_name());
             header.tvClassQuantity.setText(_class.get_quantity());
-        }else if(holder.getItemViewType() == INPUTROW){
+
+        } else if(holder.getItemViewType() == INPUTROW){
             Student student = studentList.get(position);
             ClassDetailsInputRowViewHolder inputRow = (ClassDetailsInputRowViewHolder) holder;
             inputRow.studentName.setText(student.getStudentName());
@@ -70,7 +76,7 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
 
     @Override
     public int getItemViewType(int position) {
-        return mDataSetType[position];
+        return mDataViewType[position];
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

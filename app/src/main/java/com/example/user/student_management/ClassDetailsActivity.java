@@ -13,11 +13,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.student_management.model.Student;
-import com.example.user.student_management.ui.student_list.StudentAdapter;
+import com.example.user.student_management.ui.class_list.ClassDetailsAdapter;
 import com.example.user.student_management.ui.student_list.StudentsListActivity;
 
 import java.util.ArrayList;
@@ -25,14 +24,11 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnItemSelected;
+
+import static com.example.user.student_management.ui.class_list.ClassDetailsAdapter.HEADER;
+import static com.example.user.student_management.ui.class_list.ClassDetailsAdapter.INPUTROW;
 
 public class ClassDetailsActivity extends AppCompatActivity {
-    @BindView(R.id.tvClassName)
-    TextView tvClassName;
-
-    @BindView(R.id.tvClassQuantity)
-    TextView getTvClassQuantity;
 
     @BindView(R.id.class_details_recycler_view)
     RecyclerView class_details_recycler_view;
@@ -43,24 +39,18 @@ public class ClassDetailsActivity extends AppCompatActivity {
     Spinner spinnerTypeOfMark;
 
     private AlertDialog markingDialog;
-    private StudentAdapter studentAdapter;
+    ClassDetailsAdapter classDetailsAdapter;
     List<Student> studentList;
+    int[] mDataViewType = {HEADER, INPUTROW};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class_details);
-
         ButterKnife.bind(this);
-
-        updateHeaderContent();
-
         initView();
         initData();
-
         initMarkingDialog();
-
-
     }
 
     @Override
@@ -87,13 +77,6 @@ public class ClassDetailsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void updateHeaderContent(){
-        Intent i = getIntent();
-        String className = i.getStringExtra("className");
-        String classQuantity = i.getStringExtra("classQuantity");
-        tvClassName.setText(String.format(getString(R.string.class_details_name), className));
-        getTvClassQuantity.setText(String.format(getString(R.string.class_details_quantity), classQuantity));
-    }
 
     private void initData(){
         Student student = new Student(System.currentTimeMillis(),1994,"Khiêm Ichigo", "Radiant",
@@ -114,17 +97,17 @@ public class ClassDetailsActivity extends AppCompatActivity {
 
         class_details_recycler_view.setHasFixedSize(true);
 
-        studentAdapter = new StudentAdapter(studentList);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        classDetailsAdapter = new ClassDetailsAdapter(studentList,mDataViewType);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(ClassDetailsActivity.this);
         class_details_recycler_view.setLayoutManager(layoutManager);
-        class_details_recycler_view.setAdapter(studentAdapter);
+        class_details_recycler_view.setAdapter(classDetailsAdapter);
     }
 
     private void initMarkingDialog(){
         /**Init Layout inside Dialog**/
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ClassDetailsActivity.this);
         LayoutInflater inflater = this.getLayoutInflater();
-        final View dialogView = inflater.inflate(R.layout.activity_marking, null);
+        final View dialogView = inflater.inflate(R.layout.dialog_marking, null);
         dialogBuilder.setView(dialogView);
 
         initSpinner(dialogView);
