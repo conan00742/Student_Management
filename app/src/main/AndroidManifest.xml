@@ -32,7 +32,7 @@
             android:name=".ui.student_list.StudentsListActivity"
             android:label="@string/student_list_title" />
 
-        <activity android:name=".ClassDetailsActivity"
+        <activity android:name=".ui.class_list.ClassDetailsActivity"
             android:label="@string/class_details_title"/>
     </application>
 

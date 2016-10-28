@@ -1,4 +1,4 @@
-package com.example.user.student_management;
+package com.example.user.student_management.ui.class_list;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -15,9 +15,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.user.student_management.R;
 import com.example.user.student_management.model.Classes;
 import com.example.user.student_management.model.Student;
-import com.example.user.student_management.ui.class_list.ClassDetailsAdapter;
 import com.example.user.student_management.ui.student_list.StudentsListActivity;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class ClassDetailsActivity extends AppCompatActivity {
 
     private AlertDialog markingDialog;
     ClassDetailsAdapter classDetailsAdapter;
-    List<Student> studentList;
+    List<Student> studentList = new ArrayList<>();
     int[] mDataViewType = {HEADER,INPUTROW};
     Classes currentClass = new Classes();
 
@@ -49,14 +49,15 @@ public class ClassDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class_details);
         ButterKnife.bind(this);
-        initView();
-        initData();
-        initMarkingDialog();
+
 
         if(getIntent().getExtras() != null){
-            currentClass.set_name(getIntent().getExtras().getString("className","N/A"));
-            currentClass.set_quantity(getIntent().getExtras().getInt("classQuantity",0));
+            currentClass.set_name(getIntent().getStringExtra("className"));
+            currentClass.set_quantity(Integer.parseInt(getIntent().getStringExtra("classQuantity")));
         }
+        initData();
+        initView();
+        initMarkingDialog();
     }
 
     @Override
@@ -99,12 +100,10 @@ public class ClassDetailsActivity extends AppCompatActivity {
     }
 
     private void initView(){
-        studentList = new ArrayList<>();
-
         class_details_recycler_view.setHasFixedSize(true);
-
-        classDetailsAdapter = new ClassDetailsAdapter(studentList,mDataViewType,currentClass.get_name(), currentClass.get_quantity());
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(ClassDetailsActivity.this);
+        classDetailsAdapter = new ClassDetailsAdapter(getApplicationContext(),studentList,mDataViewType,currentClass.get_name(),
+                currentClass.get_quantity());
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         class_details_recycler_view.setLayoutManager(layoutManager);
         class_details_recycler_view.setAdapter(classDetailsAdapter);
     }

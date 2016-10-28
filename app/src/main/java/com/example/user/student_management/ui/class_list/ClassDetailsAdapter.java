@@ -1,5 +1,6 @@
 package com.example.user.student_management.ui.class_list;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -24,13 +25,14 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
     public static final int HEADER = 0;
     public static final int INPUTROW = 1;
 
-    /*private Classes _class = new Classes();*/
+    Context context;
     private List<Student> studentList = new ArrayList<>();
     private int[] mDataViewType;
     private String className;
     private int classQuantity;
 
-    public ClassDetailsAdapter(List<Student> studentList, int[] mDataViewType, String className, int classQuantity) {
+    public ClassDetailsAdapter(Context context, List<Student> studentList, int[] mDataViewType, String className, int classQuantity) {
+        this.context = context;
         this.studentList = studentList;
         this.mDataViewType = mDataViewType;
         this.className = className;
@@ -55,8 +57,8 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
     public void onBindViewHolder(ViewHolder holder, final int position) {
         if(holder.getItemViewType() == HEADER){
             ClassDetailsHeaderViewHolder header = (ClassDetailsHeaderViewHolder) holder;
-            header.tvClassName.setText(className);
-            header.tvClassQuantity.setText(classQuantity);
+            header.tvClassName.setText(String.format(context.getString(R.string.class_details_name), className));
+            header.tvClassQuantity.setText(String.format(context.getString(R.string.class_details_quantity),String.valueOf(classQuantity)));
 
         } else if(holder.getItemViewType() == INPUTROW){
             Student student = studentList.get(position);
@@ -71,7 +73,7 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
 
     @Override
     public int getItemCount() {
-        return studentList.size() + 1;
+        return studentList.size();
     }
 
     @Override
