@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.user.student_management.other.SessionManager;
+import com.example.user.student_management.ui.home.LoginSuccessActivity;
+import com.example.user.student_management.ui.login.LoginActivity;
 
 public class SplashScreenActivity extends AppCompatActivity {
 

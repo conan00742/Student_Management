@@ -9,10 +9,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".LoginActivity"
+            android:name=".ui.login.LoginActivity"
             android:label="@string/login_title" />
         <activity
-            android:name=".LoginSuccessActivity"
+            android:name=".ui.home.LoginSuccessActivity"
             android:label="@string/home_title" />
         <activity
             android:name=".SplashScreenActivity"

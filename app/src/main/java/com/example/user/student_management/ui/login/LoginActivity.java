@@ -1,4 +1,4 @@
-package com.example.user.student_management;
+package com.example.user.student_management.ui.login;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +9,8 @@ import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.user.student_management.ui.home.LoginSuccessActivity;
+import com.example.user.student_management.R;
 import com.example.user.student_management.other.SessionManager;
 
 import butterknife.BindView;

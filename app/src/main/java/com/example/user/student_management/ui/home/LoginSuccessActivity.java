@@ -1,4 +1,4 @@
-package com.example.user.student_management;
+package com.example.user.student_management.ui.home;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -7,10 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.user.student_management.R;
 import com.example.user.student_management.other.SessionManager;
 import com.example.user.student_management.ui.class_list.ClassesListActivity;
 import com.example.user.student_management.ui.student_list.StudentsListActivity;

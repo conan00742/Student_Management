@@ -61,7 +61,7 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
             header.tvClassQuantity.setText(String.format(context.getString(R.string.class_details_quantity),String.valueOf(classQuantity)));
 
         } else if(holder.getItemViewType() == INPUTROW){
-            Student student = studentList.get(position);
+            Student student = studentList.get(position - 1);
             ClassDetailsInputRowViewHolder inputRow = (ClassDetailsInputRowViewHolder) holder;
             inputRow.studentName.setText(student.getStudentName());
             inputRow.studentId.setText(String.valueOf(student.getStudentId()));
@@ -73,7 +73,7 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
 
     @Override
     public int getItemCount() {
-        return studentList.size();
+        return studentList.size() + 1;
     }
 
     @Override

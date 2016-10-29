@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import com.example.user.student_management.LoginActivity;
+import com.example.user.student_management.ui.login.LoginActivity;
 
 import java.util.HashMap;
 
