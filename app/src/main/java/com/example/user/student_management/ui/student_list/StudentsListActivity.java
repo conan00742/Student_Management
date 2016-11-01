@@ -2,7 +2,6 @@ package com.example.user.student_management.ui.student_list;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +19,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.user.student_management.R;
+import com.example.user.student_management.db.DatabaseHandler;
 import com.example.user.student_management.model.Student;
 
 import java.text.ParseException;
@@ -33,10 +33,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class StudentsListActivity extends AppCompatActivity {
+    private static final String TAG = StudentsListActivity.class.getSimpleName();
+
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
 
-
-    private List<Student> studentList;
+    DatabaseHandler db;
     private StudentAdapter adapter;
     private AlertDialog addStudentDialog;
     private DatePickerDialog datePickerDialog;
@@ -76,13 +77,15 @@ public class StudentsListActivity extends AppCompatActivity {
 
     /**Set up recycler view**/
     private void setUpRecyclerView(){
+        db = new DatabaseHandler(StudentsListActivity.this);
         /**init student list**/
-        studentList = new ArrayList<>();
-
+        List<Student> studentList = db.getStudentList();
 
         /**init recycler view adapter**/
         recyclerView.setHasFixedSize(true);
-        adapter = new StudentAdapter(studentList);
+        adapter = new StudentAdapter();
+        adapter.refreshData(studentList == null ? new ArrayList<Student>() : studentList);
+        adapter.notifyDataSetChanged();
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
@@ -95,7 +98,7 @@ public class StudentsListActivity extends AppCompatActivity {
         /**Init Layout inside Dialog**/
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(StudentsListActivity.this);
         LayoutInflater inflater = this.getLayoutInflater();
-        final View dialogView = inflater.inflate(R.layout.activity_add_student, null);
+        final View dialogView = inflater.inflate(R.layout.dialog_add_student, null);
         dialogBuilder.setView(dialogView);
 
         /**find view by ID**/
@@ -161,14 +164,22 @@ public class StudentsListActivity extends AppCompatActivity {
                         Student student = new Student(id, selectedCalendar.get(Calendar.YEAR), studentName,
                                 studentAddress, studentEmail, _isMale, true);
 
-                        // Add to list and refresh adapter
-                        studentList.add(student);
-                        adapter.notifyDataSetChanged();
-                        edtName.setText(null);
-                        edtName.requestFocus();
-                        edtAddress.setText(null);
-                        edtEmail.setText(null);
-                        edtDoB.setText(null);
+                        /**Add to database**/
+                        if (db != null) {
+                            db.addNewStudent(student);
+
+                            /**get studentList from db and show in recyclerview**/
+                            List<Student> studentList = db.getStudentList();
+                            adapter.refreshData(studentList);
+                            adapter.notifyDataSetChanged();
+
+                            /**set dialog edit text to null**/
+                            edtName.setText(null);
+                            edtName.requestFocus();
+                            edtAddress.setText(null);
+                            edtEmail.setText(null);
+                            edtDoB.setText(null);
+                        }
                         addStudentDialog.dismiss();
                     }else{
                         Toast.makeText(StudentsListActivity.this, "Something went wrong. Please correct!", Toast.LENGTH_SHORT).show();

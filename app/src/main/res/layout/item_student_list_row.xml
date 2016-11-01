@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="?android:attr/listPreferredItemHeight"
     xmlns:tools="http://schemas.android.com/tools"
     android:focusable="true"
     android:paddingLeft="16dp"
@@ -14,7 +14,7 @@
 
     <TextView
         tools:text="name"
-        android:id="@+id/studentName"
+        android:id="@+id/studentMarkingName"
         android:textColor="@color/student_name"
         android:textSize="16dp"
         android:textStyle="bold"
@@ -26,42 +26,25 @@
 
 
     <TextView
-        tools:text="year of birth"
-        android:id="@+id/yearOfBirth"
-        android:layout_width="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_height="wrap_content"
-        android:textColor="@color/year_of_birth"
-        />
-
-
-    <ImageView
-        android:layout_below="@id/yearOfBirth"
-        android:layout_alignParentRight="true"
-        android:id="@+id/imgGender"
-        tools:src="@drawable/ic_male"
-        android:layout_width="20dp"
-        android:layout_height="22dp" />
-
-    <Button
-        android:id="@+id/btnAddToClass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/imgGender"
-        android:visibility="gone"
-        android:text="ADD"
-        android:fontFamily="cursive" />
-
-    <TextView
-        android:id="@+id/studentId"
+        android:id="@+id/studentMarkingId"
         android:textColor="@color/student_id"
-        android:layout_below="@id/studentName"
+        android:layout_below="@id/studentMarkingName"
         android:layout_width="match_parent"
         tools:text="ID"
         android:layout_height="wrap_content" />
 
-
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true">
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/edtMark"
+            android:layout_width="120dp"
+            android:layout_height="42dp"
+            android:hint="Enter mark"
+            android:inputType="numberDecimal"
+            android:typeface="monospace" />
+    </android.support.design.widget.TextInputLayout>
 
 
 </RelativeLayout>

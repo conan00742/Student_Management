@@ -7,6 +7,8 @@ package com.example.user.student_management.model;
 public class Subject {
     private int subjectID;
     private String subjectName;
+    private int subjectSemester;
+    private String subjectTypeOfMark;
 
     public Subject() {
     }
@@ -14,6 +16,22 @@ public class Subject {
     public Subject(int subjectID, String subjectName) {
         this.subjectID = subjectID;
         this.subjectName = subjectName;
+    }
+
+    public int getSubjectSemester() {
+        return subjectSemester;
+    }
+
+    public void setSubjectSemester(int subjectSemester) {
+        this.subjectSemester = subjectSemester;
+    }
+
+    public String getSubjectTypeOfMark() {
+        return subjectTypeOfMark;
+    }
+
+    public void setSubjectTypeOfMark(String subjectTypeOfMark) {
+        this.subjectTypeOfMark = subjectTypeOfMark;
     }
 
     public int getSubjectID() {

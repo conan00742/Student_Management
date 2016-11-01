@@ -23,17 +23,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.class_list.ClassesListActivity"
             android:label="@string/class_list_title" />
-
         <activity
             android:name=".ui.student_list.StudentsListActivity"
             android:label="@string/student_list_title" />
+        <activity
+            android:name=".ui.class_list.ClassDetailsActivity"
+            android:label="@string/class_details_title" />
 
-        <activity android:name=".ui.class_list.ClassDetailsActivity"
-            android:label="@string/class_details_title"/>
+        <activity android:name=".ui.marking.MarkingActivity"
+            android:label="@string/marking_title"/>
     </application>
 
 </manifest>

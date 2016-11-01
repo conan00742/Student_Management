@@ -19,10 +19,10 @@ import java.util.List;
  */
 public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHolder>{
 
-    private List<Student> studentList = new ArrayList<>();
+    private List<Student> studentList;
 
-    public StudentAdapter(List<Student> studentList) {
-        this.studentList = studentList;
+    public StudentAdapter() {
+        studentList = new ArrayList<>();
     }
 
     @Override
@@ -43,6 +43,18 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHo
         return studentList.size();
     }
 
+    public void refreshData(List<Student> studentList) {
+        this.studentList = studentList;
+    }
+
+    public void add(Student student) {
+        if (studentList == null) {
+            studentList = new ArrayList<>();
+        }
+
+        studentList.add(student);
+    }
+
     public static class MyViewHolder extends RecyclerView.ViewHolder{
         private TextView studentId, studentName, yearOfBirth;
         private ImageView imgGender;
@@ -61,7 +73,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHo
             studentName.setText(student.getStudentName());
             studentId.setText(String.valueOf(student.getStudentId()));
             yearOfBirth.setText(String.valueOf(student.getYearOfBirth()));
-            imgGender.setImageResource(student.isMale() ? R.drawable.ic_male : R.drawable.ic_female);
+            imgGender.setImageResource(student.isMale() == true ? R.drawable.ic_male : R.drawable.ic_female);
             btnaddToClass.setVisibility(student.isChecked() ? View.VISIBLE : View.GONE);
         }
     }

@@ -12,12 +12,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.user.student_management.R;
 import com.example.user.student_management.model.Classes;
 import com.example.user.student_management.model.Student;
+import com.example.user.student_management.ui.marking.MarkingActivity;
 import com.example.user.student_management.ui.student_list.StudentsListActivity;
 
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.example.user.student_management.ui.class_list.ClassDetailsAdapter.HEADER;
 import static com.example.user.student_management.ui.class_list.ClassDetailsAdapter.INPUTROW;
@@ -33,6 +36,13 @@ public class ClassDetailsActivity extends AppCompatActivity {
     @BindView(R.id.class_details_recycler_view)
     RecyclerView class_details_recycler_view;
 
+
+    Button btnOk;
+    Button btnMarkingCancel;
+
+    String semester;
+    String subject;
+    String markType;
 
     Spinner spinnerSemester;
     Spinner spinnerSubject;
@@ -58,6 +68,7 @@ public class ClassDetailsActivity extends AppCompatActivity {
         initData();
         initView();
         initMarkingDialog();
+
     }
 
     @Override
@@ -117,6 +128,28 @@ public class ClassDetailsActivity extends AppCompatActivity {
 
         initSpinner(dialogView);
 
+        btnOk = (Button) dialogView.findViewById(R.id.btnOk);
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ClassDetailsActivity.this, MarkingActivity.class);
+                i.putExtra("semester",semester);
+                i.putExtra("subject",subject);
+                i.putExtra("markType",markType);
+                i.putExtra("classNameForMarking",getIntent().getStringExtra("className"));
+                i.putExtra("classQuantityForMarking",getIntent().getStringExtra("classQuantity"));
+                startActivity(i);
+            }
+        });
+
+        btnMarkingCancel = (Button) dialogView.findViewById(R.id.btnMarkingCancel);
+        btnMarkingCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                markingDialog.dismiss();
+            }
+        });
+
         markingDialog = dialogBuilder.create();
 
 
@@ -133,9 +166,11 @@ public class ClassDetailsActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 1) {
-                    Toast.makeText(ClassDetailsActivity.this, "Semester 1", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ClassDetailsActivity.this, "1", Toast.LENGTH_SHORT).show();
+                    semester = parent.getItemAtPosition(position).toString();
                 } else if (position == 2) {
-                    Toast.makeText(ClassDetailsActivity.this, "Semester 2", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ClassDetailsActivity.this, "2", Toast.LENGTH_SHORT).show();
+                    semester = parent.getItemAtPosition(position).toString();
                 }
             }
 
@@ -168,6 +203,7 @@ public class ClassDetailsActivity extends AppCompatActivity {
                     case 9:
                         Toast.makeText(ClassDetailsActivity.this, "Astronomy", Toast.LENGTH_SHORT).show();
                 }
+                subject = parent.getItemAtPosition(position).toString();
             }
 
             @Override
@@ -187,6 +223,7 @@ public class ClassDetailsActivity extends AppCompatActivity {
                     case 3:
                         Toast.makeText(ClassDetailsActivity.this, "Summary mark", Toast.LENGTH_SHORT).show();
                 }
+                markType = parent.getItemAtPosition(position).toString();
             }
 
             @Override
@@ -199,8 +236,8 @@ public class ClassDetailsActivity extends AppCompatActivity {
         /** Spinner Dropdown for semester elements**/
         List<String> semesters = new ArrayList<String>();
         semesters.add("---Semester---");
-        semesters.add("Semester 1");
-        semesters.add("Semester 2");
+        semesters.add("1");
+        semesters.add("2");
 
         /** Spinner Dropdown for subject elements**/
         List<String> subjects = new ArrayList<>();
@@ -255,7 +292,6 @@ public class ClassDetailsActivity extends AppCompatActivity {
 
 
     //TODO: MarkingActivity
-
 
 
 }

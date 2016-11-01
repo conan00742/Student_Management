@@ -1,7 +1,6 @@
 package com.example.user.student_management.ui.class_list;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.user.student_management.R;
-import com.example.user.student_management.model.Classes;
 import com.example.user.student_management.model.Student;
 
 import java.util.ArrayList;
@@ -31,7 +29,8 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
     private String className;
     private int classQuantity;
 
-    public ClassDetailsAdapter(Context context, List<Student> studentList, int[] mDataViewType, String className, int classQuantity) {
+    public ClassDetailsAdapter(Context context, List<Student> studentList,
+                               int[] mDataViewType, String className, int classQuantity) {
         this.context = context;
         this.studentList = studentList;
         this.mDataViewType = mDataViewType;
@@ -44,7 +43,7 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
         View v;
         if(viewType == HEADER){
             v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.activity_class_details_header,parent,false);
+                    .inflate(R.layout.item_class_details_header,parent,false);
             return new ClassDetailsHeaderViewHolder(v);
         }else{
             v = LayoutInflater.from(parent.getContext()).inflate(R.layout.student_list_row, parent, false);
@@ -110,4 +109,5 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
             btnaddToClass = (Button) itemView.findViewById(R.id.btnAddToClass);
         }
     }
+
 }

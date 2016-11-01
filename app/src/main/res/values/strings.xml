@@ -10,4 +10,10 @@
     <string name="class_details_title">Class Information</string>
     <string name="class_details_name">Class: %s</string>
     <string name="class_details_quantity">Quantity: %s</string>
+
+    <!-- Marking -->
+    <string name="marking_title">Marking</string>
+    <string name="marking_semester">Semester: %s</string>
+    <string name="marking_subject">Subject: %s</string>
+    <string name="marking_type">Type of Mark: %s</string>
 </resources>
