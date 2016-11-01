@@ -73,7 +73,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHo
             studentName.setText(student.getStudentName());
             studentId.setText(String.valueOf(student.getStudentId()));
             yearOfBirth.setText(String.valueOf(student.getYearOfBirth()));
-            imgGender.setImageResource(student.isMale() == true ? R.drawable.ic_male : R.drawable.ic_female);
+            imgGender.setImageResource(student.isMale() ? R.drawable.ic_male : R.drawable.ic_female);
             btnaddToClass.setVisibility(student.isChecked() ? View.VISIBLE : View.GONE);
         }
     }
