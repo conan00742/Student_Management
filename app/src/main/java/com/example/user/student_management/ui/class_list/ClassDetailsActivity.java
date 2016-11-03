@@ -27,7 +27,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static com.example.user.student_management.ui.class_list.ClassDetailsAdapter.HEADER;
 import static com.example.user.student_management.ui.class_list.ClassDetailsAdapter.INPUTROW;
@@ -73,7 +72,7 @@ public class ClassDetailsActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.class_option_menu,menu);
+        getMenuInflater().inflate(R.menu.class_details_option_menu,menu);
         return super.onCreateOptionsMenu(menu);
     }
 

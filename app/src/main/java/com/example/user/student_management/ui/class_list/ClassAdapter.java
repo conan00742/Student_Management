@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.example.user.student_management.OnClassListListener;
 import com.example.user.student_management.R;
 import com.example.user.student_management.model.Classes;
+import com.example.user.student_management.model.Student;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,18 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyViewHolder
     @Override
     public int getItemCount() {
         return classList.size();
+    }
+
+    public void refreshData(List<Classes> classList) {
+        this.classList = classList;
+    }
+
+    public void add(Classes _class) {
+        if (classList == null) {
+            classList = new ArrayList<>();
+        }
+
+        classList.add(_class);
     }
 
     public void setClassListListener(OnClassListListener classListListener) {

@@ -1,18 +1,27 @@
 package com.example.user.student_management.ui.class_list;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
+import com.example.user.student_management.db.DatabaseHandler;
 import com.example.user.student_management.model.Classes;
 import com.example.user.student_management.OnClassListListener;
 import com.example.user.student_management.R;
+import com.example.user.student_management.ui.student_list.StudentsListActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +35,12 @@ public class ClassesListActivity extends AppCompatActivity {
 
     private ClassAdapter adapter;
     private List<Classes> classesList;
+    private List<String> grades;
+
+    DatabaseHandler db;
+    int grade;
+    private AlertDialog addClassDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,14 +48,152 @@ public class ClassesListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_classes_list);
 
         ButterKnife.bind(this);
+
+        db = new DatabaseHandler(ClassesListActivity.this);
         initView();
+        initAddClassDialog();
         spinnerClass();
+
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.class_list_option_menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.mnInsertClass){
+            if(addClassDialog != null && !addClassDialog.isShowing()){
+                addClassDialog.show();
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     *
+     *This dialog is used for adding new class
+     *
+     * **/
+    private void initAddClassDialog(){
+
+
+        /**Init Layout inside Dialog**/
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ClassesListActivity.this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.dialog_add_class, null);
+        dialogBuilder.setView(dialogView);
+
+        /**find view by ID**/
+        final EditText edtClassName = (EditText) dialogView.findViewById(R.id.edtClassName);
+        final EditText edtClassQuantity = (EditText) dialogView.findViewById(R.id.edtClassQuantity);
+        final Spinner addClassSpinner = (Spinner) dialogView.findViewById(R.id.addClassSpinner);
+        final Button btnAddClass = (Button) dialogView.findViewById(R.id.btnAddClass);
+        final Button btnAddCancelFromAdding = (Button) dialogView.findViewById(R.id.btnCancelFromAdding);
+
+
+        /**
+         *
+         *
+         * GRADES SPINNER INSIDE DIALOG
+         *
+         *
+         * **/
+        addClassSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                //If Grade 10 is selected
+                if(position == 1){
+                    grade = Integer.parseInt(addClassSpinner.getSelectedItem().toString().trim());
+                }
+                //If Grade 11 is selected
+                else if(position == 2){
+                    grade = Integer.parseInt(addClassSpinner.getSelectedItem().toString().trim());
+                }
+                //If Grade 12 is selected
+                else if(position == 3){
+                    grade = Integer.parseInt(addClassSpinner.getSelectedItem().toString().trim());
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        // Spinner Drop down elements
+        initGrades();
+
+        // Creating adapter for spinner
+        ArrayAdapter<String> gradesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, grades);
+
+        // Drop down layout style - list view with radio button
+        gradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        addClassSpinner.setAdapter(gradesAdapter);
+
+
+
+        /**
+         *
+         * btnAddClass
+         *
+         **/
+        btnAddClass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /**get className**/
+                String className = edtClassName.getText().toString().trim();
+                /**get classQuantity**/
+                int classQuantity = Integer.parseInt(edtClassQuantity.getText().toString().trim());
+
+                Classes _class = new Classes(className, classQuantity, grade);
+                if(db != null){
+                    db.generateClasses(_class);
+                    Toast.makeText(ClassesListActivity.this, "Add successfully", Toast.LENGTH_SHORT).show();
+
+                    /**set dialog edit text to null**/
+                    edtClassName.setText(null);
+                    edtClassQuantity.setText(null);
+                }else{
+                    Toast.makeText(ClassesListActivity.this, "Can not add new class", Toast.LENGTH_SHORT).show();
+                }
+                addClassDialog.dismiss();
+
+            }
+        });
+
+        /**
+         *
+         * btnCancelFromAdding
+         *
+         **/
+        btnAddCancelFromAdding.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addClassDialog.dismiss();
+            }
+        });
+
+
+        /**
+         *
+         * create and show dialog
+         *
+         * **/
+        addClassDialog = dialogBuilder.create();
+    }
+
     private void initView() {
-        //init class list
-        classesList = new ArrayList<>();
+        //init classes list
+        List<Classes> classList = db.getClassesListByGrade(grade);
         //recyclerView
         classRecyclerView.setHasFixedSize(true);
         adapter = new ClassAdapter(classesList);
@@ -48,6 +201,7 @@ public class ClassesListActivity extends AppCompatActivity {
             @Override
             public void onClassClick(int position) {
                 Classes classes = classesList.get(position);
+                //TODO:
                 if(classes != null){
                     Intent intent = new Intent(ClassesListActivity.this, ClassDetailsActivity.class);
                     intent.putExtra("className", classes.get_name());
@@ -57,6 +211,8 @@ public class ClassesListActivity extends AppCompatActivity {
             }
 
         });
+        adapter.refreshData(classList == null ? new ArrayList<Classes>() : classList);
+        adapter.notifyDataSetChanged();
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         classRecyclerView.setLayoutManager(layoutManager);
         classRecyclerView.setAdapter(adapter);
@@ -68,26 +224,35 @@ public class ClassesListActivity extends AppCompatActivity {
      *
      * **/
     private void spinnerClass(){
-        // Spinner element
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
 
-        // Spinner click listener
+        final Spinner spinner = (Spinner) findViewById(R.id.spinner);
+
+                // Spinner click listener
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //If Grade 10 is selected
                 if(position == 1){
-                    initGradeTen();
+                    grade = Integer.parseInt(spinner.getSelectedItem().toString().trim());
                 }
                 //If Grade 11 is selected
                 else if(position == 2){
-                    initGradeEleven();
+                    grade = Integer.parseInt(spinner.getSelectedItem().toString().trim());
                 }
                 //If Grade 12 is selected
                 else if(position == 3){
-                    initGradeTwelve();
+                    grade = Integer.parseInt(spinner.getSelectedItem().toString().trim());
                 }
-                adapter.notifyDataSetChanged();
+
+                if(db != null){
+                    classesList = db.getClassesListByGrade(grade);
+                    adapter.refreshData(classesList);
+                    adapter.notifyDataSetChanged();
+                }else{
+                    Toast.makeText(ClassesListActivity.this, "Can not get class list", Toast.LENGTH_SHORT).show();
+                }
+
+
             }
 
             @Override
@@ -97,11 +262,7 @@ public class ClassesListActivity extends AppCompatActivity {
         });
 
         // Spinner Drop down elements
-        List<String> grades = new ArrayList<String>();
-        grades.add("---Grade---");
-        grades.add("Grade 10");
-        grades.add("Grade 11");
-        grades.add("Grade 12");
+        initGrades();
 
         // Creating adapter for spinner
         ArrayAdapter<String> gradesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, grades);
@@ -113,69 +274,20 @@ public class ClassesListActivity extends AppCompatActivity {
         spinner.setAdapter(gradesAdapter);
     }
 
+
+
     /**
      *
-     * Fake Data
+     * Init grades List
      *
      * **/
 
-    //fake data for Grade 10
-    private void initGradeTen(){
-        classesList.clear();
-        Classes classTen = new Classes();
-        classTen.set_name("10A1");
-        classTen.set_quantity(39);
-        classesList.add(classTen);
-
-        classTen = new Classes();
-        classTen.set_name("10A2");
-        classTen.set_quantity(37);
-        classesList.add(classTen);
-
-        classTen = new Classes();
-        classTen.set_name("10A3");
-        classTen.set_quantity(40);
-        classesList.add(classTen);
-
-        classTen = new Classes();
-        classTen.set_name("10A4");
-        classTen.set_quantity(36);
-        classesList.add(classTen);
-    }
-
-    //fake data for Grade 11
-    private void initGradeEleven(){
-        classesList.clear();
-        Classes classEleven = new Classes();
-        classEleven.set_name("11A1");
-        classEleven.set_quantity(40);
-        classesList.add(classEleven);
-
-        classEleven = new Classes();
-        classEleven.set_name("11A2");
-        classEleven.set_quantity(37);
-        classesList.add(classEleven);
-
-        classEleven = new Classes();
-        classEleven.set_name("11A3");
-        classEleven.set_quantity(39);
-        classesList.add(classEleven);
-
-
-    }
-
-    //fake data for Grade 12
-    private void initGradeTwelve(){
-        classesList.clear();
-        Classes classTwelve = new Classes();
-        classTwelve.set_name("12A1");
-        classTwelve.set_quantity(35);
-        classesList.add(classTwelve);
-
-        classTwelve = new Classes();
-        classTwelve.set_name("12A2");
-        classTwelve.set_quantity(34);
-        classesList.add(classTwelve);
+    public void initGrades(){
+        grades = new ArrayList<String>();
+        grades.add("---Grade---");
+        grades.add("10");
+        grades.add("11");
+        grades.add("12");
     }
 
 

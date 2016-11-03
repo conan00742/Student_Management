@@ -45,7 +45,7 @@ public class Student {
                 + KEY_DATE_OF_BIRTH + " TEXT, "
                 + KEY_ADDRESS + " TEXT, "
                 + KEY_EMAIL + " TEXT, "
-                + KEY_GENDER + " INTEGER" + ");";
+                + KEY_GENDER + " INTEGER " + ");";
     }
 
     public ContentValues getContentValues() {
