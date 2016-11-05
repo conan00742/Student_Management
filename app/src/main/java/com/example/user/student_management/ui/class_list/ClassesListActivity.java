@@ -34,8 +34,8 @@ public class ClassesListActivity extends AppCompatActivity {
     RecyclerView classRecyclerView;
 
     private ClassAdapter adapter;
-    private List<Classes> classesList;
     private List<String> grades;
+    private List<Classes> classList;
 
     DatabaseHandler db;
     int grade;
@@ -49,11 +49,9 @@ public class ClassesListActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        db = new DatabaseHandler(ClassesListActivity.this);
+
         initView();
         initAddClassDialog();
-        spinnerClass();
-
 
     }
 
@@ -161,6 +159,7 @@ public class ClassesListActivity extends AppCompatActivity {
 
                     /**set dialog edit text to null**/
                     edtClassName.setText(null);
+                    edtClassName.requestFocus();
                     edtClassQuantity.setText(null);
                 }else{
                     Toast.makeText(ClassesListActivity.this, "Can not add new class", Toast.LENGTH_SHORT).show();
@@ -191,16 +190,26 @@ public class ClassesListActivity extends AppCompatActivity {
         addClassDialog = dialogBuilder.create();
     }
 
+    /**
+     *
+     *
+     * Init Recyclerview
+     *
+     * **/
     private void initView() {
-        //init classes list
-        List<Classes> classList = db.getClassesListByGrade(grade);
+        db = new DatabaseHandler(ClassesListActivity.this);
+
+        spinnerClass();
+
+
         //recyclerView
         classRecyclerView.setHasFixedSize(true);
-        adapter = new ClassAdapter(classesList);
+        adapter = new ClassAdapter(classList);
+        adapter.refreshData(classList == null ? new ArrayList<Classes>() : classList);
         adapter.setClassListListener(new OnClassListListener() {
             @Override
             public void onClassClick(int position) {
-                Classes classes = classesList.get(position);
+                Classes classes = classList.get(position);
                 //TODO:
                 if(classes != null){
                     Intent intent = new Intent(ClassesListActivity.this, ClassDetailsActivity.class);
@@ -211,8 +220,7 @@ public class ClassesListActivity extends AppCompatActivity {
             }
 
         });
-        adapter.refreshData(classList == null ? new ArrayList<Classes>() : classList);
-        adapter.notifyDataSetChanged();
+
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         classRecyclerView.setLayoutManager(layoutManager);
         classRecyclerView.setAdapter(adapter);
@@ -220,7 +228,7 @@ public class ClassesListActivity extends AppCompatActivity {
 
     /**
      *
-     * Spinner Activity
+     * Spinner Activity show a list of classes by choosing grade
      *
      * **/
     private void spinnerClass(){
@@ -245,8 +253,8 @@ public class ClassesListActivity extends AppCompatActivity {
                 }
 
                 if(db != null){
-                    classesList = db.getClassesListByGrade(grade);
-                    adapter.refreshData(classesList);
+                    classList = db.getClassesListByGrade(grade);
+                    adapter.refreshData(classList);
                     adapter.notifyDataSetChanged();
                 }else{
                     Toast.makeText(ClassesListActivity.this, "Can not get class list", Toast.LENGTH_SHORT).show();
