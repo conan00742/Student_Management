@@ -49,9 +49,9 @@ public class ClassesListActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-
-        initView();
         initAddClassDialog();
+        spinnerClass();
+
 
     }
 
@@ -197,15 +197,9 @@ public class ClassesListActivity extends AppCompatActivity {
      *
      * **/
     private void initView() {
-        db = new DatabaseHandler(ClassesListActivity.this);
-
-        spinnerClass();
-
-
         //recyclerView
         classRecyclerView.setHasFixedSize(true);
         adapter = new ClassAdapter(classList);
-        adapter.refreshData(classList == null ? new ArrayList<Classes>() : classList);
         adapter.setClassListListener(new OnClassListListener() {
             @Override
             public void onClassClick(int position) {
@@ -214,7 +208,7 @@ public class ClassesListActivity extends AppCompatActivity {
                 if(classes != null){
                     Intent intent = new Intent(ClassesListActivity.this, ClassDetailsActivity.class);
                     intent.putExtra("className", classes.get_name());
-                    intent.putExtra("classQuantity", String.valueOf(classes.get_quantity()));
+                    intent.putExtra("classQuantity", ""+classes.get_quantity());
                     startActivity(intent);
                 }
             }
@@ -232,7 +226,7 @@ public class ClassesListActivity extends AppCompatActivity {
      *
      * **/
     private void spinnerClass(){
-
+        db = new DatabaseHandler(getApplicationContext());
         final Spinner spinner = (Spinner) findViewById(R.id.spinner);
 
                 // Spinner click listener
@@ -241,23 +235,18 @@ public class ClassesListActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //If Grade 10 is selected
                 if(position == 1){
-                    grade = Integer.parseInt(spinner.getSelectedItem().toString().trim());
+                    classList = db.getClassesListByGrade(10);
+                    initView();
                 }
                 //If Grade 11 is selected
                 else if(position == 2){
-                    grade = Integer.parseInt(spinner.getSelectedItem().toString().trim());
+                    classList = db.getClassesListByGrade(11);
+                    initView();
                 }
                 //If Grade 12 is selected
                 else if(position == 3){
-                    grade = Integer.parseInt(spinner.getSelectedItem().toString().trim());
-                }
-
-                if(db != null){
-                    classList = db.getClassesListByGrade(grade);
-                    adapter.refreshData(classList);
-                    adapter.notifyDataSetChanged();
-                }else{
-                    Toast.makeText(ClassesListActivity.this, "Can not get class list", Toast.LENGTH_SHORT).show();
+                    classList = db.getClassesListByGrade(12);
+                    initView();
                 }
 
 

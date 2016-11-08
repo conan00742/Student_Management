@@ -17,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.user.student_management.R;
+import com.example.user.student_management.db.DatabaseHandler;
 import com.example.user.student_management.model.Classes;
 import com.example.user.student_management.model.Student;
 import com.example.user.student_management.ui.marking.MarkingActivity;
@@ -32,6 +33,10 @@ import static com.example.user.student_management.ui.class_list.ClassDetailsAdap
 import static com.example.user.student_management.ui.class_list.ClassDetailsAdapter.INPUTROW;
 
 public class ClassDetailsActivity extends AppCompatActivity {
+
+    public final static String CLASS_NAME_TAG = "className";
+    public final static String CLASS_QUANTITY_TAG = "classQuantity";
+    public final static int RREQUEST_CODE_ADD_STUDENT = 1;
     @BindView(R.id.class_details_recycler_view)
     RecyclerView class_details_recycler_view;
 
@@ -52,6 +57,7 @@ public class ClassDetailsActivity extends AppCompatActivity {
     List<Student> studentList = new ArrayList<>();
     int[] mDataViewType = {HEADER,INPUTROW};
     Classes currentClass = new Classes();
+    DatabaseHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +70,6 @@ public class ClassDetailsActivity extends AppCompatActivity {
             currentClass.set_name(getIntent().getStringExtra("className"));
             currentClass.set_quantity(Integer.parseInt(getIntent().getStringExtra("classQuantity")));
         }
-        initData();
         initView();
         initMarkingDialog();
 
@@ -83,7 +88,9 @@ public class ClassDetailsActivity extends AppCompatActivity {
         switch(item.getItemId()){
             case R.id.mnAdd:
                 Intent intent = new Intent(ClassDetailsActivity.this, StudentsListActivity.class);
-                startActivity(intent);
+                intent.putExtra(CLASS_NAME_TAG,getIntent().getStringExtra("className"));
+                intent.putExtra(CLASS_QUANTITY_TAG, getIntent().getStringExtra("classQuantity"));
+                startActivityForResult(intent, RREQUEST_CODE_ADD_STUDENT);
                 break;
             case R.id.mnMarking:
                 if(markingDialog != null && !markingDialog.isShowing()){
@@ -94,25 +101,27 @@ public class ClassDetailsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    private void initData(){
-        Student student = new Student(System.currentTimeMillis(),1994,"Khiêm Ichigo", "Radiant",
-                "khiemichigo@gmail.com",true,false);
-        studentList.add(student);
-
-        student = new Student(System.currentTimeMillis(),1996,"Ember Spirit","Dire",
-                "emberspirit@gmail.com", true,false);
-        studentList.add(student);
-
-        student = new Student(System.currentTimeMillis(),1993,"Death Prophet","Radiant",
-                "deathprophet@gmail.com",false,false);
-        studentList.add(student);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == RREQUEST_CODE_ADD_STUDENT){
+            if(resultCode == RESULT_OK && data != null){
+                currentClass.set_name(data.getStringExtra(CLASS_NAME_TAG));
+                currentClass.set_quantity(Integer.parseInt(data.getStringExtra(CLASS_QUANTITY_TAG)));
+                initView();
+            }
+        }
     }
 
+
     private void initView(){
+        db = new DatabaseHandler(getApplicationContext());
+        studentList = db.getStudentListById(currentClass.get_name());
+
         class_details_recycler_view.setHasFixedSize(true);
         classDetailsAdapter = new ClassDetailsAdapter(getApplicationContext(),studentList,mDataViewType,currentClass.get_name(),
                 currentClass.get_quantity());
+        classDetailsAdapter.refreshData(studentList == null ? new ArrayList<Student>() : studentList);
+        classDetailsAdapter.notifyDataSetChanged();
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         class_details_recycler_view.setLayoutManager(layoutManager);
         class_details_recycler_view.setAdapter(classDetailsAdapter);

@@ -57,7 +57,7 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
         if(holder.getItemViewType() == HEADER){
             ClassDetailsHeaderViewHolder header = (ClassDetailsHeaderViewHolder) holder;
             header.tvClassName.setText(String.format(context.getString(R.string.class_details_name), className));
-            header.tvClassQuantity.setText(String.format(context.getString(R.string.class_details_quantity),String.valueOf(classQuantity)));
+            header.tvClassQuantity.setText(String.format(context.getString(R.string.class_details_quantity),""+classQuantity));
 
         } else if(holder.getItemViewType() == INPUTROW){
             Student student = studentList.get(position - 1);
@@ -84,6 +84,10 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
         public ViewHolder(View itemView) {
             super(itemView);
         }
+    }
+
+    public void refreshData(List<Student> studentList) {
+        this.studentList = studentList;
     }
 
     public class ClassDetailsHeaderViewHolder extends ViewHolder {

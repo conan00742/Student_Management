@@ -2,10 +2,12 @@ package com.example.user.student_management.model;
 
 import android.content.ContentValues;
 
+import java.io.Serializable;
+
 /**
  * Created by USER on 10/11/2016.
  */
-public class Student {
+public class Student implements Serializable {
     // Contacts Table Columns names
 
     public static final String TABLE_STUDENTS = "STUDENT";
@@ -40,12 +42,13 @@ public class Student {
 
     public static String getInitSql (){
         return  "CREATE TABLE " + TABLE_STUDENTS + "("
-                + KEY_ID + " INTEGER PRIMARY KEY, "
-                + KEY_NAME + " TEXT, "
-                + KEY_DATE_OF_BIRTH + " TEXT, "
-                + KEY_ADDRESS + " TEXT, "
-                + KEY_EMAIL + " TEXT, "
-                + KEY_GENDER + " INTEGER " + ");";
+                + KEY_ID + " INTEGER PRIMARY KEY,"
+                + KEY_NAME + " TEXT,"
+                + KEY_DATE_OF_BIRTH + " TEXT,"
+                + KEY_ADDRESS + " TEXT,"
+                + KEY_EMAIL + " TEXT,"
+                + KEY_GENDER + " INTEGER"
+                + ")";
     }
 
     public ContentValues getContentValues() {
