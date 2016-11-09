@@ -21,6 +21,7 @@ import com.example.user.student_management.db.DatabaseHandler;
 import com.example.user.student_management.model.Classes;
 import com.example.user.student_management.model.Student;
 import com.example.user.student_management.ui.marking.MarkingActivity;
+import com.example.user.student_management.ui.marking.ViewMarkActivity;
 import com.example.user.student_management.ui.student_list.StudentsListActivity;
 
 import java.util.ArrayList;
@@ -97,6 +98,9 @@ public class ClassDetailsActivity extends AppCompatActivity {
                     markingDialog.show();
                 }
                 break;
+            case R.id.mnViewMark:
+                Intent i = new Intent(ClassDetailsActivity.this, ViewMarkActivity.class);
+                startActivity(i);
         }
         return super.onOptionsItemSelected(item);
     }

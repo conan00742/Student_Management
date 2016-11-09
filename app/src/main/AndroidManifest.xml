@@ -32,9 +32,13 @@
         <activity
             android:name=".ui.class_list.ClassDetailsActivity"
             android:label="@string/class_details_title" />
+        <activity
+            android:name=".ui.marking.MarkingActivity"
+            android:label="@string/marking_title" />
 
-        <activity android:name=".ui.marking.MarkingActivity"
-            android:label="@string/marking_title"/>
+        <activity
+            android:name=".ui.marking.ViewMarkActivity"
+            android:label="@string/view_mark"/>
     </application>
 
 </manifest>

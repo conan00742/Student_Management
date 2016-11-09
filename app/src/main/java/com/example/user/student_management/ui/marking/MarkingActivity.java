@@ -1,5 +1,6 @@
 package com.example.user.student_management.ui.marking;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +11,7 @@ import com.example.user.student_management.R;
 import com.example.user.student_management.model.Classes;
 import com.example.user.student_management.model.Student;
 import com.example.user.student_management.model.Subject;
+import com.example.user.student_management.ui.home.LoginSuccessActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +83,7 @@ public class MarkingActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnSaveMark)
     void saveMark(){
-        //TODO: Xử lý lưu điểm
-        finish();
+        Intent i = new Intent(MarkingActivity.this, LoginSuccessActivity.class);
+        startActivity(i);
     }
 }
