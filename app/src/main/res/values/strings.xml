@@ -17,4 +17,11 @@
     <string name="marking_semester">Semester: %s</string>
     <string name="marking_subject">Subject: %s</string>
     <string name="marking_type">Type of Mark: %s</string>
+
+
+    <string name="str_cnt_mnu_marking">Marking</string>
+    <string name="str_cnt_mnu_edit">Edit...</string>
+    <string name="str_cnt_mnu_delete">Delete</string>
+
+    <string name="student_details">Student Details</string>
 </resources>

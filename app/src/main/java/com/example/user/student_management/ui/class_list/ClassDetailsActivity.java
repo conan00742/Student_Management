@@ -1,11 +1,16 @@
 package com.example.user.student_management.ui.class_list;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
+import android.util.Patterns;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,10 +18,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.user.student_management.R;
+import com.example.user.student_management.RecyclerViewClickListener;
 import com.example.user.student_management.db.DatabaseHandler;
 import com.example.user.student_management.model.Classes;
 import com.example.user.student_management.model.Student;
@@ -24,7 +34,10 @@ import com.example.user.student_management.ui.marking.MarkingActivity;
 import com.example.user.student_management.ui.marking.ViewMarkActivity;
 import com.example.user.student_management.ui.student_list.StudentsListActivity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -59,6 +72,8 @@ public class ClassDetailsActivity extends AppCompatActivity {
     int[] mDataViewType = {HEADER,INPUTROW};
     Classes currentClass = new Classes();
     DatabaseHandler db;
+    int pos;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +87,7 @@ public class ClassDetailsActivity extends AppCompatActivity {
             currentClass.set_quantity(Integer.parseInt(getIntent().getStringExtra("classQuantity")));
         }
         initView();
-        initMarkingDialog();
+
 
     }
 
@@ -93,14 +108,12 @@ public class ClassDetailsActivity extends AppCompatActivity {
                 intent.putExtra(CLASS_QUANTITY_TAG, getIntent().getStringExtra("classQuantity"));
                 startActivityForResult(intent, RREQUEST_CODE_ADD_STUDENT);
                 break;
-            case R.id.mnMarking:
-                if(markingDialog != null && !markingDialog.isShowing()){
-                    markingDialog.show();
-                }
-                break;
             case R.id.mnViewMark:
-                Intent i = new Intent(ClassDetailsActivity.this, ViewMarkActivity.class);
-                startActivity(i);
+                Intent intent2 = new Intent(ClassDetailsActivity.this, ViewMarkActivity.class);
+                intent2.putExtra("classNameForViewMark", getIntent().getStringExtra("className"));
+                intent2.putExtra("classQuantityForViewMark", getIntent().getStringExtra("classQuantity"));
+                startActivity(intent2);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -150,6 +163,8 @@ public class ClassDetailsActivity extends AppCompatActivity {
                 i.putExtra("markType",markType);
                 i.putExtra("classNameForMarking",getIntent().getStringExtra("className"));
                 i.putExtra("classQuantityForMarking",getIntent().getStringExtra("classQuantity"));
+                i.putExtra("studentIDForMarking",studentList.get(pos).getStudentId());
+                i.putExtra("studentNameForMarking",studentList.get(pos).getStudentName());
                 startActivity(i);
             }
         });
@@ -197,23 +212,23 @@ public class ClassDetailsActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position){
                     case 1:
-                        Toast.makeText(ClassDetailsActivity.this, "Maths", Toast.LENGTH_SHORT).show();
+                        break;
                     case 2:
-                        Toast.makeText(ClassDetailsActivity.this, "Physics", Toast.LENGTH_SHORT).show();
+                        break;
                     case 3:
-                        Toast.makeText(ClassDetailsActivity.this, "Chemistry", Toast.LENGTH_SHORT).show();
+                        break;
                     case 4:
-                        Toast.makeText(ClassDetailsActivity.this, "Biology", Toast.LENGTH_SHORT).show();
+                        break;
                     case 5:
-                        Toast.makeText(ClassDetailsActivity.this, "History", Toast.LENGTH_SHORT).show();
+                        break;
                     case 6:
-                        Toast.makeText(ClassDetailsActivity.this, "Geography", Toast.LENGTH_SHORT).show();
+                        break;
                     case 7:
-                        Toast.makeText(ClassDetailsActivity.this, "Literature", Toast.LENGTH_SHORT).show();
+                        break;
                     case 8:
-                        Toast.makeText(ClassDetailsActivity.this, "English", Toast.LENGTH_SHORT).show();
+                        break;
                     case 9:
-                        Toast.makeText(ClassDetailsActivity.this, "Astronomy", Toast.LENGTH_SHORT).show();
+                        break;
                 }
                 subject = parent.getItemAtPosition(position).toString();
             }
@@ -229,11 +244,11 @@ public class ClassDetailsActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position){
                     case 1:
-                        Toast.makeText(ClassDetailsActivity.this, "15 minutes", Toast.LENGTH_SHORT).show();
+                        break;
                     case 2:
-                        Toast.makeText(ClassDetailsActivity.this, "45 minutes", Toast.LENGTH_SHORT).show();
+                        break;
                     case 3:
-                        Toast.makeText(ClassDetailsActivity.this, "Summary mark", Toast.LENGTH_SHORT).show();
+                        break;
                 }
                 markType = parent.getItemAtPosition(position).toString();
             }
@@ -303,7 +318,34 @@ public class ClassDetailsActivity extends AppCompatActivity {
     }
 
 
+
+
     //TODO: MarkingActivity
+    public boolean onContextItemSelected(MenuItem item) {
+
+        classDetailsAdapter.setViewClickListener(new RecyclerViewClickListener() {
+            @Override
+            public void recyclerViewListClicked(int position) {
+                pos = position-1;
+            }
+        });
+        switch (item.getItemId()) {
+            case R.id.mnMarking:
+                initMarkingDialog();
+                markingDialog.show();
+                break;
+            case R.id.mnEdit:
+                break;
+            case R.id.mnDelete:
+                Toast.makeText(getApplicationContext(),"You have clicked Delete + pos = " + pos,Toast.LENGTH_LONG).show();
+                break;
+
+        }
+
+        return super.onContextItemSelected(item);
+    }
+
+
 
 
 }

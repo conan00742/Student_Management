@@ -6,5 +6,4 @@ package com.example.user.student_management;
 
 public interface OnClassListListener {
     void onClassClick(int position);
-    /*void onNameClick(int position);*/
 }

@@ -16,12 +16,6 @@
         android:layout_height="wrap_content"
         android:scrollbars="vertical" />
 
-    <Button
-        android:id="@+id/btnSaveMark"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SAVE"
-        android:fontFamily="monospace"
-        android:layout_alignParentBottom="true"/>
+
 
 </RelativeLayout>

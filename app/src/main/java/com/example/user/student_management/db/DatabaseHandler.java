@@ -6,7 +6,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.user.student_management.model.Classes;
+import com.example.user.student_management.model.Marking;
 import com.example.user.student_management.model.Student;
+import com.example.user.student_management.model.Subject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 28;
+    private static final int DATABASE_VERSION = 35;
 
     // Database Name
     private static final String DATABASE_NAME = "STUDENT_MANAGEMENT";
@@ -37,6 +39,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(Student.getInitSql());
         db.execSQL(Classes.getInitClassesSql());
         db.execSQL(Classes.getInitStudentsInClassSql());
+        db.execSQL(Marking.getInitSql());
     }
 
     @Override
@@ -45,6 +48,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + Student.TABLE_STUDENTS);
         db.execSQL("DROP TABLE IF EXISTS " + Classes.TABLE_CLASSES);
         db.execSQL("DROP TABLE IF EXISTS " + Classes.TABLE_STUDENTS_IN_CLASS);
+        db.execSQL("DROP TABLE IF EXISTS " + Marking.TABLE_SCORE_RECORD);
         // Create tables again
         onCreate(db);
     }
@@ -81,10 +85,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if(cursor.moveToFirst()){
             do{
                 Student student = new Student();
-                student.setStudentId(Long.parseLong(cursor.getString(0)));
-                student.setStudentName(cursor.getString(1));
-                student.setYearOfBirth(Integer.parseInt(cursor.getString(2)));
-                student.setMale(cursor.getInt(5) == 1);
+                student.setStudentId(cursor.getString(cursor.getColumnIndex(Student.KEY_ID)));
+                student.setStudentName(cursor.getString(cursor.getColumnIndex(Student.KEY_NAME)));
+                student.setDateOfBirth(cursor.getString(cursor.getColumnIndex(Student.KEY_DATE_OF_BIRTH)));
+                student.setMale(cursor.getInt(cursor.getColumnIndex(Student.KEY_GENDER)) == 1);
+                student.setEmail(cursor.getString(cursor.getColumnIndex(Student.KEY_EMAIL)));
+                student.setStudentAddress(cursor.getString(cursor.getColumnIndex(Student.KEY_ADDRESS)));
                 studentList.add(student);
             }while(cursor.moveToNext());
         }
@@ -111,10 +117,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if(cursor.moveToFirst()){
             do{
                 Student student = new Student();
-                student.setStudentId(Long.parseLong(cursor.getString(0)));
-                student.setStudentName(cursor.getString(1));
-                student.setYearOfBirth(Integer.parseInt(cursor.getString(2)));
-                student.setMale(cursor.getInt(5) == 1);
+                student.setStudentId(cursor.getString(cursor.getColumnIndex(Student.KEY_ID)));
+                student.setStudentName(cursor.getString(cursor.getColumnIndex(Student.KEY_NAME)));
+                student.setDateOfBirth(cursor.getString(cursor.getColumnIndex(Student.KEY_DATE_OF_BIRTH)));
+                student.setMale(cursor.getInt(cursor.getColumnIndex(Student.KEY_GENDER)) == 1);
+                student.setEmail(cursor.getString(cursor.getColumnIndex(Student.KEY_EMAIL)));
+                student.setStudentAddress(cursor.getString(cursor.getColumnIndex(Student.KEY_ADDRESS)));
                 studentList.add(student);
             }while(cursor.moveToNext());
         }
@@ -186,32 +194,61 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     /**
      *
-     * get studentList from table STUDENTS_IN_CLASS
+     * marking student
      *
      * **/
-    /*public List<Student> getStudentListFromClass(String className){
-        List<Student> studentList = new ArrayList<>();
+    public void markingStudent(Marking marking){
+        SQLiteDatabase db = this.getWritableDatabase();
+        /**inserting row**/
+        db.insert(Marking.TABLE_SCORE_RECORD, null, marking.getMarkingContentValues());
+        db.close();
+    }
 
-        *//**Select all query**//*
+
+    /**
+     *
+     * get List of Student by className, Semester, Subject and typeOfMark
+     *
+     * **/
+    public List<Marking> getAll(Classes _class, Subject subject){
+        List<Marking> markingList = new ArrayList<>();
+
+        /**Select all query**/
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         String queryString = "SELECT * FROM "
-                + Classes.TABLE_STUDENTS_IN_CLASS
-                + " WHERE " + Classes.KEY_CLASS_NAME + " = '" + className + "'";
+                + Marking.TABLE_SCORE_RECORD + " WHERE " + Marking.KEY_CLASS_NAME + " = '" + _class.get_name() + "' AND "
+                + Marking.KEY_SEMESTER + " = " + subject.getSubjectSemester() + " AND "
+                + Marking.KEY_SUBJECT_NAME + " = '" + subject.getSubjectName() + "' AND "
+                + Marking.KEY_TYPE_OF_MARK + " = '" + subject.getSubjectTypeOfMark()+"'";
         Cursor cursor = sqLiteDatabase.rawQuery(queryString,null);
 
-        *//**looping through all rows and adding to list**//*
+        /**looping through all rows and adding to list**/
         if(cursor.moveToFirst()){
             do{
+                Marking marking = new Marking();
                 Student student = new Student();
-                student.setStudentId(Long.parseLong(cursor.getString(0)));
-                student.setStudentName(cursor.getString(1));
-                student.setYearOfBirth(Integer.parseInt(cursor.getString(2)));
-                student.setMale(cursor.getInt(5) == 1);
-                studentList.add(student);
+
+                /**set Student Name and ID**/
+                student.setStudentName(cursor.getString(cursor.getColumnIndex(Marking.KEY_STUDENT_NAME)));
+                student.setStudentId(cursor.getString(cursor.getColumnIndex(Marking.KEY_STUDENT_ID)));
+                marking.setStudent(student);
+
+
+                /**set Mark Value**/
+                marking.setMarkValue(cursor.getInt(cursor.getColumnIndex(Marking.KEY_MARK_VALUE)));
+
+                markingList.add(marking);
+
             }while(cursor.moveToNext());
         }
 
-        return studentList;
-    }*/
+        return markingList;
+    }
+
+
+
+
+
+
 
 }

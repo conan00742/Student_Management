@@ -65,7 +65,7 @@ public class Classes {
         return  "CREATE TABLE " + TABLE_STUDENTS_IN_CLASS + "("
                 + KEY_SUB_ID + " INTEGER PRIMARY KEY,"
                 + KEY_CLASS_NAME + " TEXT,"
-                + KEY_STUDENT_ID + " INTEGER"
+                + KEY_STUDENT_ID + " TEXT"
                 + ")";
     }
 

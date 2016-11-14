@@ -44,6 +44,7 @@ public class StudentsListActivity extends AppCompatActivity {
     private boolean _isMale = false;
     private boolean isChecked;
     private SimpleDateFormat simpleDateFormat;
+    private String grade;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,7 +162,18 @@ public class StudentsListActivity extends AppCompatActivity {
                         Calendar selectedCalendar = Calendar.getInstance();
 
                         selectedCalendar.setTime(simpleDateFormat.parse(dateInString));
-                        Student student = new Student(id, selectedCalendar.get(Calendar.YEAR), studentName,
+
+                        if(2016 - selectedCalendar.get(Calendar.YEAR) == 16){
+                            grade = "10";
+                        }else if(2016 - selectedCalendar.get(Calendar.YEAR) == 17){
+                            grade = "11";
+                        }else if(2016 - selectedCalendar.get(Calendar.YEAR) == 18){
+                            grade = "12";
+                        }
+
+                        String studentId = "16"+grade+String.valueOf(id).substring(9);
+
+                        Student student = new Student(studentId, dateInString, studentName,
                                 studentAddress, studentEmail, _isMale, true);
 
                         /**Add to database**/

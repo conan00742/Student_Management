@@ -18,8 +18,8 @@ public class Student implements Serializable {
     public static final String KEY_EMAIL = "email";
     public static final String KEY_GENDER = "gender";
 
-    private long studentId;
-    private int yearOfBirth;
+    private String studentId;
+    private String dateOfBirth;
     private String studentName;
     private String studentAddress;
     private String email;
@@ -29,10 +29,10 @@ public class Student implements Serializable {
     public Student() {
     }
 
-    public Student(long studentId, int yearOfBirth, String studentName,
+    public Student(String studentId, String dateOfBirth, String studentName,
                    String studentAddress, String email, boolean isMale, boolean isChecked) {
         this.studentId = studentId;
-        this.yearOfBirth = yearOfBirth;
+        this.dateOfBirth = dateOfBirth;
         this.studentName = studentName;
         this.studentAddress = studentAddress;
         this.email = email;
@@ -42,7 +42,7 @@ public class Student implements Serializable {
 
     public static String getInitSql (){
         return  "CREATE TABLE " + TABLE_STUDENTS + "("
-                + KEY_ID + " INTEGER PRIMARY KEY,"
+                + KEY_ID + " TEXT PRIMARY KEY,"
                 + KEY_NAME + " TEXT,"
                 + KEY_DATE_OF_BIRTH + " TEXT,"
                 + KEY_ADDRESS + " TEXT,"
@@ -55,9 +55,9 @@ public class Student implements Serializable {
         ContentValues contentValues = new ContentValues();
         contentValues.put(KEY_ID, this.getStudentId());
         contentValues.put(KEY_NAME, this.getStudentName());
-        contentValues.put(KEY_DATE_OF_BIRTH, this.getYearOfBirth());
+        contentValues.put(KEY_DATE_OF_BIRTH, this.getDateOfBirth());
         contentValues.put(KEY_ADDRESS, this.getStudentAddress());
-        contentValues.put(KEY_EMAIL, this.getStudentAddress());
+        contentValues.put(KEY_EMAIL, this.getEmail());
         contentValues.put(KEY_GENDER, this.isMale());
         return  contentValues;
     }
@@ -78,20 +78,20 @@ public class Student implements Serializable {
         this.email = email;
     }
 
-    public long getStudentId() {
+    public String getStudentId() {
         return studentId;
     }
 
-    public void setStudentId(long studentId) {
+    public void setStudentId(String studentId) {
         this.studentId = studentId;
     }
 
-    public int getYearOfBirth() {
-        return yearOfBirth;
+    public String getDateOfBirth() {
+        return dateOfBirth;
     }
 
-    public void setYearOfBirth(int yearOfBirth) {
-        this.yearOfBirth = yearOfBirth;
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public String getStudentName() {

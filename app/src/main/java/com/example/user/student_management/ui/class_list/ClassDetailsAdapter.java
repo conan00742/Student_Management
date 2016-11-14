@@ -1,16 +1,22 @@
 package com.example.user.student_management.ui.class_list;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.user.student_management.R;
+import com.example.user.student_management.RecyclerViewClickListener;
 import com.example.user.student_management.model.Student;
+import com.example.user.student_management.ui.student_list.StudentDetailsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,15 +25,17 @@ import java.util.List;
  * Created by Khiem Ichigo on 10/27/2016.
  */
 
-public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapter.ViewHolder> {
+public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapter.ViewHolder>{
     public static final int HEADER = 0;
     public static final int INPUTROW = 1;
 
     Context context;
+    ContextMenu.ContextMenuInfo info;
     private List<Student> studentList = new ArrayList<>();
     private int[] mDataViewType;
     private String className;
     private int classQuantity;
+    RecyclerViewClickListener viewClickListener;
 
     public ClassDetailsAdapter(Context context, List<Student> studentList,
                                int[] mDataViewType, String className, int classQuantity) {
@@ -36,6 +44,14 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
         this.mDataViewType = mDataViewType;
         this.className = className;
         this.classQuantity = classQuantity;
+    }
+
+    public ClassDetailsAdapter(){
+
+    }
+
+    public void setViewClickListener(RecyclerViewClickListener viewClickListener) {
+        this.viewClickListener = viewClickListener;
     }
 
     @Override
@@ -63,8 +79,8 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
             Student student = studentList.get(position - 1);
             ClassDetailsInputRowViewHolder inputRow = (ClassDetailsInputRowViewHolder) holder;
             inputRow.studentName.setText(student.getStudentName());
-            inputRow.studentId.setText(String.valueOf(student.getStudentId()));
-            inputRow.yearOfBirth.setText(String.valueOf(student.getYearOfBirth()));
+            inputRow.studentId.setText(student.getStudentId());
+            inputRow.yearOfBirth.setText(student.getDateOfBirth());
             inputRow.imgGender.setImageResource(student.isMale() ? R.drawable.ic_male : R.drawable.ic_female);
             inputRow.btnaddToClass.setVisibility(View.GONE);
         }
@@ -80,10 +96,70 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
         return position == 0 ? HEADER : INPUTROW;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+
+    /**
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     * **/
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+            , View.OnCreateContextMenuListener{
         public ViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
+            itemView.setOnCreateContextMenuListener(this);
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if(viewClickListener != null){
+                        viewClickListener.recyclerViewListClicked(getAdapterPosition());
+                    }
+                    return false;
+                }
+            });
         }
+
+        /**
+         *
+         * StudentDetails
+         *
+         * **/
+        @Override
+        public void onClick(View v) {
+
+            Intent intent = new Intent(context, StudentDetailsActivity.class);
+            intent.putExtra("_studentID",studentList.get(getLayoutPosition() - 1).getStudentId());
+            intent.putExtra("_studentName", studentList.get(getLayoutPosition() - 1).getStudentName());
+            intent.putExtra("_studentYearOfBirth", studentList.get(getLayoutPosition() - 1).getDateOfBirth());
+            intent.putExtra("_studentAddress", studentList.get(getLayoutPosition() - 1).getStudentAddress());
+            intent.putExtra("_studentEmail", studentList.get(getLayoutPosition() - 1).getEmail());
+            intent.putExtra("_studentGender" , String.valueOf(studentList.get(getLayoutPosition() - 1).isMale()));
+            intent.putExtra("_studentClass", className);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
+
+        /**
+         *
+         * ContextMenu
+         *
+         * **/
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            new ClassDetailsAdapter().info = menuInfo;
+            menu.setHeaderTitle("Select Your Action:");
+            menu.add(0, R.id.mnMarking, 0, "Marking");//groupId, itemId, order, title
+            menu.add(0, R.id.mnEdit, 0, "Edit...");
+            menu.add(0, R.id.mnDelete, 0, "Delete");
+        }
+
+
+
     }
 
     public void refreshData(List<Student> studentList) {

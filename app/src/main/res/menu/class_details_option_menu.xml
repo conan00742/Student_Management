@@ -13,9 +13,6 @@
         android:title="Add Student to Class"
         android:id="@+id/mnAdd"></item>
 
-    <item app:showAsAction="never"
-        android:title="Marking"
-        android:id="@+id/mnMarking"></item>
 
     <item app:showAsAction="never"
         android:title="View Mark"
