@@ -1,6 +1,7 @@
 package com.example.user.student_management.ui.class_list;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.TextView;
 
 import com.example.user.student_management.OnClassListListener;
 import com.example.user.student_management.R;
+import com.example.user.student_management.RecyclerViewClickListener;
 import com.example.user.student_management.model.Classes;
 import com.example.user.student_management.model.Student;
 
@@ -18,9 +20,13 @@ import java.util.List;
  * Created by USER on 10/13/2016.
  */
 public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyViewHolder> {
-    private OnClassListListener classListListener;
 
+
+    private OnClassListListener classListListener;
     private List<Classes> classList = new ArrayList<>();
+
+
+
 
     public ClassAdapter(List<Classes> classList) {
         this.classList = classList;
@@ -49,6 +55,8 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyViewHolder
         this.classList = classList;
     }
 
+
+
     public void add(Classes _class) {
         if (classList == null) {
             classList = new ArrayList<>();
@@ -61,12 +69,13 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyViewHolder
         this.classListListener = classListListener;
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    public static class MyViewHolder extends RecyclerView.ViewHolder{
         private TextView className, classQuantity;
         public MyViewHolder(View itemView,final OnClassListListener classListListener) {
             super(itemView);
             className = (TextView) itemView.findViewById(R.id.className);
             classQuantity = (TextView) itemView.findViewById(R.id.classQuantity);
+
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -78,5 +87,6 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyViewHolder
                 }
             });
         }
+
     }
 }

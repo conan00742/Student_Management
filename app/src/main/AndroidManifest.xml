@@ -39,8 +39,15 @@
             android:name=".ui.marking.ViewMarkActivity"
             android:label="@string/view_mark" />
         <activity android:name=".ui.marking.ViewMarkWindow" />
-        <activity android:name=".ui.student_list.StudentDetailsActivity"
-            android:label="@string/student_details"/>
+        <activity
+            android:name=".ui.student_list.StudentDetailsActivity"
+            android:label="@string/student_details" />
+        <activity android:name=".ui.student_list.EditStudentNameActivity" />
+        <activity android:name=".ui.student_list.EditStudentClassActivity" />
+        <activity android:name=".ui.student_list.EditStudentGenderActivity" />
+        <activity android:name=".ui.student_list.EditStudentDateOfBirthActivity" />
+        <activity android:name=".ui.student_list.EditStudentEmailActivity" />
+        <activity android:name=".ui.student_list.EditStudentAddressActivity"></activity>
     </application>
 
 </manifest>

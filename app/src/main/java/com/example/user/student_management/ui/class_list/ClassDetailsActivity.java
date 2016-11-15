@@ -334,10 +334,13 @@ public class ClassDetailsActivity extends AppCompatActivity {
                 initMarkingDialog();
                 markingDialog.show();
                 break;
-            case R.id.mnEdit:
-                break;
             case R.id.mnDelete:
-                Toast.makeText(getApplicationContext(),"You have clicked Delete + pos = " + pos,Toast.LENGTH_LONG).show();
+                Intent i = new Intent(ClassDetailsActivity.this, ClassesListActivity.class);
+                Student _student = new Student();
+                _student.setStudentId(studentList.get(pos).getStudentId());
+                db.deleteStudentFromClass(_student);
+
+                startActivity(i);
                 break;
 
         }

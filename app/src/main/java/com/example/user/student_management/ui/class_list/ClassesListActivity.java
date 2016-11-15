@@ -17,10 +17,12 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.user.student_management.RecyclerViewClickListener;
 import com.example.user.student_management.db.DatabaseHandler;
 import com.example.user.student_management.model.Classes;
 import com.example.user.student_management.OnClassListListener;
 import com.example.user.student_management.R;
+import com.example.user.student_management.model.Student;
 import com.example.user.student_management.ui.student_list.StudentsListActivity;
 
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ public class ClassesListActivity extends AppCompatActivity {
     DatabaseHandler db;
     int grade;
     private AlertDialog addClassDialog;
+    int pos;
 
 
     @Override
@@ -270,6 +273,7 @@ public class ClassesListActivity extends AppCompatActivity {
         // attaching data adapter to spinner
         spinner.setAdapter(gradesAdapter);
     }
+
 
 
 

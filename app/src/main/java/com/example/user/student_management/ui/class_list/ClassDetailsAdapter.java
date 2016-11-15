@@ -107,9 +107,38 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
      *
      * **/
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
-            , View.OnCreateContextMenuListener{
+    public class ViewHolder extends RecyclerView.ViewHolder{
         public ViewHolder(View itemView) {
+            super(itemView);
+
+        }
+
+
+
+
+
+    }
+
+    public void refreshData(List<Student> studentList) {
+        this.studentList = studentList;
+    }
+
+    public class ClassDetailsHeaderViewHolder extends ViewHolder {
+        TextView tvClassName;
+        TextView tvClassQuantity;
+        public ClassDetailsHeaderViewHolder(View itemView) {
+            super(itemView);
+            this.tvClassName = (TextView) itemView.findViewById(R.id.tvClassName);
+            this.tvClassQuantity = (TextView) itemView.findViewById(R.id.tvClassQuantity);
+        }
+    }
+
+    public class ClassDetailsInputRowViewHolder extends ViewHolder implements View.OnClickListener,
+            View.OnCreateContextMenuListener{
+        TextView studentId, studentName, yearOfBirth;
+        ImageView imgGender;
+        Button btnaddToClass;
+        public ClassDetailsInputRowViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
             itemView.setOnCreateContextMenuListener(this);
@@ -122,6 +151,11 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
                     return false;
                 }
             });
+            studentName = (TextView) itemView.findViewById(R.id.studentName);
+            studentId = (TextView) itemView.findViewById(R.id.studentId);
+            yearOfBirth = (TextView) itemView.findViewById(R.id.yearOfBirth);
+            imgGender = (ImageView) itemView.findViewById(R.id.imgGender);
+            btnaddToClass = (Button) itemView.findViewById(R.id.btnAddToClass);
         }
 
         /**
@@ -154,39 +188,7 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
             new ClassDetailsAdapter().info = menuInfo;
             menu.setHeaderTitle("Select Your Action:");
             menu.add(0, R.id.mnMarking, 0, "Marking");//groupId, itemId, order, title
-            menu.add(0, R.id.mnEdit, 0, "Edit...");
             menu.add(0, R.id.mnDelete, 0, "Delete");
-        }
-
-
-
-    }
-
-    public void refreshData(List<Student> studentList) {
-        this.studentList = studentList;
-    }
-
-    public class ClassDetailsHeaderViewHolder extends ViewHolder {
-        TextView tvClassName;
-        TextView tvClassQuantity;
-        public ClassDetailsHeaderViewHolder(View itemView) {
-            super(itemView);
-            this.tvClassName = (TextView) itemView.findViewById(R.id.tvClassName);
-            this.tvClassQuantity = (TextView) itemView.findViewById(R.id.tvClassQuantity);
-        }
-    }
-
-    public class ClassDetailsInputRowViewHolder extends ViewHolder {
-        TextView studentId, studentName, yearOfBirth;
-        ImageView imgGender;
-        Button btnaddToClass;
-        public ClassDetailsInputRowViewHolder(View itemView) {
-            super(itemView);
-            studentName = (TextView) itemView.findViewById(R.id.studentName);
-            studentId = (TextView) itemView.findViewById(R.id.studentId);
-            yearOfBirth = (TextView) itemView.findViewById(R.id.yearOfBirth);
-            imgGender = (ImageView) itemView.findViewById(R.id.imgGender);
-            btnaddToClass = (Button) itemView.findViewById(R.id.btnAddToClass);
         }
     }
 

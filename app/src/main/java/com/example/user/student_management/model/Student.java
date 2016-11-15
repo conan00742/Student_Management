@@ -24,7 +24,7 @@ public class Student implements Serializable {
     private String studentAddress;
     private String email;
     private boolean isMale;
-    private boolean isChecked = true;
+    private boolean isChecked;
 
     public Student() {
     }

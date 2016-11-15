@@ -2,6 +2,7 @@ package com.example.user.student_management.ui.student_list;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,8 +20,10 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.user.student_management.R;
+import com.example.user.student_management.RecyclerViewClickListener;
 import com.example.user.student_management.db.DatabaseHandler;
 import com.example.user.student_management.model.Student;
+import com.example.user.student_management.ui.home.LoginSuccessActivity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,6 +41,7 @@ public class StudentsListActivity extends AppCompatActivity {
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
 
     DatabaseHandler db;
+    List<Student> studentList;
     private StudentAdapter adapter;
     private AlertDialog addStudentDialog;
     private DatePickerDialog datePickerDialog;
@@ -45,6 +49,7 @@ public class StudentsListActivity extends AppCompatActivity {
     private boolean isChecked;
     private SimpleDateFormat simpleDateFormat;
     private String grade;
+    int pos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +85,7 @@ public class StudentsListActivity extends AppCompatActivity {
     private void setUpRecyclerView(){
         db = new DatabaseHandler(StudentsListActivity.this);
         /**init student list**/
-        List<Student> studentList = db.getStudentList();
+        studentList = db.getStudentList();
 
         /**init recycler view adapter**/
         recyclerView.setHasFixedSize(true);
@@ -140,6 +145,8 @@ public class StudentsListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
+                    Intent i = getIntent();
+                    boolean status = i.getBooleanExtra("buttonStatus",false);
                     /**get Fullname**/
                     String studentName = getEdittextString(edtName);
                     /**get Address**/
@@ -174,7 +181,7 @@ public class StudentsListActivity extends AppCompatActivity {
                         String studentId = "16"+grade+String.valueOf(id).substring(9);
 
                         Student student = new Student(studentId, dateInString, studentName,
-                                studentAddress, studentEmail, _isMale, true);
+                                studentAddress, studentEmail, _isMale, status);
 
                         /**Add to database**/
                         if (db != null) {
@@ -224,6 +231,41 @@ public class StudentsListActivity extends AppCompatActivity {
 
     public boolean isValidEmail(CharSequence target){
         return target != null && Patterns.EMAIL_ADDRESS.matcher(target).matches();
+    }
+
+
+    /**
+     *
+     *
+     * context Menu
+     *
+     *
+     * **/
+    //TODO: MarkingActivity
+    public boolean onContextItemSelected(MenuItem item) {
+
+        adapter.setViewClickListener(new RecyclerViewClickListener() {
+            @Override
+            public void recyclerViewListClicked(int position) {
+                pos = position;
+            }
+        });
+        switch (item.getItemId()) {
+            case R.id.mnDelete:
+                Intent i = new Intent(StudentsListActivity.this, LoginSuccessActivity.class);
+                Student _student = new Student();
+                _student.setStudentId(studentList.get(pos).getStudentId());
+
+                db.deleteStudent(_student);
+                startActivity(i);
+
+
+                /*Toast.makeText(this, "student ID = "+ studentList.get(pos).getStudentId(), Toast.LENGTH_SHORT).show();*/
+                break;
+
+        }
+
+        return super.onContextItemSelected(item);
     }
 
 
