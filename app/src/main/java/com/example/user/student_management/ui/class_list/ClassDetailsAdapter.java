@@ -82,7 +82,7 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
             inputRow.studentId.setText(student.getStudentId());
             inputRow.yearOfBirth.setText(student.getDateOfBirth());
             inputRow.imgGender.setImageResource(student.isMale() ? R.drawable.ic_male : R.drawable.ic_female);
-            inputRow.btnaddToClass.setVisibility(View.GONE);
+            inputRow.btnaddToClass.setVisibility(!student.isChecked() ? View.GONE : View.VISIBLE);
         }
     }
 

@@ -50,6 +50,7 @@ public class ClassDetailsActivity extends AppCompatActivity {
 
     public final static String CLASS_NAME_TAG = "className";
     public final static String CLASS_QUANTITY_TAG = "classQuantity";
+    public final static String BUTTON_STATUS = "status";
     public final static int RREQUEST_CODE_ADD_STUDENT = 1;
     @BindView(R.id.class_details_recycler_view)
     RecyclerView class_details_recycler_view;
@@ -106,6 +107,7 @@ public class ClassDetailsActivity extends AppCompatActivity {
                 Intent intent = new Intent(ClassDetailsActivity.this, StudentsListActivity.class);
                 intent.putExtra(CLASS_NAME_TAG,getIntent().getStringExtra("className"));
                 intent.putExtra(CLASS_QUANTITY_TAG, getIntent().getStringExtra("classQuantity"));
+                intent.putExtra(BUTTON_STATUS, true);
                 startActivityForResult(intent, RREQUEST_CODE_ADD_STUDENT);
                 break;
             case R.id.mnViewMark:

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.user.student_management.R;
 import com.example.user.student_management.other.SessionManager;
+import com.example.user.student_management.ui.class_list.ClassDetailsActivity;
 import com.example.user.student_management.ui.class_list.ClassesListActivity;
 import com.example.user.student_management.ui.student_list.StudentsListActivity;
 
@@ -116,7 +117,7 @@ public class LoginSuccessActivity extends AppCompatActivity {
     @OnClick(R.id.btnViewStudentList)
     public void viewStudentList(){
         Intent i = new Intent(this,StudentsListActivity.class);
-        i.putExtra("buttonStatus", false);
+        i.putExtra(ClassDetailsActivity.BUTTON_STATUS, false);
         startActivity(i);
     }
 

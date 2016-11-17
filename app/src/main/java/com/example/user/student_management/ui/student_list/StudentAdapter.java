@@ -85,6 +85,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHo
             imgGender = (ImageView) itemView.findViewById(R.id.imgGender);
             btnaddToClass = (Button) itemView.findViewById(R.id.btnAddToClass);
 
+
             itemView.setOnClickListener(this);
 
             itemView.setOnCreateContextMenuListener(this);
@@ -105,7 +106,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHo
             studentId.setText(student.getStudentId());
             yearOfBirth.setText(student.getDateOfBirth());
             imgGender.setImageResource(student.isMale() ? R.drawable.ic_male : R.drawable.ic_female);
-            btnaddToClass.setVisibility(!student.isChecked() ? View.VISIBLE : View.GONE);
+            btnaddToClass.setVisibility(!student.isChecked() ? View.GONE : View.VISIBLE);
             btnaddToClass.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
