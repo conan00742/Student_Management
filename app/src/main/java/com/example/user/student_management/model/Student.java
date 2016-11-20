@@ -24,20 +24,20 @@ public class Student implements Serializable {
     private String studentAddress;
     private String email;
     private boolean isMale;
-    private boolean isChecked;
+    private boolean isAddedToClass;
 
     public Student() {
     }
 
     public Student(String studentId, String dateOfBirth, String studentName,
-                   String studentAddress, String email, boolean isMale, boolean isChecked) {
+                   String studentAddress, String email, boolean isMale, boolean isAddToClass) {
         this.studentId = studentId;
         this.dateOfBirth = dateOfBirth;
         this.studentName = studentName;
         this.studentAddress = studentAddress;
         this.email = email;
         this.isMale = isMale;
-        this.isChecked = isChecked;
+        this.isAddedToClass = isAddedToClass;
     }
 
     public static String getInitSql (){
@@ -110,8 +110,12 @@ public class Student implements Serializable {
         isMale = male;
     }
 
-    public boolean isChecked() {
-        return isChecked;
+    public boolean isAddedToClass() {
+        return isAddedToClass;
+    }
+
+    public void setAddedToClass(boolean addedToClass) {
+        isAddedToClass = addedToClass;
     }
 
     @Override
@@ -125,9 +129,7 @@ public class Student implements Serializable {
                 '}';
     }
 
-    public void setChecked(boolean checked) {
-        isChecked = checked;
-    }
+
 
 
 }

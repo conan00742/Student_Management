@@ -1,16 +1,11 @@
 package com.example.user.student_management.ui.class_list;
 
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.Log;
-import android.util.Patterns;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,10 +13,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -35,23 +26,19 @@ import com.example.user.student_management.ui.marking.ViewMarkActivity;
 import com.example.user.student_management.ui.student_list.StudentDetailsActivity;
 import com.example.user.student_management.ui.student_list.StudentsListActivity;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.user.student_management.ui.class_list.ClassDetailsAdapter.HEADER;
-import static com.example.user.student_management.ui.class_list.ClassDetailsAdapter.INPUTROW;
+import static com.example.user.student_management.ui.class_list.StudentInClassAdapter.HEADER;
+import static com.example.user.student_management.ui.class_list.StudentInClassAdapter.INPUTROW;
 
 public class ClassDetailsActivity extends AppCompatActivity implements RecyclerViewClickListener{
 
     public final static String CLASS_NAME_TAG = "className";
     public final static String CLASS_QUANTITY_TAG = "classQuantity";
-    public final static String BUTTON_STATUS = "status";
     public final static int RREQUEST_CODE_ADD_STUDENT = 1;
     @BindView(R.id.class_details_recycler_view)
     RecyclerView class_details_recycler_view;
@@ -69,7 +56,7 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
     Spinner spinnerTypeOfMark;
 
     private AlertDialog markingDialog;
-    ClassDetailsAdapter classDetailsAdapter;
+    StudentInClassAdapter studentInClassAdapter;
     List<Student> studentList = new ArrayList<>();
     int[] mDataViewType = {HEADER,INPUTROW};
     Classes currentClass = new Classes();
@@ -108,7 +95,7 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
                 Intent intent = new Intent(ClassDetailsActivity.this, StudentsListActivity.class);
                 intent.putExtra(CLASS_NAME_TAG,getIntent().getStringExtra("className"));
                 intent.putExtra(CLASS_QUANTITY_TAG, getIntent().getStringExtra("classQuantity"));
-                intent.putExtra(BUTTON_STATUS, true);
+                intent.putExtra(StudentsListActivity.EXTRA_IS_ADD_MODE, true);
                 startActivityForResult(intent, RREQUEST_CODE_ADD_STUDENT);
                 break;
             case R.id.mnViewMark:
@@ -138,14 +125,14 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
         studentList = db.getStudentListById(currentClass.get_name());
 
         class_details_recycler_view.setHasFixedSize(true);
-        classDetailsAdapter = new ClassDetailsAdapter(getApplicationContext(),studentList,mDataViewType,currentClass.get_name(),
+        studentInClassAdapter = new StudentInClassAdapter(getApplicationContext(),studentList,mDataViewType,currentClass.get_name(),
                 currentClass.get_quantity());
-        classDetailsAdapter.setViewClickListener(this);
-        classDetailsAdapter.refreshData(studentList == null ? new ArrayList<Student>() : studentList);
-        classDetailsAdapter.notifyDataSetChanged();
+        studentInClassAdapter.setViewClickListener(this);
+        studentInClassAdapter.refreshData(studentList == null ? new ArrayList<Student>() : studentList);
+        studentInClassAdapter.notifyDataSetChanged();
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         class_details_recycler_view.setLayoutManager(layoutManager);
-        class_details_recycler_view.setAdapter(classDetailsAdapter);
+        class_details_recycler_view.setAdapter(studentInClassAdapter);
     }
 
     private void initMarkingDialog(){
@@ -327,7 +314,7 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
     //TODO: MarkingActivity
     public boolean onContextItemSelected(MenuItem item) {
 
-        classDetailsAdapter.setViewClickListener(new RecyclerViewClickListener() {
+        studentInClassAdapter.setViewClickListener(new RecyclerViewClickListener() {
             @Override
             public void recyclerViewListLongClick(int position) {
 

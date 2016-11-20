@@ -44,6 +44,7 @@ import butterknife.ButterKnife;
 
 public class StudentsListActivity extends AppCompatActivity implements RecyclerViewClickListener{
     private static final String TAG = StudentsListActivity.class.getSimpleName();
+    public static final String EXTRA_IS_ADD_MODE = "EXTRA_IS_ADD_MODE";
 
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
     @BindView(R.id.edtSearch) EditText edtSearch;
@@ -54,7 +55,7 @@ public class StudentsListActivity extends AppCompatActivity implements RecyclerV
     private AlertDialog addStudentDialog;
     private DatePickerDialog datePickerDialog;
     private boolean _isMale = false;
-    private boolean isChecked;
+    private boolean isAddMode;
     private SimpleDateFormat simpleDateFormat;
     private String grade;
     boolean status;
@@ -65,6 +66,9 @@ public class StudentsListActivity extends AppCompatActivity implements RecyclerV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_students_list);
         ButterKnife.bind(this);
+
+        /**getIntent**/
+        isAddMode = getIntent().getBooleanExtra(EXTRA_IS_ADD_MODE, false);
 
         simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
         setUpRecyclerView();
@@ -94,14 +98,18 @@ public class StudentsListActivity extends AppCompatActivity implements RecyclerV
     /**Set up recycler view**/
     private void setUpRecyclerView(){
         db = new DatabaseHandler(StudentsListActivity.this);
-        /**init student list**/
-        studentList = db.getStudentList();
-
+        if (isAddMode) {
+            studentList = db.getStudentListNotInClass();
+        }else {
+            studentList = db.getStudentList();
+        }
         /**init recycler view adapter**/
         recyclerView.setHasFixedSize(true);
 
         //TODO: problem: need to parse student object into adapter
-        adapter = new StudentAdapter();
+        adapter = new StudentAdapter(isAddMode);
+
+
         adapter.setViewClickListener(this);
         adapter.refreshData(studentList == null ? new ArrayList<Student>() : studentList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
@@ -170,9 +178,6 @@ public class StudentsListActivity extends AppCompatActivity implements RecyclerV
 
 
                 try {
-                    /**getIntent**/
-                    Intent i = getIntent();
-                    status = i.getBooleanExtra(ClassDetailsActivity.BUTTON_STATUS, false);
                     if (!TextUtils.isEmpty(studentName) && !TextUtils.isEmpty(studentAddress)
                             && !TextUtils.isEmpty(studentEmail) && !TextUtils.isEmpty(dateInString)
                             && isValidEmail(studentEmail)) {

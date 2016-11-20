@@ -1,31 +1,23 @@
 package com.example.user.student_management.ui.marking;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.InputType;
-import android.widget.Button;
-import android.widget.EditText;
 
 import com.example.user.student_management.R;
-import com.example.user.student_management.db.DatabaseHandler;
 import com.example.user.student_management.model.Classes;
-import com.example.user.student_management.model.Marking;
 import com.example.user.student_management.model.Student;
 import com.example.user.student_management.model.Subject;
-import com.example.user.student_management.ui.home.LoginSuccessActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
-import static com.example.user.student_management.ui.class_list.ClassDetailsAdapter.HEADER;
-import static com.example.user.student_management.ui.class_list.ClassDetailsAdapter.INPUTROW;
+import static com.example.user.student_management.ui.class_list.StudentInClassAdapter.HEADER;
+import static com.example.user.student_management.ui.class_list.StudentInClassAdapter.INPUTROW;
 
 public class MarkingActivity extends AppCompatActivity {
     @BindView(R.id.marking_recycler_view)

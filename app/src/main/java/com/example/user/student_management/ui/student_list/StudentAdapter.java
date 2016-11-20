@@ -21,9 +21,7 @@ import com.example.user.student_management.model.Classes;
 import com.example.user.student_management.model.Student;
 import com.example.user.student_management.R;
 import com.example.user.student_management.ui.class_list.ClassDetailsActivity;
-import com.example.user.student_management.ui.class_list.ClassDetailsAdapter;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,10 +32,12 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHo
     private List<Student> originalStudentList;
     private List<Student> filteredData;
     private Context context;
+    private boolean isShowAddButton;
     RecyclerViewClickListener viewClickListener;
     ContextMenu.ContextMenuInfo info;
 
-    public StudentAdapter() {
+    public StudentAdapter(boolean isShowAddButton) {
+        this.isShowAddButton = isShowAddButton;
         originalStudentList = new ArrayList<>();
         filteredData = new ArrayList<>();
     }
@@ -157,7 +157,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHo
             studentId.setText(student.getStudentId());
             yearOfBirth.setText(student.getDateOfBirth());
             imgGender.setImageResource(student.isMale() ? R.drawable.ic_male : R.drawable.ic_female);
-            btnaddToClass.setVisibility(!student.isChecked() ? View.GONE : View.VISIBLE);
+            btnaddToClass.setVisibility(isShowAddButton ? View.VISIBLE : View.GONE);
             btnaddToClass.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

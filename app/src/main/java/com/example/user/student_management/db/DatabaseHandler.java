@@ -90,7 +90,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 student.setStudentName(cursor.getString(cursor.getColumnIndex(Student.KEY_NAME)));
                 student.setDateOfBirth(cursor.getString(cursor.getColumnIndex(Student.KEY_DATE_OF_BIRTH)));
                 student.setMale(cursor.getInt(cursor.getColumnIndex(Student.KEY_GENDER)) == 1);
-                student.setChecked(false);
+                student.setAddedToClass(false);
                 student.setEmail(cursor.getString(cursor.getColumnIndex(Student.KEY_EMAIL)));
                 student.setStudentAddress(cursor.getString(cursor.getColumnIndex(Student.KEY_ADDRESS)));
                 studentList.add(student);
@@ -99,6 +99,37 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         return studentList;
     }
+
+    /**get Student List**/
+    public List<Student> getStudentListNotInClass(){
+        List<Student> studentList = new ArrayList<>();
+
+        /**Select all query**/
+        String selectQuery = "SELECT * FROM " + Student.TABLE_STUDENTS + " t WHERE NOT EXISTS (SELECT * FROM "+Classes.TABLE_STUDENTS_IN_CLASS +" sc " +
+                "WHERE sc."+ Classes.KEY_STUDENT_ID+" = t."+Student.KEY_ID+")";
+
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery(selectQuery,null);
+
+        /**looping through all rows and adding to list**/
+        if(cursor.moveToFirst()){
+            do{
+                Student student = new Student();
+                student.setStudentId(cursor.getString(cursor.getColumnIndex(Student.KEY_ID)));
+                student.setStudentName(cursor.getString(cursor.getColumnIndex(Student.KEY_NAME)));
+                student.setDateOfBirth(cursor.getString(cursor.getColumnIndex(Student.KEY_DATE_OF_BIRTH)));
+                student.setMale(cursor.getInt(cursor.getColumnIndex(Student.KEY_GENDER)) == 1);
+                student.setAddedToClass(false);
+
+                student.setEmail(cursor.getString(cursor.getColumnIndex(Student.KEY_EMAIL)));
+                student.setStudentAddress(cursor.getString(cursor.getColumnIndex(Student.KEY_ADDRESS)));
+                studentList.add(student);
+            }while(cursor.moveToNext());
+        }
+
+        return studentList;
+    }
+
 
 
     /**get StudentList by ID**/

@@ -1,22 +1,18 @@
 package com.example.user.student_management.ui.class_list;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.user.student_management.R;
 import com.example.user.student_management.RecyclerViewClickListener;
 import com.example.user.student_management.model.Student;
-import com.example.user.student_management.ui.student_list.StudentDetailsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +21,7 @@ import java.util.List;
  * Created by Khiem Ichigo on 10/27/2016.
  */
 
-public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapter.ViewHolder>{
+public class StudentInClassAdapter extends RecyclerView.Adapter<StudentInClassAdapter.ViewHolder>{
     public static final int HEADER = 0;
     public static final int INPUTROW = 1;
 
@@ -37,17 +33,14 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
     private int classQuantity;
     RecyclerViewClickListener viewClickListener;
 
-    public ClassDetailsAdapter(Context context, List<Student> studentList,
-                               int[] mDataViewType, String className, int classQuantity) {
+
+    public StudentInClassAdapter(Context context, List<Student> studentList,
+                                 int[] mDataViewType, String className, int classQuantity) {
         this.context = context;
         this.studentList = studentList;
         this.mDataViewType = mDataViewType;
         this.className = className;
         this.classQuantity = classQuantity;
-    }
-
-    public ClassDetailsAdapter(){
-
     }
 
     public void setViewClickListener(RecyclerViewClickListener viewClickListener) {
@@ -82,7 +75,7 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
             inputRow.studentId.setText(student.getStudentId());
             inputRow.yearOfBirth.setText(student.getDateOfBirth());
             inputRow.imgGender.setImageResource(student.isMale() ? R.drawable.ic_male : R.drawable.ic_female);
-            inputRow.btnaddToClass.setVisibility(!student.isChecked() ? View.GONE : View.VISIBLE);
+            inputRow.btnaddToClass.setVisibility(View.GONE);
         }
     }
 

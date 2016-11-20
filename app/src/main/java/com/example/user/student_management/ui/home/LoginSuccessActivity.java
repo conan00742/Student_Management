@@ -117,7 +117,7 @@ public class LoginSuccessActivity extends AppCompatActivity {
     @OnClick(R.id.btnViewStudentList)
     public void viewStudentList(){
         Intent i = new Intent(this,StudentsListActivity.class);
-        i.putExtra(ClassDetailsActivity.BUTTON_STATUS, false);
+        i.putExtra(StudentsListActivity.EXTRA_IS_ADD_MODE, false);
         startActivity(i);
     }
 
