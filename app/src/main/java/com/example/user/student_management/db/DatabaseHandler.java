@@ -90,6 +90,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 student.setStudentName(cursor.getString(cursor.getColumnIndex(Student.KEY_NAME)));
                 student.setDateOfBirth(cursor.getString(cursor.getColumnIndex(Student.KEY_DATE_OF_BIRTH)));
                 student.setMale(cursor.getInt(cursor.getColumnIndex(Student.KEY_GENDER)) == 1);
+                student.setChecked(false);
                 student.setEmail(cursor.getString(cursor.getColumnIndex(Student.KEY_EMAIL)));
                 student.setStudentAddress(cursor.getString(cursor.getColumnIndex(Student.KEY_ADDRESS)));
                 studentList.add(student);

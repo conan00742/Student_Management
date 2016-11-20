@@ -92,6 +92,8 @@ public class StudentsListActivity extends AppCompatActivity {
 
         /**init recycler view adapter**/
         recyclerView.setHasFixedSize(true);
+
+        //TODO: problem: need to parse student object into adapter
         adapter = new StudentAdapter();
         adapter.refreshData(studentList == null ? new ArrayList<Student>() : studentList);
         adapter.notifyDataSetChanged();
@@ -144,56 +146,53 @@ public class StudentsListActivity extends AppCompatActivity {
             }
         });
 
-        /**get Fullname**/
-        final String studentName = getEdittextString(edtName);
-        /**get Address**/
-        final String studentAddress = getEdittextString(edtAddress);
-        /**get Email**/
-        final String studentEmail = getEdittextString(edtEmail);
-        /**get Date of Birth**/
-        final String dateInString = getEdittextString(edtDoB);
 
-
-        try {
-            /**getIntent**/
-            Intent i = getIntent();
-            status = Boolean.parseBoolean(i.getStringExtra(ClassDetailsActivity.BUTTON_STATUS));
-            if (!TextUtils.isEmpty(studentName) && !TextUtils.isEmpty(studentAddress)
-                    && !TextUtils.isEmpty(studentEmail) && !TextUtils.isEmpty(dateInString)
-                    && isValidEmail(studentEmail)) {
-                /**generate random ID**/
-                long id = System.currentTimeMillis();
-
-                /**get gender from radio button**/
-                int selectedId = groupGender.getCheckedRadioButtonId();
-                _isMale = selectedId == R.id.isMale;
-
-                Calendar selectedCalendar = Calendar.getInstance();
-
-                selectedCalendar.setTime(simpleDateFormat.parse(dateInString));
-
-                if (2016 - selectedCalendar.get(Calendar.YEAR) == 16) {
-                    grade = "10";
-                } else if (2016 - selectedCalendar.get(Calendar.YEAR) == 17) {
-                    grade = "11";
-                } else if (2016 - selectedCalendar.get(Calendar.YEAR) == 18) {
-                    grade = "12";
-                }
-
-                String studentId = "16" + grade + String.valueOf(id).substring(9);
-
-                student = new Student(studentId, dateInString, studentName,
-                        studentAddress, studentEmail, _isMale, status);
-            }
-        }catch (ParseException e) {
-            e.printStackTrace();
-            addStudentDialog.dismiss();
-        }
 
         /**Add button**/
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /**get Fullname**/
+                String studentName = getEdittextString(edtName);
+                /**get Address**/
+                String studentAddress = getEdittextString(edtAddress);
+                /**get Email**/
+                String studentEmail = getEdittextString(edtEmail);
+                /**get Date of Birth**/
+                String dateInString = getEdittextString(edtDoB);
+
+
+                try {
+                    /**getIntent**/
+                    Intent i = getIntent();
+                    status = i.getBooleanExtra(ClassDetailsActivity.BUTTON_STATUS, false);
+                    if (!TextUtils.isEmpty(studentName) && !TextUtils.isEmpty(studentAddress)
+                            && !TextUtils.isEmpty(studentEmail) && !TextUtils.isEmpty(dateInString)
+                            && isValidEmail(studentEmail)) {
+                        /**generate random ID**/
+                        long id = System.currentTimeMillis();
+
+                        /**get gender from radio button**/
+                        int selectedId = groupGender.getCheckedRadioButtonId();
+                        _isMale = selectedId == R.id.isMale;
+
+                        Calendar selectedCalendar = Calendar.getInstance();
+
+                        selectedCalendar.setTime(simpleDateFormat.parse(dateInString));
+
+                        if (2016 - selectedCalendar.get(Calendar.YEAR) == 16) {
+                            grade = "10";
+                        } else if (2016 - selectedCalendar.get(Calendar.YEAR) == 17) {
+                            grade = "11";
+                        } else if (2016 - selectedCalendar.get(Calendar.YEAR) == 18) {
+                            grade = "12";
+                        }
+
+                        String studentId = "16" + grade + String.valueOf(id).substring(9);
+
+                        student = new Student(studentId, dateInString, studentName,
+                                studentAddress, studentEmail, _isMale, status);
+
                         /**Add to database**/
                         if (db != null) {
                             db.addNewStudent(student);
@@ -214,6 +213,12 @@ public class StudentsListActivity extends AppCompatActivity {
                             Toast.makeText(StudentsListActivity.this, "Something went wrong. Please correct!", Toast.LENGTH_SHORT).show();
                         }
                         addStudentDialog.dismiss();
+                    }
+                }catch (ParseException e) {
+                    e.printStackTrace();
+                    addStudentDialog.dismiss();
+                }
+
 
                     }
 
