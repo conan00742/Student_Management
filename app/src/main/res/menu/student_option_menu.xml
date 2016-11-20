@@ -4,9 +4,10 @@
     <item
         android:id="@+id/mnSearch"
         android:title="Search"
+        android:hint="@string/search_hint"
         android:icon="@android:drawable/ic_menu_search"
-        app:showAsAction="always|collapseActionView"
-        android:actionViewClass="android.support.v7.widget.SearchView">
+        app:showAsAction="collapseActionView|ifRoom"
+        app:actionViewClass="android.support.v7.widget.SearchView">
     </item>
 
 

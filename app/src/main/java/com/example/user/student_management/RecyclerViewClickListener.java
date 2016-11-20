@@ -5,5 +5,6 @@ package com.example.user.student_management;
  */
 
 public interface RecyclerViewClickListener {
-   void recyclerViewListClicked(int position);
+   void recyclerViewListLongClick(int position);
+   void recyclerViewListClick(int position);
 }

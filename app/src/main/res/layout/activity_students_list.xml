@@ -10,7 +10,14 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ui.student_list.StudentsListActivity">
 
+    <EditText
+        android:id="@+id/edtSearch"
+        android:hint="Search Student Name ...."
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <android.support.v7.widget.RecyclerView
+        android:layout_below="@id/edtSearch"
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

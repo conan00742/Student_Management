@@ -28,7 +28,17 @@
             android:label="@string/class_list_title" />
         <activity
             android:name=".ui.student_list.StudentsListActivity"
-            android:label="@string/student_list_title" />
+            android:launchMode="singleTop"
+            android:label="@string/student_list_title">
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH"/>
+            </intent-filter>
+
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
+
+        </activity>
         <activity
             android:name=".ui.class_list.ClassDetailsActivity"
             android:label="@string/class_details_title" />

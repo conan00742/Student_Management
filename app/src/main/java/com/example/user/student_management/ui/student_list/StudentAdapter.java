@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,16 +30,17 @@ import java.util.List;
 /**
  * Created by USER on 10/11/2016.
  */
-public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHolder>{
-    private List<Student> studentList;
+public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHolder> implements Filterable{
+    private List<Student> originalStudentList;
+    private List<Student> filteredData;
     private Context context;
     RecyclerViewClickListener viewClickListener;
     ContextMenu.ContextMenuInfo info;
 
     public StudentAdapter() {
-        studentList = new ArrayList<>();
+        originalStudentList = new ArrayList<>();
+        filteredData = new ArrayList<>();
     }
-
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -47,7 +51,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        Student student = studentList.get(position);
+        Student student = filteredData.get(position);
         holder.bindData(student);
     }
 
@@ -58,18 +62,59 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHo
 
     @Override
     public int getItemCount() {
-        return studentList.size();
+        return filteredData.size();
     }
 
+
+    public Student getItemAtPosition(int position) {
+        if (position >=0 && filteredData!= null ) {
+        return filteredData.get(position);}
+        else {
+            return null;
+        }
+    }
 
     public void refreshData(List<Student> studentList) {
-        this.studentList = studentList;
+        this.originalStudentList = studentList;
+        filteredData = originalStudentList;
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults filterResults = new FilterResults();
+
+                if(TextUtils.isEmpty(constraint.toString().trim())){
+                    filterResults.values = originalStudentList;
+                    filterResults.count = originalStudentList.size();
+                }else{
+                    List<Student> filterResultsData = new ArrayList<>();
+                    for(Student student : originalStudentList){
+                        if(student.getStudentName().toLowerCase().contains(constraint.toString().toLowerCase())){
+                            filterResultsData.add(student);
+                        }
+                    }
+
+                    filterResults.values = filterResultsData;
+                    filterResults.count = filterResultsData.size();
+                }
+
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                filteredData = (List<Student>) results.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 
 
-
-    public class MyViewHolder extends RecyclerView.ViewHolder implements
-            View.OnClickListener, View.OnCreateContextMenuListener {
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView studentId, studentName, yearOfBirth;
         private ImageView imgGender;
         private Button btnaddToClass;
@@ -86,15 +131,21 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHo
             btnaddToClass = (Button) itemView.findViewById(R.id.btnAddToClass);
 
 
-            itemView.setOnClickListener(this);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(viewClickListener != null) {
+                        viewClickListener.recyclerViewListClick(getLayoutPosition());
+                    }
+                }
+            });
 
-            itemView.setOnCreateContextMenuListener(this);
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     if(viewClickListener != null){
-                        viewClickListener.recyclerViewListClicked(getLayoutPosition());
+                        viewClickListener.recyclerViewListLongClick(getLayoutPosition());
                     }
                     return false;
                 }
@@ -119,7 +170,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHo
                     /**put the list, className & classQuantity back to the ClassDetailsActivity**/
                     Classes _class = new Classes(className,Integer.parseInt(classQuantity));
                     DatabaseHandler db = new DatabaseHandler(context);
-                    db.addStudentToClass(_class,studentList,getAdapterPosition());
+                    db.addStudentToClass(_class,filteredData,getAdapterPosition());
 
 
                     i.putExtra(ClassDetailsActivity.CLASS_NAME_TAG, className);
@@ -132,27 +183,6 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHo
 
         }
 
-        @Override
-        public void onClick(View v) {
-            DatabaseHandler db = new DatabaseHandler(context);
-            Intent intent = new Intent(context, StudentDetailsActivity.class);
-            intent.putExtra("_studentID",studentList.get(getLayoutPosition()).getStudentId());
-            intent.putExtra("_studentName", studentList.get(getLayoutPosition()).getStudentName());
-            intent.putExtra("_studentYearOfBirth", studentList.get(getLayoutPosition()).getDateOfBirth());
-            intent.putExtra("_studentAddress", studentList.get(getLayoutPosition()).getStudentAddress());
-            intent.putExtra("_studentEmail", studentList.get(getLayoutPosition()).getEmail());
-            intent.putExtra("_studentGender" , String.valueOf(studentList.get(getLayoutPosition()).isMale()));
-            intent.putExtra("_studentClass", db.getClassNameByStudentId(studentList.get(getLayoutPosition()).getStudentId()));
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
-        }
-
-        @Override
-        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            new StudentAdapter().info = menuInfo;
-            menu.setHeaderTitle("Select Your Action:");
-            menu.add(0, R.id.mnDelete, 0, "Delete");
-        }
     }
 
 }

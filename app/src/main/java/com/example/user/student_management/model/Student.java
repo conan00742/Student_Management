@@ -114,7 +114,20 @@ public class Student implements Serializable {
         return isChecked;
     }
 
+    @Override
+    public String toString() {
+        return "Student{" +
+                "studentId='" + studentId + '\'' +
+                ", studentName='" + studentName + '\'' +
+                ", studentAddress='" + studentAddress + '\'' +
+                ", email='" + email + '\'' +
+                ", isMale=" + isMale +
+                '}';
+    }
+
     public void setChecked(boolean checked) {
         isChecked = checked;
     }
+
+
 }

@@ -2,12 +2,18 @@ package com.example.user.student_management.ui.student_list;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,10 +42,11 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class StudentsListActivity extends AppCompatActivity {
+public class StudentsListActivity extends AppCompatActivity implements RecyclerViewClickListener{
     private static final String TAG = StudentsListActivity.class.getSimpleName();
 
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
+    @BindView(R.id.edtSearch) EditText edtSearch;
 
     DatabaseHandler db;
     List<Student> studentList;
@@ -50,7 +57,6 @@ public class StudentsListActivity extends AppCompatActivity {
     private boolean isChecked;
     private SimpleDateFormat simpleDateFormat;
     private String grade;
-    int pos;
     boolean status;
     Student student;
 
@@ -63,12 +69,13 @@ public class StudentsListActivity extends AppCompatActivity {
         simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
         setUpRecyclerView();
         initAddStudentDialog();
+        initSearchStudentListener();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.student_option_menu,menu);
-        return super.onCreateOptionsMenu(menu);
+        return true;
     }
 
     @Override
@@ -95,8 +102,8 @@ public class StudentsListActivity extends AppCompatActivity {
 
         //TODO: problem: need to parse student object into adapter
         adapter = new StudentAdapter();
+        adapter.setViewClickListener(this);
         adapter.refreshData(studentList == null ? new ArrayList<Student>() : studentList);
-        adapter.notifyDataSetChanged();
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
@@ -200,7 +207,6 @@ public class StudentsListActivity extends AppCompatActivity {
                             /**get studentList from db and show in recyclerview**/
                             List<Student> studentList = db.getStudentList();
                             adapter.refreshData(studentList);
-                            adapter.notifyDataSetChanged();
 
                             /**set dialog edit text to null**/
                             edtName.setText(null);
@@ -248,41 +254,58 @@ public class StudentsListActivity extends AppCompatActivity {
     }
 
 
-    /**
-     *
-     *
-     * context Menu
-     *
-     *
-     * **/
-    //TODO: MarkingActivity
-    public boolean onContextItemSelected(MenuItem item) {
-
-        adapter.setViewClickListener(new RecyclerViewClickListener() {
+    //TODO: Search Student
+    public void initSearchStudentListener(){
+        edtSearch.addTextChangedListener(new TextWatcher() {
             @Override
-            public void recyclerViewListClicked(int position) {
-                pos = position;
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                StudentsListActivity.this.adapter.getFilter().filter(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
-        switch (item.getItemId()) {
-            case R.id.mnDelete:
-                Intent i = new Intent(StudentsListActivity.this, LoginSuccessActivity.class);
-                Student _student = new Student();
-                _student.setStudentId(studentList.get(pos).getStudentId());
-
-                db.deleteStudent(_student);
-                startActivity(i);
-
-
-                /*Toast.makeText(this, "student ID = "+ studentList.get(pos).getStudentId(), Toast.LENGTH_SHORT).show();*/
-                break;
-
-        }
-
-        return super.onContextItemSelected(item);
     }
 
+    @Override
+    public void recyclerViewListLongClick(int position) {
+        //TODO: implement alert dialog to have an option DELETE
+        Student _student = adapter.getItemAtPosition(position);
+        if(_student != null){
+            if(db.deleteStudent(_student) != -1){
+                Log.i("deleteStudent",_student.toString());
+                studentList.remove(_student);
+                adapter.refreshData(studentList);
+            }
+        }
 
-    //TODO: Search Student
+    }
 
+    @Override
+    public void recyclerViewListClick(int position) {
+        DatabaseHandler db = new DatabaseHandler(this);
+        Intent intent = new Intent(this, StudentDetailsActivity.class);
+
+        Student student = adapter.getItemAtPosition(position);
+
+        if(student != null){
+            intent.putExtra("_studentID",student.getStudentId());
+            intent.putExtra("_studentName", student.getStudentName());
+            intent.putExtra("_studentYearOfBirth", student.getDateOfBirth());
+            intent.putExtra("_studentAddress",student.getStudentAddress());
+            intent.putExtra("_studentEmail", student.getEmail());
+            intent.putExtra("_studentGender" , String.valueOf(student.isMale()));
+            intent.putExtra("_studentClass", db.getClassNameByStudentId(student.getStudentId()));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+
+    }
 }

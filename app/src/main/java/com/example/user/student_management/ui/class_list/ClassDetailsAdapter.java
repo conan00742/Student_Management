@@ -133,20 +133,17 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
         }
     }
 
-    public class ClassDetailsInputRowViewHolder extends ViewHolder implements View.OnClickListener,
-            View.OnCreateContextMenuListener{
+    public class ClassDetailsInputRowViewHolder extends ViewHolder{
         TextView studentId, studentName, yearOfBirth;
         ImageView imgGender;
         Button btnaddToClass;
         public ClassDetailsInputRowViewHolder(View itemView) {
             super(itemView);
-            itemView.setOnClickListener(this);
-            itemView.setOnCreateContextMenuListener(this);
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     if(viewClickListener != null){
-                        viewClickListener.recyclerViewListClicked(getAdapterPosition());
+                        viewClickListener.recyclerViewListLongClick(getAdapterPosition());
                     }
                     return false;
                 }
@@ -158,38 +155,7 @@ public class ClassDetailsAdapter extends RecyclerView.Adapter<ClassDetailsAdapte
             btnaddToClass = (Button) itemView.findViewById(R.id.btnAddToClass);
         }
 
-        /**
-         *
-         * StudentDetails
-         *
-         * **/
-        @Override
-        public void onClick(View v) {
 
-            Intent intent = new Intent(context, StudentDetailsActivity.class);
-            intent.putExtra("_studentID",studentList.get(getLayoutPosition() - 1).getStudentId());
-            intent.putExtra("_studentName", studentList.get(getLayoutPosition() - 1).getStudentName());
-            intent.putExtra("_studentYearOfBirth", studentList.get(getLayoutPosition() - 1).getDateOfBirth());
-            intent.putExtra("_studentAddress", studentList.get(getLayoutPosition() - 1).getStudentAddress());
-            intent.putExtra("_studentEmail", studentList.get(getLayoutPosition() - 1).getEmail());
-            intent.putExtra("_studentGender" , String.valueOf(studentList.get(getLayoutPosition() - 1).isMale()));
-            intent.putExtra("_studentClass", className);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
-        }
-
-        /**
-         *
-         * ContextMenu
-         *
-         * **/
-        @Override
-        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            new ClassDetailsAdapter().info = menuInfo;
-            menu.setHeaderTitle("Select Your Action:");
-            menu.add(0, R.id.mnMarking, 0, "Marking");//groupId, itemId, order, title
-            menu.add(0, R.id.mnDelete, 0, "Delete");
-        }
     }
 
 }

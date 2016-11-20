@@ -24,4 +24,5 @@
     <string name="str_cnt_mnu_delete">Delete</string>
 
     <string name="student_details">Student Details</string>
+    <string name="search_hint">Search Student</string>
 </resources>

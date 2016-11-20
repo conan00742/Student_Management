@@ -437,11 +437,36 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * DELETE STUDENT
      *
      * **/
-    public void deleteStudent(Student student){
+    public int deleteStudent(Student student){
+        int result = -1;
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(Student.TABLE_STUDENTS, Classes.KEY_STUDENT_ID + " = ?",
+        result = db.delete(Student.TABLE_STUDENTS, Classes.KEY_STUDENT_ID + " = ?",
                 new String[] {student.getStudentId()});
         db.close();
+        return result;
+    }
+
+
+
+    /**
+     *
+     *
+     * SEARCH STUDENT
+     *
+     * **/
+    public Cursor searchStudentByName(String studentName){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM "+Student.TABLE_STUDENTS+" WHERE "+Student.KEY_NAME+" LIKE '%"+studentName+"%'";
+        Cursor cursor = db.rawQuery(query,null);
+        if (cursor == null) {
+            return null;
+        } else if (!cursor.moveToFirst()) {
+            cursor.close();
+            return null;
+        }
+        return cursor;
+
     }
 
 }

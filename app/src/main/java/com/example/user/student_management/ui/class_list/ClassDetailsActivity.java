@@ -32,6 +32,7 @@ import com.example.user.student_management.model.Classes;
 import com.example.user.student_management.model.Student;
 import com.example.user.student_management.ui.marking.MarkingActivity;
 import com.example.user.student_management.ui.marking.ViewMarkActivity;
+import com.example.user.student_management.ui.student_list.StudentDetailsActivity;
 import com.example.user.student_management.ui.student_list.StudentsListActivity;
 
 import java.text.ParseException;
@@ -46,7 +47,7 @@ import butterknife.ButterKnife;
 import static com.example.user.student_management.ui.class_list.ClassDetailsAdapter.HEADER;
 import static com.example.user.student_management.ui.class_list.ClassDetailsAdapter.INPUTROW;
 
-public class ClassDetailsActivity extends AppCompatActivity {
+public class ClassDetailsActivity extends AppCompatActivity implements RecyclerViewClickListener{
 
     public final static String CLASS_NAME_TAG = "className";
     public final static String CLASS_QUANTITY_TAG = "classQuantity";
@@ -139,6 +140,7 @@ public class ClassDetailsActivity extends AppCompatActivity {
         class_details_recycler_view.setHasFixedSize(true);
         classDetailsAdapter = new ClassDetailsAdapter(getApplicationContext(),studentList,mDataViewType,currentClass.get_name(),
                 currentClass.get_quantity());
+        classDetailsAdapter.setViewClickListener(this);
         classDetailsAdapter.refreshData(studentList == null ? new ArrayList<Student>() : studentList);
         classDetailsAdapter.notifyDataSetChanged();
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
@@ -327,8 +329,13 @@ public class ClassDetailsActivity extends AppCompatActivity {
 
         classDetailsAdapter.setViewClickListener(new RecyclerViewClickListener() {
             @Override
-            public void recyclerViewListClicked(int position) {
-                pos = position-1;
+            public void recyclerViewListLongClick(int position) {
+
+            }
+
+            @Override
+            public void recyclerViewListClick(int position) {
+
             }
         });
         switch (item.getItemId()) {
@@ -351,6 +358,23 @@ public class ClassDetailsActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void recyclerViewListLongClick(int position) {
 
+    }
 
+    @Override
+    public void recyclerViewListClick(int position) {
+        Intent intent = new Intent(ClassDetailsActivity.this, StudentDetailsActivity.class);
+        Student _student = studentList.get(position);
+        intent.putExtra("_studentID",_student.getStudentId());
+        intent.putExtra("_studentName", _student.getStudentName());
+        intent.putExtra("_studentYearOfBirth", _student.getDateOfBirth());
+        intent.putExtra("_studentAddress", _student.getStudentAddress());
+        intent.putExtra("_studentEmail", _student.getEmail());
+        intent.putExtra("_studentGender" , String.valueOf(_student.isMale()));
+        intent.putExtra("_studentClass", currentClass.get_name());
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
 }
