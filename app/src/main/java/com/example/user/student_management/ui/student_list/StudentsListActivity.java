@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,6 +24,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.student_management.R;
@@ -61,11 +63,14 @@ public class StudentsListActivity extends AppCompatActivity implements RecyclerV
     boolean status;
     Student student;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_students_list);
         ButterKnife.bind(this);
+
+
 
         /**getIntent**/
         isAddMode = getIntent().getBooleanExtra(EXTRA_IS_ADD_MODE, false);
@@ -134,6 +139,8 @@ public class StudentsListActivity extends AppCompatActivity implements RecyclerV
         final EditText edtEmail = (EditText) dialogView.findViewById(R.id.edtEmail);
         final RadioGroup groupGender = (RadioGroup) dialogView.findViewById(R.id.groupGender);
         groupGender.check(R.id.isMale);
+
+
 
         Button btnCancel = (Button) dialogView.findViewById(R.id.btnCancel);
         Button btnAdd = (Button) dialogView.findViewById(R.id.btnAdd);

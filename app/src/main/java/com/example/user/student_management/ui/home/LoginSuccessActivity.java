@@ -3,6 +3,7 @@ package com.example.user.student_management.ui.home;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -27,6 +28,8 @@ public class LoginSuccessActivity extends AppCompatActivity {
     @BindView(R.id.tvUsername) TextView tvUsername;
     @BindView(R.id.btnViewStudentList) Button btnViewStudentList;
     @BindView(R.id.btnViewClassList) Button btnViewClassList;
+    @BindView(R.id.tvActions) TextView tvAction;
+    @BindView(R.id.tvWelcome) TextView tvWelcome;
 
     SessionManager session;
 
@@ -55,10 +58,14 @@ public class LoginSuccessActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_success);
         ButterKnife.bind(this);
+        Typeface typeFace= Typeface.createFromAsset(getAssets(),"CoolDots.ttf");
+        tvWelcome.setTypeface(typeFace);
+        tvAction.setTypeface(typeFace);
+
 
         session = new SessionManager(getApplicationContext());
 
-        /*Toast.makeText(LoginSuccessActivity.this, "User Login Status: " + session.isLoggedIn(), Toast.LENGTH_LONG).show();*/
+
 
         /**
          * Call this function whenever you want to check user login
@@ -73,7 +80,6 @@ public class LoginSuccessActivity extends AppCompatActivity {
         if(user != null && user.containsKey(SessionManager.KEY_EMAIL)){
             /**get Email from SessionManager**/
             String email = user.get(SessionManager.KEY_EMAIL);
-
             /**and set it into the EditText**/
             tvUsername.setText(email);
         }

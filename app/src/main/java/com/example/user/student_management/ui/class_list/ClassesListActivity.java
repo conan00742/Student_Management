@@ -2,6 +2,7 @@ package com.example.user.student_management.ui.class_list;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.student_management.RecyclerViewClickListener;
@@ -34,6 +36,8 @@ import butterknife.ButterKnife;
 public class ClassesListActivity extends AppCompatActivity {
     @BindView(R.id.class_recycler_view)
     RecyclerView classRecyclerView;
+    @BindView(R.id.tvTitle)
+    TextView tvTitle;
 
     private ClassAdapter adapter;
     private List<String> grades;
@@ -51,6 +55,10 @@ public class ClassesListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_classes_list);
 
         ButterKnife.bind(this);
+
+
+        Typeface typeFace= Typeface.createFromAsset(getAssets(),"CoolDots.ttf");
+        tvTitle.setTypeface(typeFace);
 
         initAddClassDialog();
         spinnerClass();
@@ -237,17 +245,17 @@ public class ClassesListActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //If Grade 10 is selected
-                if(position == 1){
+                if(position == 0){
                     classList = db.getClassesListByGrade(10);
                     initView();
                 }
                 //If Grade 11 is selected
-                else if(position == 2){
+                else if(position == 1){
                     classList = db.getClassesListByGrade(11);
                     initView();
                 }
                 //If Grade 12 is selected
-                else if(position == 3){
+                else if(position == 2){
                     classList = db.getClassesListByGrade(12);
                     initView();
                 }
@@ -285,7 +293,6 @@ public class ClassesListActivity extends AppCompatActivity {
 
     public void initGrades(){
         grades = new ArrayList<String>();
-        grades.add("---Grade---");
         grades.add("10");
         grades.add("11");
         grades.add("12");
