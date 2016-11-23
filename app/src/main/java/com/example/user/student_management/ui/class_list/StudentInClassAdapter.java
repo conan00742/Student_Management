@@ -2,14 +2,18 @@ package com.example.user.student_management.ui.class_list;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.user.student_management.MarkingClickListener;
 import com.example.user.student_management.R;
 import com.example.user.student_management.RecyclerViewClickListener;
 import com.example.user.student_management.model.Student;
@@ -21,17 +25,18 @@ import java.util.List;
  * Created by Khiem Ichigo on 10/27/2016.
  */
 
-public class StudentInClassAdapter extends RecyclerView.Adapter<StudentInClassAdapter.ViewHolder>{
+public class StudentInClassAdapter extends RecyclerView.Adapter<StudentInClassAdapter.ViewHolder> implements Filterable{
     public static final int HEADER = 0;
     public static final int INPUTROW = 1;
 
     Context context;
-    ContextMenu.ContextMenuInfo info;
     private List<Student> studentList = new ArrayList<>();
+    private List<Student> filteredData;
     private int[] mDataViewType;
     private String className;
     private int classQuantity;
     RecyclerViewClickListener viewClickListener;
+    MarkingClickListener markingClickListener;
 
 
     public StudentInClassAdapter(Context context, List<Student> studentList,
@@ -41,10 +46,15 @@ public class StudentInClassAdapter extends RecyclerView.Adapter<StudentInClassAd
         this.mDataViewType = mDataViewType;
         this.className = className;
         this.classQuantity = classQuantity;
+        filteredData = new ArrayList<>();
     }
 
     public void setViewClickListener(RecyclerViewClickListener viewClickListener) {
         this.viewClickListener = viewClickListener;
+    }
+
+    public void setMarkingClickListener(MarkingClickListener markingClickListener) {
+        this.markingClickListener = markingClickListener;
     }
 
     @Override
@@ -69,24 +79,73 @@ public class StudentInClassAdapter extends RecyclerView.Adapter<StudentInClassAd
             header.tvClassQuantity.setText(String.format(context.getString(R.string.class_details_quantity),""+classQuantity));
 
         } else if(holder.getItemViewType() == INPUTROW){
-            Student student = studentList.get(position - 1);
+            Student student = filteredData.get(position - 1);
             ClassDetailsInputRowViewHolder inputRow = (ClassDetailsInputRowViewHolder) holder;
             inputRow.studentName.setText(student.getStudentName());
             inputRow.studentId.setText(student.getStudentId());
             inputRow.yearOfBirth.setText(student.getDateOfBirth());
             inputRow.imgGender.setImageResource(student.isMale() ? R.drawable.ic_male : R.drawable.ic_female);
             inputRow.btnaddToClass.setVisibility(View.GONE);
+            inputRow.btnMarking.setVisibility(View.VISIBLE);
         }
+    }
+
+
+    public Student getItemAtPosition(int position) {
+        if (position >=0 && filteredData!= null ) {
+            return filteredData.get(position);}
+        else {
+            return null;
+        }
+        /*if(position >= 0 && studentList != null){
+            return studentList.get(position);
+        }else{
+            return null;
+        }*/
     }
 
     @Override
     public int getItemCount() {
-        return studentList.size() + 1;
+        return filteredData.size() + 1;
     }
 
     @Override
     public int getItemViewType(int position) {
         return position == 0 ? HEADER : INPUTROW;
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults filterResults = new FilterResults();
+
+                if(TextUtils.isEmpty(constraint.toString().trim())){
+                    filterResults.values = studentList;
+                    filterResults.count = studentList.size();
+                }else{
+                    List<Student> filterResultsData = new ArrayList<>();
+                    for(Student student : studentList){
+                        if(student.getStudentName().toLowerCase().contains(constraint.toString().toLowerCase())){
+                            filterResultsData.add(student);
+                        }
+                    }
+
+                    filterResults.values = filterResultsData;
+                    filterResults.count = filterResultsData.size();
+
+                }
+
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                filteredData = (List<Student>) results.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 
 
@@ -104,6 +163,7 @@ public class StudentInClassAdapter extends RecyclerView.Adapter<StudentInClassAd
         public ViewHolder(View itemView) {
             super(itemView);
 
+
         }
 
 
@@ -114,6 +174,8 @@ public class StudentInClassAdapter extends RecyclerView.Adapter<StudentInClassAd
 
     public void refreshData(List<Student> studentList) {
         this.studentList = studentList;
+        filteredData = this.studentList;
+        notifyDataSetChanged();
     }
 
     public class ClassDetailsHeaderViewHolder extends ViewHolder {
@@ -129,9 +191,22 @@ public class StudentInClassAdapter extends RecyclerView.Adapter<StudentInClassAd
     public class ClassDetailsInputRowViewHolder extends ViewHolder{
         TextView studentId, studentName, yearOfBirth;
         ImageView imgGender;
-        Button btnaddToClass;
+        Button btnaddToClass,btnMarking;
         public ClassDetailsInputRowViewHolder(View itemView) {
             super(itemView);
+
+
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(viewClickListener != null){
+                        viewClickListener.recyclerViewListClick(getLayoutPosition() - 1);
+                    }
+                }
+            });
+
+
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -146,6 +221,16 @@ public class StudentInClassAdapter extends RecyclerView.Adapter<StudentInClassAd
             yearOfBirth = (TextView) itemView.findViewById(R.id.yearOfBirth);
             imgGender = (ImageView) itemView.findViewById(R.id.imgGender);
             btnaddToClass = (Button) itemView.findViewById(R.id.btnAddToClass);
+            btnMarking = (Button) itemView.findViewById(R.id.btnMarking);
+
+            btnMarking.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(markingClickListener != null){
+                        markingClickListener.recyclerViewButtonClickListener(getLayoutPosition());
+                    }
+                }
+            });
         }
 
 

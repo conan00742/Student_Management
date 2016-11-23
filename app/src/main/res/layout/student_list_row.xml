@@ -53,6 +53,16 @@
         android:text="ADD"
         android:fontFamily="cursive" />
 
+    <Button
+        android:id="@+id/btnMarking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/imgGender"
+        android:visibility="invisible"
+        android:text="MARKING"
+        android:fontFamily="cursive" />
+
     <TextView
         android:id="@+id/studentId"
         android:textColor="@color/student_id"

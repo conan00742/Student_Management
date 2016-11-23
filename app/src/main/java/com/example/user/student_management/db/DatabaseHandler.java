@@ -455,11 +455,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * DELETE STUDENT FROM CLASS
      *
      * **/
-    public void deleteStudentFromClass(Student student){
+    public int deleteStudentFromClass(Student student){
+        int result = -1;
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(Classes.TABLE_STUDENTS_IN_CLASS, Classes.KEY_STUDENT_ID + " = ?",
+        result = db.delete(Classes.TABLE_STUDENTS_IN_CLASS, Classes.KEY_STUDENT_ID + " = ?",
                 new String[] {student.getStudentId()});
         db.close();
+        return result;
     }
 
 

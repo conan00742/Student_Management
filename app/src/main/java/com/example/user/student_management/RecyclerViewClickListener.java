@@ -7,4 +7,5 @@ package com.example.user.student_management;
 public interface RecyclerViewClickListener {
    void recyclerViewListLongClick(int position);
    void recyclerViewListClick(int position);
+
 }

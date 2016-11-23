@@ -1,11 +1,15 @@
 package com.example.user.student_management.ui.class_list;
 
 import android.app.AlertDialog;
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,13 +17,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.user.student_management.MarkingClickListener;
 import com.example.user.student_management.R;
 import com.example.user.student_management.RecyclerViewClickListener;
 import com.example.user.student_management.db.DatabaseHandler;
 import com.example.user.student_management.model.Classes;
+import com.example.user.student_management.model.Marking;
 import com.example.user.student_management.model.Student;
 import com.example.user.student_management.ui.marking.MarkingActivity;
 import com.example.user.student_management.ui.marking.ViewMarkActivity;
@@ -31,18 +38,18 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.example.user.student_management.ui.class_list.StudentInClassAdapter.HEADER;
 import static com.example.user.student_management.ui.class_list.StudentInClassAdapter.INPUTROW;
 
-public class ClassDetailsActivity extends AppCompatActivity implements RecyclerViewClickListener{
+public class ClassDetailsActivity extends AppCompatActivity implements RecyclerViewClickListener, MarkingClickListener{
 
     public final static String CLASS_NAME_TAG = "className";
     public final static String CLASS_QUANTITY_TAG = "classQuantity";
     public final static int RREQUEST_CODE_ADD_STUDENT = 1;
     @BindView(R.id.class_details_recycler_view)
     RecyclerView class_details_recycler_view;
-
 
     Button btnOk;
     Button btnMarkingCancel;
@@ -83,7 +90,28 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.class_details_option_menu,menu);
-        return super.onCreateOptionsMenu(menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.mnSearchStudentInClass).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                ClassDetailsActivity.this.studentInClassAdapter.getFilter().filter(query);
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                ClassDetailsActivity.this.studentInClassAdapter.getFilter().filter(newText);
+
+                return false;
+            }
+        });
+
+        return true;
     }
 
 
@@ -128,8 +156,8 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
         studentInClassAdapter = new StudentInClassAdapter(getApplicationContext(),studentList,mDataViewType,currentClass.get_name(),
                 currentClass.get_quantity());
         studentInClassAdapter.setViewClickListener(this);
+        studentInClassAdapter.setMarkingClickListener(this);
         studentInClassAdapter.refreshData(studentList == null ? new ArrayList<Student>() : studentList);
-        studentInClassAdapter.notifyDataSetChanged();
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         class_details_recycler_view.setLayoutManager(layoutManager);
         class_details_recycler_view.setAdapter(studentInClassAdapter);
@@ -138,17 +166,20 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
     private void initMarkingDialog(){
         /**Init Layout inside Dialog**/
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ClassDetailsActivity.this);
-        LayoutInflater inflater = this.getLayoutInflater();
+        LayoutInflater inflater = ClassDetailsActivity.this.getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.dialog_marking, null);
         dialogBuilder.setView(dialogView);
 
         initSpinner(dialogView);
 
+        final EditText edtMarkValue = (EditText) dialogView.findViewById(R.id.edtMarkValue);
+
         btnOk = (Button) dialogView.findViewById(R.id.btnOk);
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(ClassDetailsActivity.this, MarkingActivity.class);
+                String mark = edtMarkValue.getText().toString();
+                /*Intent i = new Intent(ClassDetailsActivity.this, MarkingActivity.class);
                 i.putExtra("semester",semester);
                 i.putExtra("subject",subject);
                 i.putExtra("markType",markType);
@@ -156,7 +187,15 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
                 i.putExtra("classQuantityForMarking",getIntent().getStringExtra("classQuantity"));
                 i.putExtra("studentIDForMarking",studentList.get(pos).getStudentId());
                 i.putExtra("studentNameForMarking",studentList.get(pos).getStudentName());
-                startActivity(i);
+                startActivity(i);*/
+                Toast.makeText(ClassDetailsActivity.this, "Semester = "+ semester
+                        +" Subject = "+ subject
+                        +" Type Of Mark = "+ markType
+                        +" className = "+ getIntent().getStringExtra("className")
+                        +" classQuantity = "+ getIntent().getStringExtra("classQuantity")
+                        +" studentId = "+ studentList.get(pos).getStudentId()
+                        +" studentName = "+ studentList.get(pos).getStudentName()
+                        +" mark = "+ mark, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -169,7 +208,7 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
         });
 
         markingDialog = dialogBuilder.create();
-
+        markingDialog.show();
 
     }
 
@@ -183,11 +222,9 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
         spinnerSemester.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 1) {
-                    Toast.makeText(ClassDetailsActivity.this, "1", Toast.LENGTH_SHORT).show();
+                if (position == 0) {
                     semester = parent.getItemAtPosition(position).toString();
-                } else if (position == 2) {
-                    Toast.makeText(ClassDetailsActivity.this, "2", Toast.LENGTH_SHORT).show();
+                } else if (position == 1) {
                     semester = parent.getItemAtPosition(position).toString();
                 }
             }
@@ -202,6 +239,8 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position){
+                    case 0:
+                        break;
                     case 1:
                         break;
                     case 2:
@@ -218,8 +257,6 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
                         break;
                     case 8:
                         break;
-                    case 9:
-                        break;
                 }
                 subject = parent.getItemAtPosition(position).toString();
             }
@@ -234,11 +271,11 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position){
+                    case 0:
+                        break;
                     case 1:
                         break;
                     case 2:
-                        break;
-                    case 3:
                         break;
                 }
                 markType = parent.getItemAtPosition(position).toString();
@@ -253,13 +290,11 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
 
         /** Spinner Dropdown for semester elements**/
         List<String> semesters = new ArrayList<String>();
-        semesters.add("---Semester---");
         semesters.add("1");
         semesters.add("2");
 
         /** Spinner Dropdown for subject elements**/
         List<String> subjects = new ArrayList<>();
-        subjects.add("---Subjects---");
         subjects.add("Maths"); //Toán
         subjects.add("Physics"); //Lý
         subjects.add("Chemistry"); //Hóa
@@ -272,7 +307,6 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
 
         /** Spinner Dropdown for type of mark elements**/
         List<String> markTypes = new ArrayList<String>();
-        markTypes.add("---Type of Marks---");
         markTypes.add("15 minutes");
         markTypes.add("45 minutes");
         markTypes.add("Summary Mark");
@@ -311,49 +345,56 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
 
 
 
-    //TODO: MarkingActivity
-    public boolean onContextItemSelected(MenuItem item) {
-
-        studentInClassAdapter.setViewClickListener(new RecyclerViewClickListener() {
-            @Override
-            public void recyclerViewListLongClick(int position) {
-
-            }
-
-            @Override
-            public void recyclerViewListClick(int position) {
-
-            }
-        });
-        switch (item.getItemId()) {
-            case R.id.mnMarking:
-                initMarkingDialog();
-                markingDialog.show();
-                break;
-            case R.id.mnDelete:
-                Intent i = new Intent(ClassDetailsActivity.this, ClassesListActivity.class);
-                Student _student = new Student();
-                _student.setStudentId(studentList.get(pos).getStudentId());
-                db.deleteStudentFromClass(_student);
-
-                startActivity(i);
-                break;
-
-        }
-
-        return super.onContextItemSelected(item);
-    }
+    /*//TODO: MarkingActivity
+    @OnClick(R.id.btnMarking)
+    public void markingDialog(){
+        initMarkingDialog();
+    }*/
 
 
     @Override
-    public void recyclerViewListLongClick(int position) {
+    public void recyclerViewListLongClick(final int position) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(ClassDetailsActivity.this);
+        final Student _student = studentInClassAdapter.getItemAtPosition(position - 1);
+        //set Title
+        builder.setTitle("Delete");
+
+        //set Message
+        builder.setMessage("Are you sure you want to delete this student?");
+
+        //set Icon
+        builder.setIcon(R.drawable.trash_bin);
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(_student != null){
+                    if(db.deleteStudentFromClass(_student) != -1){
+                        studentList.remove(_student);
+                        studentInClassAdapter.refreshData(studentList);
+                    }
+                }else {
+                    Toast.makeText(ClassDetailsActivity.this, "Can not delete", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.show();
 
     }
 
     @Override
     public void recyclerViewListClick(int position) {
         Intent intent = new Intent(ClassDetailsActivity.this, StudentDetailsActivity.class);
-        Student _student = studentList.get(position);
+        Student _student = studentInClassAdapter.getItemAtPosition(position);
         intent.putExtra("_studentID",_student.getStudentId());
         intent.putExtra("_studentName", _student.getStudentName());
         intent.putExtra("_studentYearOfBirth", _student.getDateOfBirth());
@@ -364,4 +405,11 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
+
+    @Override
+    public void recyclerViewButtonClickListener(int position) {
+       initMarkingDialog();
+    }
+
+    //TODO: implement add mark and view mark
 }

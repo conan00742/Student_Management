@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
@@ -49,7 +50,6 @@ public class StudentsListActivity extends AppCompatActivity implements RecyclerV
     public static final String EXTRA_IS_ADD_MODE = "EXTRA_IS_ADD_MODE";
 
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
-    @BindView(R.id.edtSearch) EditText edtSearch;
 
     DatabaseHandler db;
     List<Student> studentList;
@@ -78,12 +78,30 @@ public class StudentsListActivity extends AppCompatActivity implements RecyclerV
         simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
         setUpRecyclerView();
         initAddStudentDialog();
-        initSearchStudentListener();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.student_option_menu,menu);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.mnSearch).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                StudentsListActivity.this.adapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                StudentsListActivity.this.adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+
+
         return true;
     }
 
@@ -266,37 +284,43 @@ public class StudentsListActivity extends AppCompatActivity implements RecyclerV
     }
 
 
-    //TODO: Search Student
-    public void initSearchStudentListener(){
-        edtSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                StudentsListActivity.this.adapter.getFilter().filter(s);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-    }
 
     @Override
-    public void recyclerViewListLongClick(int position) {
+    public void recyclerViewListLongClick(final int position) {
         //TODO: implement alert dialog to have an option DELETE
-        Student _student = adapter.getItemAtPosition(position);
-        if(_student != null){
-            if(db.deleteStudent(_student) != -1){
-                Log.i("deleteStudent",_student.toString());
-                studentList.remove(_student);
-                adapter.refreshData(studentList);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(StudentsListActivity.this);
+        final Student _student = adapter.getItemAtPosition(position);
+        //set Title
+        builder.setTitle("Delete");
+
+        //set Message
+        builder.setMessage("Are you sure you want to delete this student?");
+
+        //set Icon
+        builder.setIcon(R.drawable.trash_bin);
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                if(_student != null){
+                    if(db.deleteStudent(_student) != -1){
+                        studentList.remove(_student);
+                        adapter.refreshData(studentList);
+                    }
+                }
             }
-        }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+
+        builder.show();
 
     }
 
@@ -318,6 +342,5 @@ public class StudentsListActivity extends AppCompatActivity implements RecyclerV
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
-
     }
 }
