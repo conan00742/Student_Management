@@ -281,11 +281,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * marking student
      *
      * **/
-    public void markingStudent(Marking marking){
+    public long markingStudent(Marking marking){
+        long result = 0;
         SQLiteDatabase db = this.getWritableDatabase();
         /**inserting row**/
-        db.insert(Marking.TABLE_SCORE_RECORD, null, marking.getMarkingContentValues());
+        result = db.insert(Marking.TABLE_SCORE_RECORD, null, marking.getMarkingContentValues());
         db.close();
+        return result;
     }
 
 
@@ -299,7 +301,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         /**Select all query**/
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        String queryString = "SELECT * FROM "
+        String queryString = "SELECT " + Marking.KEY_STUDENT_ID + ", "+ Marking.KEY_STUDENT_NAME
+                +", "+ Marking.KEY_MARK_VALUE+" FROM "
                 + Marking.TABLE_SCORE_RECORD + " WHERE " + Marking.KEY_CLASS_NAME + " = '" + _class.get_name() + "' AND "
                 + Marking.KEY_SEMESTER + " = " + subject.getSubjectSemester() + " AND "
                 + Marking.KEY_SUBJECT_NAME + " = '" + subject.getSubjectName() + "' AND "
@@ -312,14 +315,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 Marking marking = new Marking();
                 Student student = new Student();
 
-                /**set Student Name and ID**/
+                /*set Student Name and ID*/
                 student.setStudentName(cursor.getString(cursor.getColumnIndex(Marking.KEY_STUDENT_NAME)));
                 student.setStudentId(cursor.getString(cursor.getColumnIndex(Marking.KEY_STUDENT_ID)));
                 marking.setStudent(student);
 
 
                 /**set Mark Value**/
-                marking.setMarkValue(cursor.getInt(cursor.getColumnIndex(Marking.KEY_MARK_VALUE)));
+                marking.setMarkValue(cursor.getDouble(cursor.getColumnIndex(Marking.KEY_MARK_VALUE)));
 
                 markingList.add(marking);
 
@@ -481,25 +484,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
 
-    /**
-     *
-     *
-     * SEARCH STUDENT
-     *
-     * **/
-    public Cursor searchStudentByName(String studentName){
 
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM "+Student.TABLE_STUDENTS+" WHERE "+Student.KEY_NAME+" LIKE '%"+studentName+"%'";
-        Cursor cursor = db.rawQuery(query,null);
-        if (cursor == null) {
-            return null;
-        } else if (!cursor.moveToFirst()) {
-            cursor.close();
-            return null;
-        }
-        return cursor;
-
-    }
 
 }

@@ -1,6 +1,7 @@
 package com.example.user.student_management.ui.marking;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,18 +62,28 @@ public class ViewMarkAdapter extends RecyclerView.Adapter<ViewMarkAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         if(holder.getItemViewType() == HEADER){
             ViewMarkAdapter.ViewMarkHeader header = (ViewMarkHeader) holder;
+            //className
             header.tvClassNameHeader.setText(String.format(context.getString(R.string.class_details_name), _class.get_name()));
+            header.tvClassNameHeader.setTextColor(Color.BLUE);
+            //classQuantity
             header.tvClassQuantityHeader.setText(String.format(context.getString(R.string.class_details_quantity), String.valueOf(_class.get_quantity())));
+            header.tvClassQuantityHeader.setTextColor(Color.BLUE);
+            //Semester
             header.tvSemester.setText(String.format(context.getString(R.string.marking_semester), String.valueOf(_subject.getSubjectSemester())));
+            header.tvSemester.setTextColor(Color.RED);
+            //Subject
             header.tvSubject.setText(String.format(context.getString(R.string.marking_subject), _subject.getSubjectName()));
+            header.tvSubject.setTextColor(Color.RED);
+            //Type Of Mark
             header.tvMarkType.setText(String.format(context.getString(R.string.marking_type), _subject.getSubjectTypeOfMark()));
+            header.tvMarkType.setTextColor(Color.RED);
 
         } else if(holder.getItemViewType() == INPUTROW){
-            position = markingList.size() - 1;
+            Marking marking = markingList.get(position - 1);
             ViewMarkAdapter.ViewMarkInputRow inputRow = (ViewMarkInputRow) holder;
-            inputRow.studentName.setText(markingList.get(position).getStudent().getStudentName());
-            inputRow.studentId.setText(markingList.get(position).getStudent().getStudentId());
-            inputRow.edtViewMark.setText(String.valueOf(markingList.get(position).getMarkValue()));
+            inputRow.studentName.setText(marking.getStudent().getStudentName());
+            inputRow.studentId.setText(marking.getStudent().getStudentId());
+            inputRow.tvViewMark.setText(String.valueOf(marking.getMarkValue()));
         }
     }
 
@@ -116,13 +127,12 @@ public class ViewMarkAdapter extends RecyclerView.Adapter<ViewMarkAdapter.ViewHo
 
     public class ViewMarkInputRow extends ViewHolder {
         TextView studentId, studentName;
-        EditText edtViewMark;
+        TextView tvViewMark;
         public ViewMarkInputRow(View itemView) {
             super(itemView);
             studentName = (TextView) itemView.findViewById(R.id.studentMarkingName);
             studentId = (TextView) itemView.findViewById(R.id.studentMarkingId);
-            edtViewMark = (EditText) itemView.findViewById(R.id.edtViewMark);
-            edtViewMark.setKeyListener(null);
+            tvViewMark = (TextView) itemView.findViewById(R.id.tvViewMark);
         }
     }
 }

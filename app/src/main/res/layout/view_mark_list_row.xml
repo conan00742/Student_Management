@@ -33,17 +33,14 @@
         tools:text="ID"
         android:layout_height="wrap_content" />
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true">
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/edtViewMark"
+
+        <TextView
+            android:layout_alignParentRight="true"
+            android:id="@+id/tvViewMark"
             android:layout_width="120dp"
             android:layout_height="42dp"
-            android:inputType="none"
             android:typeface="monospace" />
-    </android.support.design.widget.TextInputLayout>
+
 
 
 </RelativeLayout>

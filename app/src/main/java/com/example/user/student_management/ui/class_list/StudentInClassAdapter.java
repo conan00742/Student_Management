@@ -227,7 +227,7 @@ public class StudentInClassAdapter extends RecyclerView.Adapter<StudentInClassAd
                 @Override
                 public void onClick(View v) {
                     if(markingClickListener != null){
-                        markingClickListener.recyclerViewButtonClickListener(getLayoutPosition());
+                        markingClickListener.recyclerViewButtonClickListener(getLayoutPosition() - 1);
                     }
                 }
             });
