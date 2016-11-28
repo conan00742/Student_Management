@@ -314,7 +314,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public long markingStudent(Marking marking){
         long result = 0;
         SQLiteDatabase db = this.getWritableDatabase();
-        /**inserting row**/
+        //inserting row
         result = db.insert(Marking.TABLE_SCORE_RECORD, null, marking.getMarkingContentValues());
         db.close();
         return result;
@@ -326,9 +326,45 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * calculate summary mark
      *
      * **/
-    public long calculateSummaryMark(){
+    public long calculateSummaryMark(Marking marking){
         long result = 0;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        //inserting row
+        result = db.insert(Marking.TABLE_SCORE_RECORD, null, marking.getMarkingContentValues());
+        db.close();
         return result;
+    }
+
+
+    /**SELECT COUNT(*) SUMMARY MARK**/
+    public int getSummaryMarkCount(String studentID, int semester, String subjectName, String markType){
+        int count = 0;
+        Cursor cursor = null;
+        SQLiteDatabase db = null;
+        try {
+            db = this.getReadableDatabase();
+            String query = "SELECT COUNT(*) FROM " + Marking.TABLE_SCORE_RECORD
+                    + " WHERE " + Marking.KEY_STUDENT_ID + " = '"
+                    + studentID + "' AND " + Marking.KEY_SEMESTER + " = "
+                    + semester + " AND " + Marking.KEY_SUBJECT_NAME + " = '"
+                    + subjectName + "' AND " + Marking.KEY_TYPE_OF_MARK + " = '"
+                    + markType + "'";
+            cursor = db.rawQuery(query, null);
+
+            if (cursor.moveToFirst()) {
+                count = cursor.getInt(0);
+            }
+        }finally {
+            if(cursor != null){
+                cursor.close();
+            }
+            if(db != null){
+                db.close();
+            }
+        }
+
+        return count;
     }
 
 
@@ -356,6 +392,95 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         return marking.getMarkValue();
     }
+
+
+
+    /**get 45 minutes mark**/
+    public double getFortyFiveMinutesMark(String studentID, int semester, String subjectName){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Marking marking = new Marking();
+
+        String query = "SELECT " + Marking.KEY_MARK_VALUE + " FROM "
+                + Marking.TABLE_SCORE_RECORD + " WHERE "
+                + Marking.KEY_STUDENT_ID + " = '" + studentID + "' AND "
+                + Marking.KEY_SEMESTER + " = " + semester + " AND "
+                + Marking.KEY_SUBJECT_NAME + " = '" + subjectName + "' AND "
+                + Marking.KEY_TYPE_OF_MARK + " = '45 minutes'";
+
+        Cursor cursor = db.rawQuery(query,null);
+
+        if(cursor.moveToFirst()){
+            do{
+                marking.setMarkValue(cursor.getDouble(cursor.getColumnIndex(Marking.KEY_MARK_VALUE)));
+            }while(cursor.moveToNext());
+        }
+
+
+        return marking.getMarkValue();
+    }
+
+
+
+
+    /**get final exam mark**/
+    public double getFinalExamMark(String studentID, int semester, String subjectName){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Marking marking = new Marking();
+
+        String query = "SELECT " + Marking.KEY_MARK_VALUE + " FROM "
+                + Marking.TABLE_SCORE_RECORD + " WHERE "
+                + Marking.KEY_STUDENT_ID + " = '" + studentID + "' AND "
+                + Marking.KEY_SEMESTER + " = " + semester + " AND "
+                + Marking.KEY_SUBJECT_NAME + " = '" + subjectName + "' AND "
+                + Marking.KEY_TYPE_OF_MARK + " = 'Final Exam'";
+
+        Cursor cursor = db.rawQuery(query,null);
+
+        if(cursor.moveToFirst()){
+            do{
+                marking.setMarkValue(cursor.getDouble(cursor.getColumnIndex(Marking.KEY_MARK_VALUE)));
+            }while(cursor.moveToNext());
+        }
+
+
+        return marking.getMarkValue();
+    }
+
+
+    /**select count(*) fifteen minutes mark**/
+    public int getMarkCount(String studentID, int semester, String subjectName, String markType){
+        int count = 0;
+        Cursor cursor = null;
+        SQLiteDatabase db = null;
+        try {
+            db = this.getReadableDatabase();
+            String query = "SELECT COUNT(*) FROM " + Marking.TABLE_SCORE_RECORD
+                    + " WHERE " + Marking.KEY_STUDENT_ID + " = '"
+                    + studentID + "' AND " + Marking.KEY_SEMESTER + " = "
+                    + semester + " AND " + Marking.KEY_SUBJECT_NAME + " = '"
+                    + subjectName + "' AND " + Marking.KEY_TYPE_OF_MARK + " = '"
+                    + markType + "'";
+            cursor = db.rawQuery(query, null);
+
+            if (cursor.moveToFirst()) {
+                count = cursor.getInt(0);
+            }
+        }finally {
+            if(cursor != null){
+                cursor.close();
+            }
+            if(db != null){
+                db.close();
+            }
+        }
+
+        return count;
+    }
+
+
+
 
 
     /**

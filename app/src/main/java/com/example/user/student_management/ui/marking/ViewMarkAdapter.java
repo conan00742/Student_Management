@@ -85,9 +85,9 @@ public class ViewMarkAdapter extends RecyclerView.Adapter<ViewMarkAdapter.ViewHo
             inputRow.studentId.setText(marking.getStudent().getStudentId());
             if(marking.getMarkValue() < 5.0){
                 inputRow.tvViewMark.setTextColor(Color.RED);
-                inputRow.tvViewMark.setText(String.valueOf(marking.getMarkValue()));
+                inputRow.tvViewMark.setText(String.format("%.1f",marking.getMarkValue()));
             }else{
-                inputRow.tvViewMark.setText(String.valueOf(marking.getMarkValue()));
+                inputRow.tvViewMark.setText(String.format("%.1f",marking.getMarkValue()));
             }
         }
     }
