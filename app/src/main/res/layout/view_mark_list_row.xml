@@ -35,11 +35,15 @@
 
 
         <TextView
+            android:gravity="right"
             android:layout_alignParentRight="true"
             android:id="@+id/tvViewMark"
             android:layout_width="120dp"
             android:layout_height="42dp"
-            android:typeface="monospace" />
+            android:typeface="monospace"
+            tools:text="9.5"
+            android:textSize="15sp"
+            android:textColor="#000000"/>
 
 
 

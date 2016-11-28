@@ -305,6 +305,7 @@ public class StudentsListActivity extends AppCompatActivity implements RecyclerV
 
                 if(_student != null){
                     if(db.deleteStudent(_student) != -1){
+                        db.deleteStudentFromScoreRecord(_student);
                         studentList.remove(_student);
                         adapter.refreshData(studentList);
                     }

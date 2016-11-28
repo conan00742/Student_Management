@@ -166,7 +166,7 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
     }
 
 
-    /**view mark dialog**/
+    //view mark dialog
     private void initViewMarkDialog(){
         /**Init Layout inside Dialog**/
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ClassDetailsActivity.this);
@@ -208,7 +208,7 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
         markingDialog.show();
     }
 
-    /**spinner for Marking**/
+    //spinner for Marking
     private void initSpinner(View dialogView){
         spinnerSemester = (Spinner) dialogView.findViewById(R.id.spinnerSemester);
         spinnerSubject = (Spinner) dialogView.findViewById(R.id.spinnerSubject);
@@ -273,6 +273,8 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
                         break;
                     case 2:
                         break;
+                    case 3:
+                        break;
                 }
                 markType = parent.getItemAtPosition(position).toString();
             }
@@ -305,6 +307,7 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
         List<String> markTypes = new ArrayList<String>();
         markTypes.add("15 minutes");
         markTypes.add("45 minutes");
+        markTypes.add("Final Exam");
         markTypes.add("Summary Mark");
 
 
@@ -338,7 +341,7 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
         spinnerTypeOfMark.setAdapter(markTypesAdapter);
     }
 
-    /**spinner for View Mark**/
+    //spinner for View Mark
     private void initViewMarkSpinner(View dialogView){
         spnViewMarkSemester = (Spinner) dialogView.findViewById(R.id.spnViewMarkSemester);
         spnViewMarkSubject = (Spinner) dialogView.findViewById(R.id.spnViewMarkSubject);
@@ -403,6 +406,8 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
                         break;
                     case 2:
                         break;
+                    case 3:
+                        break;
                 }
                 markType = parent.getItemAtPosition(position).toString();
             }
@@ -435,6 +440,131 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
         List<String> markTypes = new ArrayList<String>();
         markTypes.add("15 minutes");
         markTypes.add("45 minutes");
+        markTypes.add("Final Exam");
+        markTypes.add("Summary Mark");
+
+
+        /** Creating adapter for SEMESTER spinner **/
+        ArrayAdapter<String> semestersAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item,
+                semesters);
+
+        /** Creating adapter for SUBJECT spinner **/
+        ArrayAdapter<String> subjectsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item,
+                subjects);
+
+        /** Creating adapter for TYPE OF MARK spinner **/
+        ArrayAdapter<String> markTypesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item,
+                markTypes);
+
+
+
+
+
+        /**Drop down layout style - list view with radio button**/
+        semestersAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        subjectsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        markTypesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+
+
+
+        /**attaching data adapter to spinner**/
+        spnViewMarkSemester.setAdapter(semestersAdapter);
+        spnViewMarkSubject.setAdapter(subjectsAdapter);
+        spnViewMarkTypeOfMark.setAdapter(markTypesAdapter);
+    }
+
+    //spinner for calculate summary mark
+    private void initSummaryMarkSpinner(View dialogView){
+        spnViewMarkSemester = (Spinner) dialogView.findViewById(R.id.spnViewMarkSemester);
+        spnViewMarkSubject = (Spinner) dialogView.findViewById(R.id.spnViewMarkSubject);
+        spnViewMarkTypeOfMark = (Spinner) dialogView.findViewById(R.id.spnViewMarkTypeOfMark);
+
+
+        spnViewMarkSemester.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    semester = parent.getItemAtPosition(position).toString();
+                } else if (position == 1) {
+                    semester = parent.getItemAtPosition(position).toString();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        spnViewMarkSubject.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position){
+                    case 0:
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        break;
+                    case 5:
+                        break;
+                    case 6:
+                        break;
+                    case 7:
+                        break;
+                    case 8:
+                        break;
+                }
+                subject = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        spnViewMarkTypeOfMark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position){
+                    case 0:
+                        break;
+                }
+                markType = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        /** Spinner Dropdown for semester elements**/
+        List<String> semesters = new ArrayList<String>();
+        semesters.add("1");
+        semesters.add("2");
+
+        /** Spinner Dropdown for subject elements**/
+        List<String> subjects = new ArrayList<>();
+        subjects.add("Maths"); //Toán
+        subjects.add("Physics"); //Lý
+        subjects.add("Chemistry"); //Hóa
+        subjects.add("Biology"); //Sinh
+        subjects.add("History"); //Sử
+        subjects.add("Geography"); //Địa
+        subjects.add("Literature"); //Văn
+        subjects.add("English"); //Anh
+        subjects.add("Astronomy"); //Thiên Văn Học
+
+        /** Spinner Dropdown for type of mark elements**/
+        List<String> markTypes = new ArrayList<String>();
         markTypes.add("Summary Mark");
 
 
@@ -486,6 +616,7 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
             public void onClick(DialogInterface dialog, int which) {
                 if(_student != null){
                     if(db.deleteStudentFromClass(_student) != -1){
+                        db.deleteStudentFromScoreRecord(_student);
                         studentList.remove(_student);
                         studentInClassAdapter.refreshData(studentList);
                     }
@@ -541,7 +672,7 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String mark = edtMarkValue.getText().toString();
+                double mark = Double.parseDouble(edtMarkValue.getText().toString().trim());
                 //Student
                 Student _student = new Student();
                 _student.setStudentId(studentList.get(position).getStudentId());
@@ -559,16 +690,18 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
                 marking.setStudent(_student);
                 marking.set_class(currentClass);
                 marking.setSubject(_subject);
-                marking.setMarkValue(Double.parseDouble(mark));
 
-                db = new DatabaseHandler(getApplicationContext());
-                if(db.markingStudent(marking) != 0){
-                    Toast.makeText(ClassDetailsActivity.this, "Successful", Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(ClassDetailsActivity.this, "Fail", Toast.LENGTH_SHORT).show();
+                if(mark > 10){
+                    Toast.makeText(ClassDetailsActivity.this, "Mark is wrong!!!", Toast.LENGTH_SHORT).show();
+                }else if(mark <= 10){
+                    marking.setMarkValue(mark);
+                    db = new DatabaseHandler(getApplicationContext());
+                    if(db.markingStudent(marking) != 0){
+                        Toast.makeText(ClassDetailsActivity.this, "Successful", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(ClassDetailsActivity.this, "Fail", Toast.LENGTH_SHORT).show();
+                    }
                 }
-
-
 
                 markingDialog.dismiss();
                 /*Toast.makeText(ClassDetailsActivity.this, "studentID = "+ _student.getStudentId()
@@ -596,5 +729,62 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
 
     }
 
-    //TODO: implement add mark and view mark
+    @Override
+    public void recyclerViewCalculateButtonClickListener(final int position) {
+        /**Init Layout inside Dialog**/
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ClassDetailsActivity.this);
+        LayoutInflater inflater = ClassDetailsActivity.this.getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.activity_mark_selection, null);
+        dialogBuilder.setView(dialogView);
+
+        initSummaryMarkSpinner(dialogView);
+
+
+        btnViewMark = (Button) dialogView.findViewById(R.id.btnViewMark);
+        btnViewMark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Student
+                Student _student = new Student();
+                _student.setStudentId(studentList.get(position).getStudentId());
+                //Subject
+                Subject _subject = new Subject();
+                _subject.setSubjectSemester(Integer.parseInt(semester));
+                _subject.setSubjectName(subject);
+                _subject.setSubjectTypeOfMark(markType);
+
+
+
+                db = new DatabaseHandler(getApplicationContext());
+
+                double fifteenMinutesMark = db.getFifteenMinutesMark(_student.getStudentId(),_subject.getSubjectSemester(),
+                        _subject.getSubjectName());
+
+                //TODO: get 15mins + 45mins + finalExam ----> calculate summary mark
+                Toast.makeText(ClassDetailsActivity.this, "15 minutes mark = "+ fifteenMinutesMark, Toast.LENGTH_SHORT).show();
+
+
+                /*markingDialog.dismiss();*/
+                /*Toast.makeText(ClassDetailsActivity.this, "studentID = "+ _student.getStudentId()
+                        +" ; studentName = "+ _student.getStudentName()
+                        +" ; className = "+ currentClass.get_name()
+                        +" ; subjectName = "+ _subject.getSubjectName()
+                        +" ; semester = "+ _subject.getSubjectSemester()
+                        +" ; typeOfMark = "+ _subject.getSubjectTypeOfMark()
+                        +" ; markValue = "+ mark, Toast.LENGTH_SHORT).show();*/
+            }
+        });
+
+        btnCancelViewMark = (Button) dialogView.findViewById(R.id.btnCancelViewMark);
+        btnCancelViewMark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                markingDialog.dismiss();
+            }
+        });
+
+        markingDialog = dialogBuilder.create();
+        markingDialog.show();
+    }
+
 }

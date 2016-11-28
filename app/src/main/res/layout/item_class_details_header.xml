@@ -19,7 +19,8 @@
             android:layout_height="wrap_content"
             android:text="Class: "
             android:fontFamily="monospace"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:textSize="15sp"/>
 
         <TextView
             android:id="@+id/tvClassQuantity"
@@ -29,6 +30,7 @@
             android:text="Quantity: "
             android:fontFamily="monospace"
             android:textStyle="bold"
+            android:textSize="15sp"
             />
 
 

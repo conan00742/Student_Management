@@ -1,6 +1,7 @@
 package com.example.user.student_management.ui.class_list;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.ContextMenu;
@@ -76,7 +77,9 @@ public class StudentInClassAdapter extends RecyclerView.Adapter<StudentInClassAd
         if(holder.getItemViewType() == HEADER){
             ClassDetailsHeaderViewHolder header = (ClassDetailsHeaderViewHolder) holder;
             header.tvClassName.setText(String.format(context.getString(R.string.class_details_name), className));
+            header.tvClassName.setTextColor(Color.BLUE);
             header.tvClassQuantity.setText(String.format(context.getString(R.string.class_details_quantity),""+classQuantity));
+            header.tvClassQuantity.setTextColor(Color.BLUE);
 
         } else if(holder.getItemViewType() == INPUTROW){
             Student student = filteredData.get(position - 1);
@@ -87,6 +90,7 @@ public class StudentInClassAdapter extends RecyclerView.Adapter<StudentInClassAd
             inputRow.imgGender.setImageResource(student.isMale() ? R.drawable.ic_male : R.drawable.ic_female);
             inputRow.btnaddToClass.setVisibility(View.GONE);
             inputRow.btnMarking.setVisibility(View.VISIBLE);
+            inputRow.btnCalculate.setVisibility(View.VISIBLE);
         }
     }
 
@@ -191,7 +195,7 @@ public class StudentInClassAdapter extends RecyclerView.Adapter<StudentInClassAd
     public class ClassDetailsInputRowViewHolder extends ViewHolder{
         TextView studentId, studentName, yearOfBirth;
         ImageView imgGender;
-        Button btnaddToClass,btnMarking;
+        Button btnaddToClass,btnMarking, btnCalculate;
         public ClassDetailsInputRowViewHolder(View itemView) {
             super(itemView);
 
@@ -228,6 +232,17 @@ public class StudentInClassAdapter extends RecyclerView.Adapter<StudentInClassAd
                 public void onClick(View v) {
                     if(markingClickListener != null){
                         markingClickListener.recyclerViewButtonClickListener(getLayoutPosition() - 1);
+                    }
+                }
+            });
+
+            btnCalculate = (Button) itemView.findViewById(R.id.btnCalculate);
+
+            btnCalculate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(markingClickListener != null){
+                        markingClickListener.recyclerViewCalculateButtonClickListener(getLayoutPosition() - 1);
                     }
                 }
             });

@@ -19,13 +19,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.user.student_management.RecyclerViewClickListener;
 import com.example.user.student_management.db.DatabaseHandler;
 import com.example.user.student_management.model.Classes;
 import com.example.user.student_management.OnClassListListener;
 import com.example.user.student_management.R;
-import com.example.user.student_management.model.Student;
-import com.example.user.student_management.ui.student_list.StudentsListActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,15 +113,15 @@ public class ClassesListActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //If Grade 10 is selected
-                if(position == 1){
+                if(position == 0){
                     grade = Integer.parseInt(addClassSpinner.getSelectedItem().toString().trim());
                 }
                 //If Grade 11 is selected
-                else if(position == 2){
+                else if(position == 1){
                     grade = Integer.parseInt(addClassSpinner.getSelectedItem().toString().trim());
                 }
                 //If Grade 12 is selected
-                else if(position == 3){
+                else if(position == 2){
                     grade = Integer.parseInt(addClassSpinner.getSelectedItem().toString().trim());
                 }
             }
@@ -149,7 +146,6 @@ public class ClassesListActivity extends AppCompatActivity {
         addClassSpinner.setAdapter(gradesAdapter);
 
 
-
         /**
          *
          * btnAddClass
@@ -165,9 +161,13 @@ public class ClassesListActivity extends AppCompatActivity {
 
                 Classes _class = new Classes(className, classQuantity, grade);
                 if(db != null){
-                    db.generateClasses(_class);
-                    Toast.makeText(ClassesListActivity.this, "Add successfully", Toast.LENGTH_SHORT).show();
-
+                    if(db.getCount(className) == 0){
+                        db.generateClasses(_class);
+                        Toast.makeText(ClassesListActivity.this, "Add successfully", Toast.LENGTH_SHORT).show();
+                        addClassDialog.dismiss();
+                    }else{
+                        Toast.makeText(ClassesListActivity.this, "Class already exists", Toast.LENGTH_SHORT).show();
+                    }
                     /**set dialog edit text to null**/
                     edtClassName.setText(null);
                     edtClassName.requestFocus();
@@ -175,7 +175,7 @@ public class ClassesListActivity extends AppCompatActivity {
                 }else{
                     Toast.makeText(ClassesListActivity.this, "Can not add new class", Toast.LENGTH_SHORT).show();
                 }
-                addClassDialog.dismiss();
+
 
             }
         });
@@ -211,6 +211,7 @@ public class ClassesListActivity extends AppCompatActivity {
         //recyclerView
         classRecyclerView.setHasFixedSize(true);
         adapter = new ClassAdapter(classList);
+        adapter.refreshData(classList);
         adapter.setClassListListener(new OnClassListListener() {
             @Override
             public void onClassClick(int position) {
@@ -281,6 +282,9 @@ public class ClassesListActivity extends AppCompatActivity {
         // attaching data adapter to spinner
         spinner.setAdapter(gradesAdapter);
     }
+
+
+
 
 
 

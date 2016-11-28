@@ -22,7 +22,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 36;
+    private static final int DATABASE_VERSION = 38;
 
     // Database Name
     private static final String DATABASE_NAME = "STUDENT_MANAGEMENT";
@@ -176,8 +176,38 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void generateClasses(Classes _class){
         SQLiteDatabase db = this.getWritableDatabase();
         /**Inserting Row**/
-        db.insert(Classes.TABLE_CLASSES,null,_class.getContentValues());
+        db.insert(Classes.TABLE_CLASSES, null ,_class.getContentValues());
         db.close();
+    }
+
+    /**
+     *
+     * select count(*)
+     *
+     * **/
+    public int getCount(String className){
+        int count = 0;
+        Cursor cursor = null;
+        SQLiteDatabase db = null;
+        try {
+            db = this.getReadableDatabase();
+            String query = "SELECT COUNT(*) FROM " + Classes.TABLE_CLASSES
+                    + " WHERE " + Classes.KEY_NAME + " = ?";
+            cursor = db.rawQuery(query, new String[]{className});
+
+            if (cursor.moveToFirst()) {
+                count = cursor.getInt(0);
+            }
+        }finally {
+            if(cursor != null){
+                cursor.close();
+            }
+            if(db != null){
+                db.close();
+            }
+        }
+
+        return count;
     }
 
 
@@ -288,6 +318,43 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         result = db.insert(Marking.TABLE_SCORE_RECORD, null, marking.getMarkingContentValues());
         db.close();
         return result;
+    }
+
+
+    /**
+     *
+     * calculate summary mark
+     *
+     * **/
+    public long calculateSummaryMark(){
+        long result = 0;
+        return result;
+    }
+
+
+    /**get 15 minutes mark**/
+    public double getFifteenMinutesMark(String studentID, int semester, String subjectName){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Marking marking = new Marking();
+
+        String query = "SELECT " + Marking.KEY_MARK_VALUE + " FROM "
+                + Marking.TABLE_SCORE_RECORD + " WHERE "
+                + Marking.KEY_STUDENT_ID + " = '" + studentID + "' AND "
+                + Marking.KEY_SEMESTER + " = " + semester + " AND "
+                + Marking.KEY_SUBJECT_NAME + " = '" + subjectName + "' AND "
+                + Marking.KEY_TYPE_OF_MARK + " = '15 minutes'";
+
+        Cursor cursor = db.rawQuery(query,null);
+
+        if(cursor.moveToFirst()){
+            do{
+                marking.setMarkValue(cursor.getDouble(cursor.getColumnIndex(Marking.KEY_MARK_VALUE)));
+            }while(cursor.moveToNext());
+        }
+
+
+        return marking.getMarkValue();
     }
 
 
@@ -483,6 +550,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
+    /**
+     *
+     * DELETE STUDENT FROM SCORE_RECORD TABLE
+     *
+     * **/
+    public int deleteStudentFromScoreRecord(Student student){
+        int result = -1;
+        SQLiteDatabase db = this.getWritableDatabase();
+        result = db.delete(Marking.TABLE_SCORE_RECORD, Marking.KEY_STUDENT_ID + " = ?",
+                new String[] {student.getStudentId()});
+        db.close();
+        return result;
+    }
 
 
 

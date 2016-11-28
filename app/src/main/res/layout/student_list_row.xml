@@ -63,6 +63,14 @@
         android:text="MARKING"
         android:fontFamily="cursive" />
 
+    <Button
+        android:id="@+id/btnCalculate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imgGender"
+        android:text="Calculate"
+        android:visibility="invisible" />
+
     <TextView
         android:id="@+id/studentId"
         android:textColor="@color/student_id"
