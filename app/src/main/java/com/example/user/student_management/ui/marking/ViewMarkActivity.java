@@ -62,7 +62,16 @@ public class ViewMarkActivity extends AppCompatActivity {
     public void initView(){
 
         db = new DatabaseHandler(getApplicationContext());
-        markingList = db.getAll(_class,_subject);
+        //chia ra 3 th điểm trung bình môn, tb học kỳ, điểm tổng
+        String typeOfMark = getIntent().getStringExtra(MARK_TYPE_TAG);
+        if(typeOfMark.equals("Semester Summary Mark")){
+            markingList = db.getSemesterSummaryMarkList(_class,_subject);
+        }else if(typeOfMark.equals("Final Mark")){
+            markingList = db.getFinalMarkList(_class,_subject);
+        }else{
+            markingList = db.getAll(_class,_subject);
+        }
+
         marking_recycler_view.setHasFixedSize(true);
         viewMarkAdapter = new ViewMarkAdapter(getApplicationContext(),markingList,mDataViewType,
                 _class,_subject);
@@ -80,11 +89,22 @@ public class ViewMarkActivity extends AppCompatActivity {
         _class.set_name(i.getStringExtra(CLASS_NAME_TAG));
         _class.set_quantity(Integer.parseInt(i.getStringExtra(CLASS_QUANTITY_TAG)));
 
-
         _subject = new Subject();
-        _subject.setSubjectSemester(Integer.parseInt(i.getStringExtra(SEMESTER_TAG)));
-        _subject.setSubjectName(i.getStringExtra(SUBJECT_TAG));
-        _subject.setSubjectTypeOfMark(i.getStringExtra(MARK_TYPE_TAG));
+        String typeOfMark = i.getStringExtra(MARK_TYPE_TAG);
+        if(typeOfMark.equals("Semester Summary Mark")){
+            _subject.setSubjectSemester(Integer.parseInt(i.getStringExtra(SEMESTER_TAG)));
+            _subject.setSubjectTypeOfMark(i.getStringExtra(MARK_TYPE_TAG));
+        }else if(typeOfMark.equals("Final Mark")){
+            _subject.setSubjectTypeOfMark(i.getStringExtra(MARK_TYPE_TAG));
+        }else{
+            _subject.setSubjectSemester(Integer.parseInt(i.getStringExtra(SEMESTER_TAG)));
+            _subject.setSubjectName(i.getStringExtra(SUBJECT_TAG));
+            _subject.setSubjectTypeOfMark(i.getStringExtra(MARK_TYPE_TAG));
+        }
+
+
+
+
     }
 
 

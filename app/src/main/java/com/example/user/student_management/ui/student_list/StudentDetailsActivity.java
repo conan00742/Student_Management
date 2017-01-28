@@ -92,9 +92,9 @@ public class StudentDetailsActivity extends AppCompatActivity {
         tvStudentDetailsEmail.setText(studentEmail);
         tvStudentDetailsAddress.setText(studentAddress);
         if(studentGender.equals("true")){
-            imgViewStudentDetails.setImageResource(R.drawable.male_student);
+            imgViewStudentDetails.setImageResource(R.mipmap.male_icon);
         }else{
-            imgViewStudentDetails.setImageResource(R.drawable.female_student);
+            imgViewStudentDetails.setImageResource(R.mipmap.female_icon);
         }
     }
 

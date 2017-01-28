@@ -25,17 +25,7 @@
             android:textSize="15sp"
             />
 
-        <TextView
-            android:id="@+id/tvSemester"
-            android:layout_below="@id/tvClassQuantityHeader"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:fontFamily="monospace"
-            android:textStyle="bold"
-            android:layout_marginTop="10dp"
-            android:text="Semester: "
-            android:textSize="15sp"/>
+
 
 
 
@@ -62,6 +52,18 @@
             android:fontFamily="monospace"
             android:textStyle="bold"
             android:layout_marginTop="10dp"
+            android:textSize="15sp"/>
+
+        <TextView
+            android:id="@+id/tvSemester"
+            android:layout_below="@id/tvSubject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:fontFamily="monospace"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:text="Semester: "
             android:textSize="15sp"/>
 
         <TextView

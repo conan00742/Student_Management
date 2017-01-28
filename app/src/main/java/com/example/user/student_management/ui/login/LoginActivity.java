@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.user.student_management.db.DatabaseHandler;
 import com.example.user.student_management.ui.home.LoginSuccessActivity;
 import com.example.user.student_management.R;
 import com.example.user.student_management.other.SessionManager;
@@ -79,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
     @OnClick(R.id.button_login)
     void attemptLogin(){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(LoginActivity.this);
-
+        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
         /** Store values at the time of the login attempt.**/
         String email = edittext_username.getText().toString();
         String password = edittext_password.getText().toString();
@@ -101,6 +102,7 @@ public class LoginActivity extends AppCompatActivity {
                     dialog.cancel();
                 }
             });
+            alertDialog.show();
         }
 
         /**If PASSWORD blank**/
@@ -114,6 +116,7 @@ public class LoginActivity extends AppCompatActivity {
                     dialog.cancel();
                 }
             });
+            alertDialog.show();
         }
 
         /**If EMAIL blank**/
@@ -127,6 +130,7 @@ public class LoginActivity extends AppCompatActivity {
                     dialog.cancel();
                 }
             });
+            alertDialog.show();
         }
 
 
@@ -150,31 +154,45 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             /**Correct Account**/
-            else if(email.equals("android@gmail.com")  && password.equals("123456")){
+            else if(db != null) {
+                if (db.checkLoginInfo(email,password)) {
 
-                session.createLoginSession(email);
+                    session.createLoginSession(email);
 
-                /**Login Success ---> LoginSuccessActivity**/
-                Intent i = new Intent(getApplicationContext(),LoginSuccessActivity.class);
-                startActivity(i);
-                finish();
+                    /**Login Success ---> LoginSuccessActivity**/
+                    Intent i = new Intent(getApplicationContext(), LoginSuccessActivity.class);
+                    startActivity(i);
+                    finish();
+                }else if(email.equals("admin@gmail.com")  && password.equals("qwerty")){
+
+                    session.createLoginSession(email);
+
+                    /**Login Success ---> LoginSuccessActivity**/
+                    Intent intent = new Intent(getApplicationContext(),LoginSuccessActivity.class);
+                    startActivity(intent);
+                    finish();
+
+                }/**Wrong Account**/
+                else{
+                    alertDialog.setTitle("Error");
+                    alertDialog.setMessage("Username or Password is incorrect");
+                    alertDialog.setIcon(R.drawable.delete_mdpi);
+                    alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    alertDialog.show();
+                }
             }
 
-            /**Wrong Account**/
-            else{
-                alertDialog.setTitle("Error");
-                alertDialog.setMessage("Username or Password is incorrect");
-                alertDialog.setIcon(R.drawable.delete_mdpi);
-                alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-            }
+
+
+
         }
 
-        alertDialog.show();
+
 
     }
 

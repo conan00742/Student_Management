@@ -1,12 +1,14 @@
 package com.example.user.student_management.ui.class_list;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,12 +31,14 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ClassesListActivity extends AppCompatActivity {
     @BindView(R.id.class_recycler_view)
     RecyclerView classRecyclerView;
     @BindView(R.id.tvTitle)
     TextView tvTitle;
+
 
     private ClassAdapter adapter;
     private List<String> grades;
@@ -63,6 +67,8 @@ public class ClassesListActivity extends AppCompatActivity {
 
     }
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.class_list_option_menu,menu);
@@ -72,10 +78,18 @@ public class ClassesListActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        db = new DatabaseHandler(getApplicationContext());
+        String sentEmail = getIntent().getStringExtra("email");
+        String role = db.getRoleByEmail(sentEmail);
         if(id == R.id.mnInsertClass){
-            if(addClassDialog != null && !addClassDialog.isShowing()){
-                addClassDialog.show();
+            if(role.equals("Manager") || role.equals("Administrator")){
+                if(addClassDialog != null && !addClassDialog.isShowing()){
+                    addClassDialog.show();
+                }
+            }else{
+                warningDialog("You are not allowed to do this");
             }
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -154,27 +168,38 @@ public class ClassesListActivity extends AppCompatActivity {
         btnAddClass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /**get className**/
-                String className = edtClassName.getText().toString().trim();
-                /**get classQuantity**/
-                int classQuantity = Integer.parseInt(edtClassQuantity.getText().toString().trim());
 
-                Classes _class = new Classes(className, classQuantity, grade);
-                if(db != null){
-                    if(db.getCount(className) == 0){
-                        db.generateClasses(_class);
-                        Toast.makeText(ClassesListActivity.this, "Add successfully", Toast.LENGTH_SHORT).show();
-                        addClassDialog.dismiss();
+
+                if(!TextUtils.isEmpty(edtClassName.getText().toString().trim()) && !TextUtils.isEmpty(edtClassQuantity.getText().toString().trim())){
+                    if(containsDigit(edtClassName.getText().toString().trim())){
+                        /**get className**/
+                        String className = edtClassName.getText().toString().trim();
+                        /**get classQuantity**/
+                        int classQuantity = Integer.parseInt(edtClassQuantity.getText().toString().trim());
+                        Classes _class = new Classes(className, classQuantity, grade);
+                        if(db != null){
+                            if(db.getCount(className) == 0){
+                                db.generateClasses(_class);
+                                Toast.makeText(ClassesListActivity.this, "Add successfully", Toast.LENGTH_SHORT).show();
+                                addClassDialog.dismiss();
+                            }else{
+                                Toast.makeText(ClassesListActivity.this, "Class already exists", Toast.LENGTH_SHORT).show();
+                            }
+                            /**set dialog edit text to null**/
+                            edtClassName.setText(null);
+                            edtClassName.requestFocus();
+                            edtClassQuantity.setText(null);
+                        }else{
+                            Toast.makeText(ClassesListActivity.this, "Can not add new class", Toast.LENGTH_SHORT).show();
+                        }
                     }else{
-                        Toast.makeText(ClassesListActivity.this, "Class already exists", Toast.LENGTH_SHORT).show();
+                        warningDialog("Check your class name");
                     }
-                    /**set dialog edit text to null**/
-                    edtClassName.setText(null);
-                    edtClassName.requestFocus();
-                    edtClassQuantity.setText(null);
+
                 }else{
-                    Toast.makeText(ClassesListActivity.this, "Can not add new class", Toast.LENGTH_SHORT).show();
+                    warningDialog("Can not leave blank!!!");
                 }
+
 
 
             }
@@ -221,6 +246,7 @@ public class ClassesListActivity extends AppCompatActivity {
                     Intent intent = new Intent(ClassesListActivity.this, ClassDetailsActivity.class);
                     intent.putExtra("className", classes.get_name());
                     intent.putExtra("classQuantity", ""+classes.get_quantity());
+                    intent.putExtra("email",getIntent().getStringExtra("email"));
                     startActivity(intent);
                 }
             }
@@ -300,6 +326,41 @@ public class ClassesListActivity extends AppCompatActivity {
         grades.add("10");
         grades.add("11");
         grades.add("12");
+    }
+
+    public void warningDialog(String message){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(ClassesListActivity.this);
+
+        //set Title
+        builder.setTitle("Warning");
+
+        //set Message
+        builder.setMessage(message);
+
+        //set Icon
+        builder.setIcon(R.drawable.warning);
+
+
+
+        builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.show();
+    }
+
+    public static boolean containsDigit(String s) {
+        if (s != null && !s.isEmpty()) {
+            for (char c : s.toCharArray()) {
+                if (Character.isDigit(c)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 

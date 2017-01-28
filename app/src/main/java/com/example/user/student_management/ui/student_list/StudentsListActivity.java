@@ -33,6 +33,7 @@ import com.example.user.student_management.RecyclerViewClickListener;
 import com.example.user.student_management.db.DatabaseHandler;
 import com.example.user.student_management.model.Student;
 import com.example.user.student_management.ui.class_list.ClassDetailsActivity;
+import com.example.user.student_management.ui.class_list.ClassesListActivity;
 import com.example.user.student_management.ui.home.LoginSuccessActivity;
 
 import java.text.ParseException;
@@ -78,6 +79,7 @@ public class StudentsListActivity extends AppCompatActivity implements RecyclerV
         simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
         setUpRecyclerView();
         initAddStudentDialog();
+
     }
 
     @Override
@@ -107,10 +109,17 @@ public class StudentsListActivity extends AppCompatActivity implements RecyclerV
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        db = new DatabaseHandler(getApplicationContext());
         int id = item.getItemId();
+        String sentEmail = getIntent().getStringExtra("email");
+        String role = db.getRoleByEmail(sentEmail);
         if(id == R.id.mnInsert){
-            if(addStudentDialog != null && !addStudentDialog.isShowing()){
-                addStudentDialog.show();
+            if(role.equals("Manager") || role.equals("Administrator")){
+                if(addStudentDialog != null && !addStudentDialog.isShowing()){
+                    addStudentDialog.show();
+                }
+            }else{
+                warningDialog("You are not allowed to add new student");
             }
         }
         return super.onOptionsItemSelected(item);
@@ -203,52 +212,57 @@ public class StudentsListActivity extends AppCompatActivity implements RecyclerV
 
 
                 try {
-                    if (!TextUtils.isEmpty(studentName) && !TextUtils.isEmpty(studentAddress)
-                            && !TextUtils.isEmpty(studentEmail) && !TextUtils.isEmpty(dateInString)
-                            && isValidEmail(studentEmail)) {
-                        /**generate random ID**/
-                        long id = System.currentTimeMillis();
+                    if (!TextUtils.isEmpty(studentName)  && !TextUtils.isEmpty(studentAddress)
+                            && !TextUtils.isEmpty(studentEmail) && !TextUtils.isEmpty(dateInString)) {
+                        if(isValidEmail(studentEmail) && !containsDigit(studentName)){
+                            /**generate random ID**/
+                            long id = System.currentTimeMillis();
 
-                        /**get gender from radio button**/
-                        int selectedId = groupGender.getCheckedRadioButtonId();
-                        _isMale = selectedId == R.id.isMale;
+                            /**get gender from radio button**/
+                            int selectedId = groupGender.getCheckedRadioButtonId();
+                            _isMale = selectedId == R.id.isMale;
 
-                        Calendar selectedCalendar = Calendar.getInstance();
+                            Calendar selectedCalendar = Calendar.getInstance();
 
-                        selectedCalendar.setTime(simpleDateFormat.parse(dateInString));
+                            selectedCalendar.setTime(simpleDateFormat.parse(dateInString));
 
-                        if (2016 - selectedCalendar.get(Calendar.YEAR) == 16) {
-                            grade = "10";
-                        } else if (2016 - selectedCalendar.get(Calendar.YEAR) == 17) {
-                            grade = "11";
-                        } else if (2016 - selectedCalendar.get(Calendar.YEAR) == 18) {
-                            grade = "12";
+                            if (2016 - selectedCalendar.get(Calendar.YEAR) == 16) {
+                                grade = "10";
+                            } else if (2016 - selectedCalendar.get(Calendar.YEAR) == 17) {
+                                grade = "11";
+                            } else if (2016 - selectedCalendar.get(Calendar.YEAR) == 18) {
+                                grade = "12";
+                            }
+
+                            String studentId = "16" + grade + String.valueOf(id).substring(9);
+
+                            student = new Student(studentId, dateInString, studentName,
+                                    studentAddress, studentEmail, _isMale, status);
+
+                            /**Add to database**/
+                            if (db != null) {
+                                db.addNewStudent(student);
+
+                                /**get studentList from db and show in recyclerview**/
+                                List<Student> studentList = db.getStudentList();
+                                adapter.refreshData(studentList);
+
+                                /**set dialog edit text to null**/
+                                edtName.setText(null);
+                                edtName.requestFocus();
+                                edtAddress.setText(null);
+                                edtEmail.setText(null);
+                                edtDoB.setText(null);
+                                addStudentDialog.dismiss();
+                            }
+                            else{
+                                warningDialog("Something went wrong. Please correct!");
+                            }
+                        }else{
+                            warningDialog("Check your student name/email address");
                         }
-
-                        String studentId = "16" + grade + String.valueOf(id).substring(9);
-
-                        student = new Student(studentId, dateInString, studentName,
-                                studentAddress, studentEmail, _isMale, status);
-
-                        /**Add to database**/
-                        if (db != null) {
-                            db.addNewStudent(student);
-
-                            /**get studentList from db and show in recyclerview**/
-                            List<Student> studentList = db.getStudentList();
-                            adapter.refreshData(studentList);
-
-                            /**set dialog edit text to null**/
-                            edtName.setText(null);
-                            edtName.requestFocus();
-                            edtAddress.setText(null);
-                            edtEmail.setText(null);
-                            edtDoB.setText(null);
-                        }
-                        else{
-                            Toast.makeText(StudentsListActivity.this, "Something went wrong. Please correct!", Toast.LENGTH_SHORT).show();
-                        }
-                        addStudentDialog.dismiss();
+                    }else{
+                        warningDialog("Can not leave blank");
                     }
                 }catch (ParseException e) {
                     e.printStackTrace();
@@ -275,12 +289,47 @@ public class StudentsListActivity extends AppCompatActivity implements RecyclerV
 
     }
 
+    public void warningDialog(String message){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(StudentsListActivity.this);
+
+        //set Title
+        builder.setTitle("Warning");
+
+        //set Message
+        builder.setMessage(message);
+
+        //set Icon
+        builder.setIcon(R.drawable.warning);
+
+
+
+        builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.show();
+    }
+
     private String getEdittextString(EditText editText) {
         return editText.getText().toString().trim();
     }
 
     public boolean isValidEmail(CharSequence target){
         return target != null && Patterns.EMAIL_ADDRESS.matcher(target).matches();
+    }
+
+    public static boolean containsDigit(String s) {
+        if (s != null && !s.isEmpty()) {
+            for (char c : s.toCharArray()) {
+                if (Character.isDigit(c)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 
@@ -302,14 +351,21 @@ public class StudentsListActivity extends AppCompatActivity implements RecyclerV
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
-                if(_student != null){
-                    if(db.deleteStudent(_student) != -1){
-                        db.deleteStudentFromScoreRecord(_student);
-                        studentList.remove(_student);
-                        adapter.refreshData(studentList);
+                String role = db.getRoleByEmail(getIntent().getStringExtra("email"));
+                if(role.equals("Manager") || role.equals("Administrator")){
+                    if(_student != null){
+                        if(db.deleteStudent(_student) != -1){
+                            db.deleteStudentFromScoreRecord(_student);
+                            studentList.remove(_student);
+                            adapter.refreshData(studentList);
+                        }
+                    }else {
+                        Toast.makeText(StudentsListActivity.this, "Can not delete", Toast.LENGTH_SHORT).show();
                     }
+                }else{
+                    Toast.makeText(StudentsListActivity.this, "You are not allowed to do this", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
 

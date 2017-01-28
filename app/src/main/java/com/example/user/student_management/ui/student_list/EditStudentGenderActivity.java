@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.example.user.student_management.R;
 import com.example.user.student_management.db.DatabaseHandler;
 import com.example.user.student_management.model.Student;
+import com.example.user.student_management.ui.home.LoginSuccessActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,7 +52,7 @@ public class EditStudentGenderActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnSaveNewGender)
     public void saveNewGender(){
-        Intent i = new Intent(EditStudentGenderActivity.this, StudentsListActivity.class);
+        Intent i = new Intent(EditStudentGenderActivity.this, LoginSuccessActivity.class);
         DatabaseHandler db = new DatabaseHandler(getApplicationContext());
         Student student = new Student();
         student.setStudentId(getIntent().getStringExtra("studentId"));

@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,7 +29,6 @@ import com.example.user.student_management.model.Classes;
 import com.example.user.student_management.model.Marking;
 import com.example.user.student_management.model.Student;
 import com.example.user.student_management.model.Subject;
-import com.example.user.student_management.ui.marking.MarkingActivity;
 import com.example.user.student_management.ui.marking.ViewMarkActivity;
 import com.example.user.student_management.ui.student_list.StudentDetailsActivity;
 import com.example.user.student_management.ui.student_list.StudentsListActivity;
@@ -40,7 +38,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static com.example.user.student_management.ui.class_list.StudentInClassAdapter.HEADER;
 import static com.example.user.student_management.ui.class_list.StudentInClassAdapter.INPUTROW;
@@ -129,11 +126,19 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.mnAdd:
-                Intent intent = new Intent(ClassDetailsActivity.this, StudentsListActivity.class);
-                intent.putExtra(CLASS_NAME_TAG,getIntent().getStringExtra("className"));
-                intent.putExtra(CLASS_QUANTITY_TAG, getIntent().getStringExtra("classQuantity"));
-                intent.putExtra(StudentsListActivity.EXTRA_IS_ADD_MODE, true);
-                startActivityForResult(intent, RREQUEST_CODE_ADD_STUDENT);
+                db = new DatabaseHandler(getApplicationContext());
+                String sentEmail = getIntent().getStringExtra("email");
+                String role = db.getRoleByEmail(sentEmail);
+
+                if(role.equals("Manager") || role.equals("Administrator")){
+                    Intent intent = new Intent(ClassDetailsActivity.this, StudentsListActivity.class);
+                    intent.putExtra(CLASS_NAME_TAG,getIntent().getStringExtra("className"));
+                    intent.putExtra(CLASS_QUANTITY_TAG, getIntent().getStringExtra("classQuantity"));
+                    intent.putExtra(StudentsListActivity.EXTRA_IS_ADD_MODE, true);
+                    startActivityForResult(intent, RREQUEST_CODE_ADD_STUDENT);
+                }else{
+                    warningDialog("You are not allowed to proceed this action");
+                }
                 break;
             case R.id.mnViewMark:
                initViewMarkDialog();
@@ -187,12 +192,23 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ClassDetailsActivity.this,ViewMarkActivity.class);
+                if(markType.equals("Semester Summary Mark")){
+                    intent.putExtra(ViewMarkActivity.SEMESTER_TAG, semester);
+                    intent.putExtra(ViewMarkActivity.MARK_TYPE_TAG, markType);
+                    intent.putExtra(ViewMarkActivity.CLASS_NAME_TAG, getIntent().getStringExtra("className"));
+                    intent.putExtra(ViewMarkActivity.CLASS_QUANTITY_TAG, getIntent().getStringExtra("classQuantity"));
+                }else if(markType.equals("Final Mark")){
+                    intent.putExtra(ViewMarkActivity.MARK_TYPE_TAG, markType);
+                    intent.putExtra(ViewMarkActivity.CLASS_NAME_TAG, getIntent().getStringExtra("className"));
+                    intent.putExtra(ViewMarkActivity.CLASS_QUANTITY_TAG, getIntent().getStringExtra("classQuantity"));
+                }else{
+                    intent.putExtra(ViewMarkActivity.SEMESTER_TAG, semester);
+                    intent.putExtra(ViewMarkActivity.SUBJECT_TAG, subject);
+                    intent.putExtra(ViewMarkActivity.MARK_TYPE_TAG, markType);
+                    intent.putExtra(ViewMarkActivity.CLASS_NAME_TAG, getIntent().getStringExtra("className"));
+                    intent.putExtra(ViewMarkActivity.CLASS_QUANTITY_TAG, getIntent().getStringExtra("classQuantity"));
+                }
 
-                intent.putExtra(ViewMarkActivity.SEMESTER_TAG, semester);
-                intent.putExtra(ViewMarkActivity.SUBJECT_TAG, subject);
-                intent.putExtra(ViewMarkActivity.MARK_TYPE_TAG, markType);
-                intent.putExtra(ViewMarkActivity.CLASS_NAME_TAG, getIntent().getStringExtra("className"));
-                intent.putExtra(ViewMarkActivity.CLASS_QUANTITY_TAG, getIntent().getStringExtra("classQuantity"));
 
                 startActivity(intent);
                 markingDialog.dismiss();
@@ -270,6 +286,21 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
         spnViewMarkTypeOfMark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItem = spnViewMarkTypeOfMark.getSelectedItem().toString();
+                if(selectedItem.equals("Semester Summary Mark")){
+                    spnViewMarkSubject.setEnabled(false);
+                    spnViewMarkSubject.setClickable(false);
+                    spnViewMarkSemester.setEnabled(true);
+                    spnViewMarkSemester.setClickable(true);
+                }else if(selectedItem.equals("Final Mark")){
+                    spnViewMarkSubject.setEnabled(false);
+                    spnViewMarkSubject.setClickable(false);
+                    spnViewMarkSemester.setEnabled(false);
+                    spnViewMarkSemester.setClickable(false);
+                }else{
+                    spnViewMarkSubject.setEnabled(true);
+                    spnViewMarkSemester.setEnabled(true);
+                }
                 switch (position){
                     case 0:
                         break;
@@ -278,6 +309,10 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
                     case 2:
                         break;
                     case 3:
+                        break;
+                    case 4:
+                        break;
+                    case 5:
                         break;
                 }
                 markType = parent.getItemAtPosition(position).toString();
@@ -312,7 +347,9 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
         markTypes.add("15 minutes");
         markTypes.add("45 minutes");
         markTypes.add("Final Exam");
-        markTypes.add("Summary Mark");
+        markTypes.add("Subject Summary Mark");
+        markTypes.add("Semester Summary Mark");
+        markTypes.add("Final Mark");
 
 
         /** Creating adapter for SEMESTER spinner **/
@@ -476,7 +513,7 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
     }
 
     //spinner for calculate summary mark
-    private void initSummaryMarkSpinner(View dialogView){
+    private void initSubjectSummaryMarkSpinner(View dialogView){
         spnViewMarkSemester = (Spinner) dialogView.findViewById(R.id.spnViewMarkSemester);
         spnViewMarkSubject = (Spinner) dialogView.findViewById(R.id.spnViewMarkSubject);
         spnViewMarkTypeOfMark = (Spinner) dialogView.findViewById(R.id.spnViewMarkTypeOfMark);
@@ -533,8 +570,23 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
         spnViewMarkTypeOfMark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItem = spnViewMarkTypeOfMark.getSelectedItem().toString();
+                if(selectedItem.equals("Semester Summary Mark")){
+                    spnViewMarkSemester.setEnabled(true);
+                    spnViewMarkSubject.setEnabled(false);
+                }else if(selectedItem.equals("Final Mark")){
+                    spnViewMarkSemester.setEnabled(false);
+                    spnViewMarkSubject.setEnabled(false);
+                }else{
+                    spnViewMarkSemester.setEnabled(true);
+                    spnViewMarkSubject.setEnabled(true);
+                }
                 switch (position){
                     case 0:
+                        break;
+                    case 1:
+                        break;
+                    case 2:
                         break;
                 }
                 markType = parent.getItemAtPosition(position).toString();
@@ -566,7 +618,9 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
 
         /** Spinner Dropdown for type of mark elements**/
         List<String> markTypes = new ArrayList<String>();
-        markTypes.add("Summary Mark");
+        markTypes.add("Subject Summary Mark");
+        markTypes.add("Semester Summary Mark");
+        markTypes.add("Final Mark");
 
 
         /** Creating adapter for SEMESTER spinner **/
@@ -615,14 +669,19 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if(_student != null){
-                    if(db.deleteStudentFromClass(_student) != -1){
-                        db.deleteStudentFromScoreRecord(_student);
-                        studentList.remove(_student);
-                        studentInClassAdapter.refreshData(studentList);
+                String role = db.getRoleByEmail(getIntent().getStringExtra("email"));
+                if(role.equals("Manager") || role.equals("Administrator") || role.equals("Head Teacher")){
+                    if(_student != null){
+                        if(db.deleteStudentFromClass(_student) != -1){
+                            db.deleteStudentFromScoreRecord(_student);
+                            studentList.remove(_student);
+                            studentInClassAdapter.refreshData(studentList);
+                        }
+                    }else {
+                        Toast.makeText(ClassDetailsActivity.this, "Can not delete", Toast.LENGTH_SHORT).show();
                     }
-                }else {
-                    Toast.makeText(ClassDetailsActivity.this, "Can not delete", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(ClassDetailsActivity.this, "You are not allowed to do this", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -673,48 +732,42 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                double mark = Double.parseDouble(edtMarkValue.getText().toString().trim());
+                if(edtMarkValue.getText().toString().trim().equals("")){
+                    warningDialog("Enter your mark!!!");
+                }else{
+                    double mark = Double.parseDouble(edtMarkValue.getText().toString().trim());
 
-                setObject(position);
+                    setObject(position);
 
-                if(mark > 10){
-                    Toast.makeText(ClassDetailsActivity.this, "Mark is wrong!!!", Toast.LENGTH_SHORT).show();
-                }else if(mark <= 10){
-                    marking.setMarkValue(mark);
-                    db = new DatabaseHandler(getApplicationContext());
-                    int count = db.getMarkCount(_student.getStudentId(),_subject.getSubjectSemester(), _subject.getSubjectName(),_subject.getSubjectTypeOfMark());
-                    if(count == 0){
-                        if(db.markingStudent(marking) != 0){
-                            Toast.makeText(ClassDetailsActivity.this, "Successful", Toast.LENGTH_SHORT).show();
-                        }else {
-                            Toast.makeText(ClassDetailsActivity.this, "Fail", Toast.LENGTH_SHORT).show();
-                        }
-                    }else{
-                        final AlertDialog.Builder builder = new AlertDialog.Builder(ClassDetailsActivity.this);
+                    if(mark > 10){
+                        Toast.makeText(ClassDetailsActivity.this, "Mark is wrong!!!", Toast.LENGTH_SHORT).show();
+                    }else if(mark <= 10){
+                        marking.setMarkValue(mark);
+                        db = new DatabaseHandler(getApplicationContext());
+                        int count = db.getMarkCount(_student.getStudentId(),_subject.getSubjectSemester(), _subject.getSubjectName(),_subject.getSubjectTypeOfMark());
+                        String responsibleSubject = db.getResponsibleSubjectByEmail(getIntent().getStringExtra("email"));
+                        String sentEmail = getIntent().getStringExtra("email");
+                        String role = db.getRoleByEmail(sentEmail);
+                        if(responsibleSubject.equals(_subject.getSubjectName()) || role.equals("Administrator")){
+                            if(count == 0){
+                                if(db.markingStudent(marking) != 0){
+                                    Toast.makeText(ClassDetailsActivity.this, "Successful", Toast.LENGTH_SHORT).show();
+                                    markingDialog.dismiss();
+                                }else {
+                                    Toast.makeText(ClassDetailsActivity.this, "Fail", Toast.LENGTH_SHORT).show();
+                                }
+                            }else{
+                                warningDialog("This student already has mark");
 
-                        //set Title
-                        builder.setTitle("Warning");
-
-                        //set Message
-                        builder.setMessage("This student already has mark");
-
-                        //set Icon
-                        builder.setIcon(R.drawable.warning);
-
-
-
-                        builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
                             }
-                        });
+                        }else{
+                            warningDialog("You are not allowed to mark in this subject");
+                        }
 
-                        builder.show();
+
 
                     }
 
-                    markingDialog.dismiss();
                 }
 
             }
@@ -743,7 +796,7 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
         final View dialogView = inflater.inflate(R.layout.activity_mark_selection, null);
         dialogBuilder.setView(dialogView);
 
-        initSummaryMarkSpinner(dialogView);
+        initSubjectSummaryMarkSpinner(dialogView);
 
 
         btnViewMark = (Button) dialogView.findViewById(R.id.btnViewMark);
@@ -754,51 +807,71 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
 
                 db = new DatabaseHandler(getApplicationContext());
 
-                double fifteenMinutesMark = db.getFifteenMinutesMark(_student.getStudentId(),_subject.getSubjectSemester(),
-                        _subject.getSubjectName());
+                switch(markType){
+                    case "Subject Summary Mark":
+                        //15 minutes mark
+                        double fifteenMinutesMark = db.getFifteenMinutesMark(_student.getStudentId(),_subject.getSubjectSemester(),
+                                _subject.getSubjectName());
 
-                double fortyFiveMinutesMark = db.getFortyFiveMinutesMark(_student.getStudentId(), _subject.getSubjectSemester(),
-                        _subject.getSubjectName());
+                        //45 minutes mark
+                        double fortyFiveMinutesMark = db.getFortyFiveMinutesMark(_student.getStudentId(), _subject.getSubjectSemester(),
+                                _subject.getSubjectName());
 
-                double finalExamMark = db.getFinalExamMark(_student.getStudentId(), _subject.getSubjectSemester(),
-                        _subject.getSubjectName());
+                        //final exam mark
+                        double finalExamMark = db.getFinalExamMark(_student.getStudentId(), _subject.getSubjectSemester(),
+                                _subject.getSubjectName());
 
-                double summaryMark = (fifteenMinutesMark + (fortyFiveMinutesMark * 2) + (finalExamMark * 3))/6;
+                        //subject summary mark
+                        double subjectSummaryMark = (fifteenMinutesMark + (fortyFiveMinutesMark * 2) + (finalExamMark * 3))/6;
 
+                        //count subject summary mark
+                        int subjectSummaryMarkCount = db.getMarkCount(_student.getStudentId(),_subject.getSubjectSemester(),
+                                _subject.getSubjectName(),_subject.getSubjectTypeOfMark());
 
-                int summaryMarkCount = db.getSummaryMarkCount(_student.getStudentId(),_subject.getSubjectSemester(),
-                        _subject.getSubjectName(),_subject.getSubjectTypeOfMark());
+                        //count 15 minutes mark
+                        int fifteenMinutesMarkCount = db.getMarkCount(_student.getStudentId(),_subject.getSubjectSemester(),
+                                _subject.getSubjectName(), "15 minutes");
 
-                if(summaryMarkCount == 0){
-                    marking.setMarkValue(summaryMark);
-                    if(db.calculateSummaryMark(marking) != 0){
-                        Toast.makeText(ClassDetailsActivity.this, "Successful", Toast.LENGTH_SHORT).show();
-                    }else{
-                        Toast.makeText(ClassDetailsActivity.this, "Fail", Toast.LENGTH_SHORT).show();
-                    }
-                }else{
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(ClassDetailsActivity.this);
+                        //count 45 minutes mark
+                        int fortyFiveMinutesMarkCount = db.getMarkCount(_student.getStudentId(),_subject.getSubjectSemester(),
+                                _subject.getSubjectName(), "45 minutes");
 
-                    //set Title
-                    builder.setTitle("Warning");
+                        //count final exam mark
+                        int finalExamMarkCount = db.getMarkCount(_student.getStudentId(),_subject.getSubjectSemester(),
+                                _subject.getSubjectName(), "Final Exam");
 
-                    //set Message
-                    builder.setMessage("This student already has mark");
-
-                    //set Icon
-                    builder.setIcon(R.drawable.warning);
-
-
-
-                    builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
+                        if(fifteenMinutesMarkCount == 0){
+                            warningDialog("This student hasn't had 15 minutes mark yet");
+                        }else{
+                            if(fortyFiveMinutesMarkCount == 0){
+                                warningDialog("This student hasn't had 45 minutes mark yet");
+                            }else{
+                                if(finalExamMarkCount == 0){
+                                   warningDialog("This student hasn't had final exam mark yet");
+                                }else{
+                                    if(subjectSummaryMarkCount == 0){
+                                        marking.setMarkValue(subjectSummaryMark);
+                                        if(db.calculateSubjectSummaryMark(marking) != 0){
+                                            Toast.makeText(ClassDetailsActivity.this, "Successful", Toast.LENGTH_SHORT).show();
+                                        }else{
+                                            Toast.makeText(ClassDetailsActivity.this, "Fail", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }else{
+                                        warningDialog("This student already has mark");
+                                    }
+                                }
+                            }
                         }
-                    });
-
-                    builder.show();
+                        break;
+                    case "Semester Summary Mark":
+                        calculateSemesterSummaryMark(db);
+                        break;
+                    case "Final Mark":
+                        calculateFinalMark(db);
+                        break;
                 }
+
+
 
                 markingDialog.dismiss();
 
@@ -817,10 +890,7 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
         markingDialog.show();
     }
 
-    //TODO: Calculate semester summary mark (1 + 2)
 
-
-    //TODO: Calculate summary year mark and student type
 
 
     public void setObject(int position){
@@ -839,5 +909,238 @@ public class ClassDetailsActivity extends AppCompatActivity implements RecyclerV
         marking.set_class(currentClass);
         marking.setSubject(_subject);
     }
+
+
+    public void warningDialog(String message){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(ClassDetailsActivity.this);
+
+        //set Title
+        builder.setTitle("Warning");
+
+        //set Message
+        builder.setMessage(message);
+
+        //set Icon
+        builder.setIcon(R.drawable.warning);
+
+
+
+        builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.show();
+    }
+
+    public void calculateSemesterSummaryMark(DatabaseHandler db){
+        String studentType = "";
+        /**GET**/
+        //Maths summary mark
+        double mathSummaryMark = db.getSummaryMark(_student.getStudentId(),_subject.getSubjectSemester()
+                ,"Maths");
+        //Physics summary mark
+        double physicSummaryMark = db.getSummaryMark(_student.getStudentId(),_subject.getSubjectSemester()
+                ,"Physics");
+        //Chemistry summary mark
+        double chemistrySummaryMark = db.getSummaryMark(_student.getStudentId(),_subject.getSubjectSemester()
+                ,"Chemistry");
+        //Biology summary mark
+        double biologySummaryMark = db.getSummaryMark(_student.getStudentId(),_subject.getSubjectSemester()
+                ,"Biology");
+        //History summary mark
+        double historySummaryMark = db.getSummaryMark(_student.getStudentId(),_subject.getSubjectSemester()
+                ,"History");
+        //Geography summary mark
+        double geographySummaryMark = db.getSummaryMark(_student.getStudentId(),_subject.getSubjectSemester()
+                ,"Geography");
+        //Literature summary mark
+        double literatureSummaryMark = db.getSummaryMark(_student.getStudentId(),_subject.getSubjectSemester()
+                ,"Literature");
+        //English summary mark
+        double englishSummaryMark = db.getSummaryMark(_student.getStudentId(),_subject.getSubjectSemester()
+                ,"English");
+        //Astronomy summary mark
+        double astronomySummaryMark = db.getSummaryMark(_student.getStudentId(),_subject.getSubjectSemester()
+                ,"Astronomy");
+
+
+        //semester summary mark
+        double semesterSummaryMark = (mathSummaryMark + physicSummaryMark + chemistrySummaryMark
+                + biologySummaryMark + historySummaryMark + geographySummaryMark + literatureSummaryMark
+                + englishSummaryMark + astronomySummaryMark)/9;
+
+
+
+        /**COUNT**/
+        //Maths summary mark count
+        int mathSummaryMarkCount = db.getSubjectSummaryMarkCount(_student.getStudentId(),_subject.getSubjectSemester()
+                ,"Maths");
+        //Physics summary mark count
+        int physicSummaryMarkCount = db.getSubjectSummaryMarkCount(_student.getStudentId(),_subject.getSubjectSemester()
+                ,"Physics");
+        //Chemistry summary mark count
+        int chemistrySummaryMarkCount = db.getSubjectSummaryMarkCount(_student.getStudentId(),_subject.getSubjectSemester()
+                ,"Chemistry");
+
+        //Biology summary mark count
+        int biologySummaryMarkCount = db.getSubjectSummaryMarkCount(_student.getStudentId(),_subject.getSubjectSemester()
+                ,"Biology");
+        //History summary mark count
+        int historySummaryMarkCount = db.getSubjectSummaryMarkCount(_student.getStudentId(),_subject.getSubjectSemester()
+                ,"History");
+        //Geography summary mark count
+        int geographySummaryMarkCount = db.getSubjectSummaryMarkCount(_student.getStudentId(),_subject.getSubjectSemester()
+                ,"Geography");
+        //Literature summary mark count
+        int literatureSummaryMarkCount = db.getSubjectSummaryMarkCount(_student.getStudentId(),_subject.getSubjectSemester()
+                ,"Literature");
+        //English summary mark count
+        int englishSummaryMarkCount = db.getSubjectSummaryMarkCount(_student.getStudentId(),_subject.getSubjectSemester()
+                ,"English");
+        //Astronomy summary mark count
+        int astronomySummaryMarkCount = db.getSubjectSummaryMarkCount(_student.getStudentId(),_subject.getSubjectSemester()
+                ,"Astronomy");
+
+
+        if(mathSummaryMarkCount == 0){
+            warningDialog("This student hasn't had Maths Summary Mark yet!!!");
+        }else{
+            if(physicSummaryMarkCount == 0){
+                warningDialog("This student hasn't had Physics Summary Mark yet!!!");
+            }else{
+                if(chemistrySummaryMarkCount == 0){
+                    warningDialog("This student hasn't had Chemistry Summary Mark yet!!!");
+                }else{
+                    if(biologySummaryMarkCount == 0){
+                        warningDialog("This student hasn't had Biology Summary Mark yet!!!");
+                    }else{
+                        if(historySummaryMarkCount == 0){
+                            warningDialog("This student hasn't had History Summary Mark yet!!!");
+                        }else{
+                            if(geographySummaryMarkCount == 0){
+                                warningDialog("This student hasn't had Geography Summary Mark yet!!!");
+                            }else{
+                                if(literatureSummaryMarkCount == 0){
+                                    warningDialog("This student hasn't had Literature Summary Mark yet!!!");
+                                }else{
+                                    if(englishSummaryMarkCount == 0){
+                                        warningDialog("This student hasn't had English Summary Mark yet!!!");
+                                    }else{
+                                        if(astronomySummaryMarkCount == 0){
+                                            warningDialog("This student hasn't had Astronomy Summary Mark yet!!!");
+                                        }else{
+                                            if(semesterSummaryMark >= 5 && semesterSummaryMark < 6.5){
+                                                studentType = "Average";
+                                            }else if(semesterSummaryMark >= 6.5 && semesterSummaryMark < 8){
+                                                studentType = "Good";
+                                            }else if(semesterSummaryMark >= 8){
+                                                if(mathSummaryMark >= 6.5 && physicSummaryMark >= 6.5
+                                                        && chemistrySummaryMark >= 6.5 && biologySummaryMark >= 6.5
+                                                        && historySummaryMark >= 6.5 && geographySummaryMark >= 6.5
+                                                        && literatureSummaryMark >= 6.5 && englishSummaryMark >= 6.5
+                                                        && astronomySummaryMark >= 6.5){
+                                                    studentType = "Excellent";
+                                                }else{
+                                                    studentType = "Good";
+                                                }
+                                            }else{
+                                                studentType = "Fail";
+                                            }
+
+                                            int count = db.getSummaryMarkCount(_student.getStudentId(),_subject.getSubjectSemester()
+                                                    ,_subject.getSubjectTypeOfMark());
+                                            String role = db.getRoleByEmail(getIntent().getStringExtra("email"));
+                                            if(role.equals("Head Teacher") || role.equals("Administrator")){
+                                                if(count == 0){
+                                                    //insert into DB
+                                                    marking.setMarkValue(semesterSummaryMark);
+                                                    marking.setStudentType(studentType);
+                                                    if(db.calculateSummaryMark(marking) != 0){
+                                                        Toast.makeText(ClassDetailsActivity.this, "Successful", Toast.LENGTH_SHORT).show();
+                                                    }else{
+                                                        Toast.makeText(ClassDetailsActivity.this, "Fail", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }else{
+                                                    warningDialog("This student already has mark");
+                                                }
+                                            }else{
+                                                warningDialog("You are not allowed to do this");
+                                            }
+
+                                        }
+                                    }
+                                }
+                            }
+
+
+
+                        }
+                    }
+                }
+            }
+        }
+
+
+    }
+
+    //TODO: implement final mark
+    public void calculateFinalMark(DatabaseHandler db){
+        String studentType = "";
+
+        /**  GET  **/
+        //get semester 1 summary mark values
+        double semesterOneSummaryMark = db.getSemesterSummaryMark(_student.getStudentId(),1);
+        //get semester 2 summary mark values
+        double semesterTwoSummaryMark = db.getSemesterSummaryMark(_student.getStudentId(),2);
+
+        double finalMark = (semesterOneSummaryMark + (semesterTwoSummaryMark * 2))/3;
+
+        /**  COUNT  **/
+        //count semester 1 summary mark
+        int semesterOneSummaryMarkCount = db.getSummaryMarkCount(_student.getStudentId(),1,"Semester Summary Mark");
+        //count semester 2 summary mark
+        int semesterTwoSummaryMarkCount = db.getSummaryMarkCount(_student.getStudentId(),2,"Semester Summary Mark");
+
+        if(semesterOneSummaryMarkCount == 0){
+            warningDialog("This student hasn't had Semester 1 Summary Mark yet!!!");
+        }else{
+            if(semesterTwoSummaryMarkCount == 0){
+                warningDialog("This student hasn't had Semester 2 Summary Mark yet!!!");
+            }else{
+                if(finalMark >= 5 && finalMark < 6.5){
+                    studentType = "Average";
+                }else if(finalMark >= 6.5 && finalMark < 8){
+                    studentType = "Good";
+                }else if(finalMark >= 8){
+                    studentType = "Excellent";
+                }else{
+                    studentType = "Fail";
+                }
+
+                int count = db.getFinalMarkCount(_student.getStudentId());
+                String role = db.getRoleByEmail(getIntent().getStringExtra("email"));
+                if(role.equals("Head Teacher") || role.equals("Administrator")){
+                    if(count == 0){
+                        marking.setMarkValue(finalMark);
+                        marking.setStudentType(studentType);
+                        if(db.calculateFinalMark(marking) != 0){
+                            Toast.makeText(ClassDetailsActivity.this, "Successful", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(ClassDetailsActivity.this, "Fail", Toast.LENGTH_SHORT).show();
+                        }
+                    }else{
+                        warningDialog("This student already has mark");
+                    }
+                }else{
+                    warningDialog("You are not allowed to do this");
+                }
+
+            }
+        }
+    }
+
 
 }

@@ -71,6 +71,15 @@
         android:text="Calculate"
         android:visibility="invisible" />
 
+    <Button
+        android:id="@+id/btnGenerate"
+        android:layout_marginLeft="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imgGender"
+        android:text="Generate"
+        android:visibility="invisible" />
+
     <TextView
         android:id="@+id/studentId"
         android:textColor="@color/student_id"

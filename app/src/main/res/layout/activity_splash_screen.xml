@@ -8,7 +8,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".SplashScreenActivity"
-    android:background="#12508E">
+    android:background="#E04A40">
 
     <TextView
         android:layout_width="fill_parent"
@@ -22,20 +22,21 @@
         android:id="@+id/textView3" />
 
     <ImageView
-        android:id="@+id/imgLogo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/splash_student_xxxhdpi"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
-
-    <ImageView
         android:id="@+id/imgSchoolName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/phunhuan30"
         android:layout_marginBottom="16dp"
         android:layout_above="@+id/imgLogo"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/splash_student_xxxhdpi"
+        android:layout_marginBottom="122dp"
+        android:layout_above="@+id/textView3"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

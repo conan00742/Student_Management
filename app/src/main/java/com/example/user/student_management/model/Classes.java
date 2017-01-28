@@ -52,7 +52,7 @@ public class Classes {
     /**init table CLASSES**/
     public static String getInitClassesSql (){
         return  "CREATE TABLE " + TABLE_CLASSES + "("
-                + KEY_ID + " INTEGER PRIMARY KEY,"
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_NAME + " TEXT,"
                 + KEY_QUANTITY + " INTEGER,"
                 + KEY_GRADE_ID + " INTEGER"
@@ -63,7 +63,7 @@ public class Classes {
     /**init table STUDENTS_IN_CLASS**/
     public static String getInitStudentsInClassSql(){
         return  "CREATE TABLE " + TABLE_STUDENTS_IN_CLASS + "("
-                + KEY_SUB_ID + " INTEGER PRIMARY KEY,"
+                + KEY_SUB_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_CLASS_NAME + " TEXT,"
                 + KEY_STUDENT_ID + " TEXT"
                 + ")";

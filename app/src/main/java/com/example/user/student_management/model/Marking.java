@@ -17,6 +17,7 @@ public class Marking {
     public static final String KEY_SEMESTER = "semester";
     public static final String KEY_TYPE_OF_MARK = "typeOfMark";
     public static final String KEY_MARK_VALUE = "markValue";
+    public static final String KEY_STUDENT_TYPE = "studentType";
 
 
 
@@ -24,17 +25,19 @@ public class Marking {
     private Classes _class;
     private Subject subject;
     private double markValue;
+    private String studentType;
 
     public static String getInitSql(){
         return  "CREATE TABLE " + TABLE_SCORE_RECORD + "("
-                + KEY_SCORE_RECORD_ID + " INTEGER PRIMARY KEY,"
+                + KEY_SCORE_RECORD_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_STUDENT_ID + " TEXT,"
                 + KEY_STUDENT_NAME + " TEXT,"
                 + KEY_CLASS_NAME + " TEXT,"
                 + KEY_SUBJECT_NAME + " TEXT,"
                 + KEY_SEMESTER + " INTEGER,"
                 + KEY_TYPE_OF_MARK + " TEXT,"
-                + KEY_MARK_VALUE + " REAL"
+                + KEY_MARK_VALUE + " REAL,"
+                + KEY_STUDENT_TYPE + " TEXT"
                 + ")";
     }
 
@@ -46,10 +49,33 @@ public class Marking {
         contentValues.put(KEY_SUBJECT_NAME, this.subject.getSubjectName());
         contentValues.put(KEY_SEMESTER, this.subject.getSubjectSemester());
         contentValues.put(KEY_TYPE_OF_MARK, this.subject.getSubjectTypeOfMark());
-        contentValues.put(KEY_MARK_VALUE, this.markValue);
+        contentValues.put(KEY_MARK_VALUE, this.getMarkValue());
+        contentValues.put(KEY_STUDENT_TYPE, this.getStudentType());
         return contentValues;
     }
 
+    public ContentValues getSemesterSummaryMarkContentsValues(){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(KEY_STUDENT_ID, this.student.getStudentId());
+        contentValues.put(KEY_STUDENT_NAME, this.student.getStudentName());
+        contentValues.put(KEY_CLASS_NAME, this._class.get_name());
+        contentValues.put(KEY_SEMESTER, this.subject.getSubjectSemester());
+        contentValues.put(KEY_TYPE_OF_MARK, this.subject.getSubjectTypeOfMark());
+        contentValues.put(KEY_MARK_VALUE, this.getMarkValue());
+        contentValues.put(KEY_STUDENT_TYPE, this.getStudentType());
+        return contentValues;
+    }
+
+    public ContentValues getFinalMarkContentsValues(){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(KEY_STUDENT_ID, this.student.getStudentId());
+        contentValues.put(KEY_STUDENT_NAME, this.student.getStudentName());
+        contentValues.put(KEY_CLASS_NAME, this._class.get_name());
+        contentValues.put(KEY_TYPE_OF_MARK, this.subject.getSubjectTypeOfMark());
+        contentValues.put(KEY_MARK_VALUE, this.getMarkValue());
+        contentValues.put(KEY_STUDENT_TYPE, this.getStudentType());
+        return contentValues;
+    }
 
     public Marking() {
     }
@@ -91,5 +117,13 @@ public class Marking {
 
     public void setMarkValue(double markValue) {
         this.markValue = markValue;
+    }
+
+    public String getStudentType() {
+        return studentType;
+    }
+
+    public void setStudentType(String studentType) {
+        this.studentType = studentType;
     }
 }

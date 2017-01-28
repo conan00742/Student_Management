@@ -14,6 +14,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.user.student_management.RecyclerViewClickListener;
 import com.example.user.student_management.db.DatabaseHandler;
@@ -170,7 +171,13 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHo
                     /**put the list, className & classQuantity back to the ClassDetailsActivity**/
                     Classes _class = new Classes(className,Integer.parseInt(classQuantity));
                     DatabaseHandler db = new DatabaseHandler(context);
-                    db.addStudentToClass(_class,filteredData,getAdapterPosition());
+                    int count = db.getStudentInClassCount(className);
+                    int quantity  = Integer.parseInt(classQuantity);
+                    if(count < quantity){
+                        db.addStudentToClass(_class,filteredData,getAdapterPosition());
+                    }else if(count >= quantity){
+                        Toast.makeText(context, "Maximum is "+ classQuantity, Toast.LENGTH_SHORT).show();
+                    }
 
 
                     i.putExtra(ClassDetailsActivity.CLASS_NAME_TAG, className);

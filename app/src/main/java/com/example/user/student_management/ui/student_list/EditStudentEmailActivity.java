@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.example.user.student_management.R;
 import com.example.user.student_management.db.DatabaseHandler;
 import com.example.user.student_management.model.Student;
+import com.example.user.student_management.ui.home.LoginSuccessActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,7 +40,7 @@ public class EditStudentEmailActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnSaveNewEmail)
     public void editNewEmail(){
-        Intent i = new Intent(EditStudentEmailActivity.this, StudentsListActivity.class);
+        Intent i = new Intent(EditStudentEmailActivity.this, LoginSuccessActivity.class);
         DatabaseHandler db = new DatabaseHandler(getApplicationContext());
         Student student = new Student();
         student.setStudentId(getIntent().getStringExtra("studentId"));

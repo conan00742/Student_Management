@@ -68,15 +68,38 @@ public class ViewMarkAdapter extends RecyclerView.Adapter<ViewMarkAdapter.ViewHo
             //classQuantity
             header.tvClassQuantityHeader.setText(String.format(context.getString(R.string.class_details_quantity), String.valueOf(_class.get_quantity())));
             header.tvClassQuantityHeader.setTextColor(Color.BLUE);
-            //Semester
-            header.tvSemester.setText(String.format(context.getString(R.string.marking_semester), String.valueOf(_subject.getSubjectSemester())));
-            header.tvSemester.setTextColor(Color.RED);
-            //Subject
-            header.tvSubject.setText(String.format(context.getString(R.string.marking_subject), _subject.getSubjectName()));
-            header.tvSubject.setTextColor(Color.RED);
-            //Type Of Mark
-            header.tvMarkType.setText(String.format(context.getString(R.string.marking_type), _subject.getSubjectTypeOfMark()));
-            header.tvMarkType.setTextColor(Color.RED);
+
+            if(_subject.getSubjectTypeOfMark().equals("Semester Summary Mark")){
+                header.tvSubject.setVisibility(View.GONE);
+
+                //Semester
+                header.tvSemester.setText(String.format(context.getString(R.string.marking_semester), String.valueOf(_subject.getSubjectSemester())));
+                header.tvSemester.setTextColor(Color.RED);
+
+                //Type Of Mark
+                header.tvMarkType.setText(String.format(context.getString(R.string.marking_type), _subject.getSubjectTypeOfMark()));
+                header.tvMarkType.setTextColor(Color.RED);
+            }else if(_subject.getSubjectTypeOfMark().equals("Final Mark")){
+                //Type Of Mark
+                header.tvMarkType.setText(String.format(context.getString(R.string.marking_type), _subject.getSubjectTypeOfMark()));
+                header.tvMarkType.setTextColor(Color.RED);
+
+                header.tvSubject.setVisibility(View.GONE);
+
+                header.tvSemester.setVisibility(View.GONE);
+            }else{
+                //Semester
+                header.tvSemester.setText(String.format(context.getString(R.string.marking_semester), String.valueOf(_subject.getSubjectSemester())));
+                header.tvSemester.setTextColor(Color.RED);
+                //Subject
+                header.tvSubject.setText(String.format(context.getString(R.string.marking_subject), _subject.getSubjectName()));
+                header.tvSubject.setTextColor(Color.RED);
+                //Type Of Mark
+                header.tvMarkType.setText(String.format(context.getString(R.string.marking_type), _subject.getSubjectTypeOfMark()));
+                header.tvMarkType.setTextColor(Color.RED);
+            }
+
+
 
         } else if(holder.getItemViewType() == INPUTROW){
             Marking marking = markingList.get(position - 1);
@@ -89,6 +112,12 @@ public class ViewMarkAdapter extends RecyclerView.Adapter<ViewMarkAdapter.ViewHo
             }else{
                 inputRow.tvViewMark.setText(String.format("%.1f",marking.getMarkValue()));
             }
+            if(marking.getStudentType() != null){
+                inputRow.tvStudentType.setText(marking.getStudentType());
+            }else{
+                inputRow.tvStudentType.setText("");
+            }
+
         }
     }
 
@@ -132,12 +161,13 @@ public class ViewMarkAdapter extends RecyclerView.Adapter<ViewMarkAdapter.ViewHo
 
     public class ViewMarkInputRow extends ViewHolder {
         TextView studentId, studentName;
-        TextView tvViewMark;
+        TextView tvViewMark, tvStudentType;
         public ViewMarkInputRow(View itemView) {
             super(itemView);
             studentName = (TextView) itemView.findViewById(R.id.studentMarkingName);
             studentId = (TextView) itemView.findViewById(R.id.studentMarkingId);
             tvViewMark = (TextView) itemView.findViewById(R.id.tvViewMark);
+            tvStudentType = (TextView) itemView.findViewById(R.id.tvStudentType);
         }
     }
 }

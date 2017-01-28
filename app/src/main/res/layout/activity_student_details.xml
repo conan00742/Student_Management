@@ -31,7 +31,7 @@
                     android:id="@+id/imgViewStudentDetails"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/male_student"/>
+                    android:src="@mipmap/male_icon"/>
 
                 <TextView
                     android:paddingLeft="10dp"

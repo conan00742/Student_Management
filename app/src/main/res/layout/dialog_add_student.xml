@@ -15,7 +15,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Student name"
-                android:typeface="monospace"/>
+                android:typeface="monospace"
+                android:inputType="textPersonName"/>
         </android.support.design.widget.TextInputLayout>
 
 
@@ -39,7 +40,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Address"
-                android:typeface="monospace" />
+                android:typeface="monospace"
+                android:inputType="textPostalAddress"/>
         </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -50,7 +52,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Email"
-            android:typeface="monospace" />
+            android:typeface="monospace"
+            android:inputType="textEmailAddress"/>
     </android.support.design.widget.TextInputLayout>
 
     <LinearLayout

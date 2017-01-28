@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.example.user.student_management.R;
 import com.example.user.student_management.db.DatabaseHandler;
 import com.example.user.student_management.ui.class_list.ClassDetailsActivity;
+import com.example.user.student_management.ui.home.LoginSuccessActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,11 +41,13 @@ public class EditStudentNameActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnSaveNewName)
     void saveNewName(){
-        Intent i = new Intent(EditStudentNameActivity.this, StudentsListActivity.class);
+        Intent i = new Intent(EditStudentNameActivity.this, LoginSuccessActivity.class);
         String newName = edtNewName.getText().toString().trim();
         String studentId = getIntent().getStringExtra("studentId");
         DatabaseHandler db = new DatabaseHandler(EditStudentNameActivity.this);
         db.editStudentNameById(studentId, newName);
         startActivity(i);
     }
+
+
 }

@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.example.user.student_management.R;
 import com.example.user.student_management.db.DatabaseHandler;
 import com.example.user.student_management.model.Classes;
+import com.example.user.student_management.model.Student;
+import com.example.user.student_management.ui.home.LoginSuccessActivity;
 
 import java.util.List;
 
@@ -67,9 +69,12 @@ public class EditStudentClassActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnSaveNewClass)
     public void editNewClass(){
-        Intent i = new Intent(EditStudentClassActivity.this, StudentsListActivity.class);
+        Intent i = new Intent(EditStudentClassActivity.this, LoginSuccessActivity.class);
         String studentID = getIntent().getStringExtra("studentId");
+        Student student = new Student();
+        student.setStudentId(studentID);
         db.editStudentClassById(studentID,newClass);
+        db.deleteStudentFromScoreRecord(student);
         startActivity(i);
     }
 }

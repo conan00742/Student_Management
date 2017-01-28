@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.example.user.student_management.R;
 import com.example.user.student_management.db.DatabaseHandler;
 import com.example.user.student_management.model.Student;
+import com.example.user.student_management.ui.home.LoginSuccessActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -79,7 +80,7 @@ public class EditStudentDateOfBirthActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnSaveNewDoB)
     public void saveNewDateOfBirth(){
-        Intent i = new Intent(EditStudentDateOfBirthActivity.this, StudentsListActivity.class);
+        Intent i = new Intent(EditStudentDateOfBirthActivity.this, LoginSuccessActivity.class);
         DatabaseHandler db = new DatabaseHandler(getApplicationContext());
         dateInString = edtNewDoB.getText().toString().trim();
         Student student = new Student();
