@@ -2,7 +2,7 @@
 A small pet project created by me when self-studying android. To think of replacing all the paper works by technology on management problems. That's what i'm planning to build an mobile app for local high school. 
 ## Installation
 APK file:
-https://drive.google.com/file/d/0B9lB_ErCBUKFQi10TjFFWnFXRlE/view
+https://www.dropbox.com/home?preview=student_management.apk
 ## Usage
 1. Login as Administrator to reg user account (admin@gmail.com / pass: qwerty)
 2. Using user account to do some actions
